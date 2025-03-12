@@ -1,0 +1,188 @@
+actor Manufacturer {
+    precondition materialAvailable {
+        description: "Material availability in stock";
+        value: boolean exp here;
+    }
+
+    precondition hasManufacturingCapacity {
+        description: "Manufacturer has capacity to build in-house";
+        value: boolean exp here, string for now;
+    }
+
+    primitive predicate deliveredInTimeDom {
+        description: "Materials delivered on time (domestic)";
+        init: false;
+    }
+
+    primitive predicate deliveredLateDom {
+        description: "Materials delivered late (domestic)";
+        init: false;
+    }
+
+    primitive predicate neverDeliveredDom {
+        description: "Materials never delivered (domestic)";
+        init: false;
+    }
+
+    primitive predicate deliveredInTimeFrgn {
+        description: "Materials delivered on time (foreign)";
+        init: false;
+    }
+
+    primitive predicate deliveredLateFrgn {
+        description: "Materials delivered late (foreign)";
+        init: false;
+    }
+
+    primitive predicate neverDeliveredFrgn {
+        description: "Materials never delivered (foreign)";
+        init: false;
+    }
+
+    primitive predicate deliveredGoodQualityInH {
+        description: "In-house build with good quality";
+        init: false;
+    }
+
+    primitive predicate deliveredBadQualityInH {
+        description: "In-house build with bad quality";
+        init: false;
+    }
+
+    primitive predicate deliveredGoodQualitySpec {
+        description: "Specialists produce good quality";
+        init: false;
+    }
+
+    primitive predicate deliveredBadQualitySpec {
+        description: "Specialists produce bad quality";
+        init: false;
+    }
+
+    quality Reputation {
+        description: "Reputation of the Manufacturer";
+        value: [numericExpression];
+    }
+
+    quality FinancialGain {
+        description: "Financial Gain";
+        value: [numericExpression];
+    }
+
+    root quality totalValue {
+        description: "Total Value"
+        value: Reputation + FinancialGain; // f
+    }
+
+    root goal ProductManufactured(param1, param2, ...) {
+        description: "Product Manufactured";
+        refined: and;
+        children: MaterialOrdered(param1, param2,...), ManufacturingCompleted(param1, param2,...);
+    }
+
+    goal MaterialOrdered(param1, param2, ...) {
+        description: "Material Ordered";
+        refined: or;
+        children: SourceDomestically(param1, param2,...), SourceFromAbroad(param1, param2,...);
+    }
+
+    goal ManufacturingCompleted(param1, param2, ...) {
+        description: "Manufacturing Completed";
+        precondition: MaterialOrdered;
+        refined: or;
+        children: BuildInHouse(param1, param2,...), AssignToSpecialists(param1, param2,...);
+    }
+
+    task SourceDomestically(param1, param2, ...) {
+        description: "Source materials from a domestic supplier";
+        precondition: materialAvailable;
+        effectGroup {
+            effect successDeliveredInTimeDom {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.75;
+                turnsTrue: deliveredInTimeDom;
+            }
+
+            effect successDeliveredLateDom {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.20;
+                turnsTrue: deliveredLateDom;
+            }
+
+            effect failureDeliveredDom {
+                description: "Failure";
+                satisfying: false;
+                probability: 0.05;
+                turnsTrue: neverDeliveredDom;
+            }
+        }
+    }
+
+    task SourceFromAbroad(param1, param2, ...) {
+        description: "Source materials from a foreign supplier";
+        effectGroup {
+            effect successDeliveredInTimeFrgn {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.5;
+                turnsTrue: deliveredInTimeFrgn;
+            }
+
+            effect successDeliveredLateFrgn {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.35;
+                turnsTrue: deliveredLateFrgn;
+            }
+
+            effect failureDeliveredFrgn {
+                description: "Failure";
+                satisfying: false;
+                probability: 0.15;
+                turnsTrue: neverDeliveredFrgn;
+            }
+        }
+    }
+
+    task BuildInHouse(param1, param2, ...) {
+        description: "Build the product in-house";
+        precondition: hasManufacturingCapacity;
+        effectGroup {
+            effect successInHGood {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.5;
+                turnsTrue: deliveredGoodQualityInH;
+            }
+
+            effect successInHBad {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.5;
+                turnsTrue: deliveredBadQualityInH;
+            }
+        }
+    }
+
+    task AssignToSpecialists(param1, param2, ...) {
+        description: "Assign product manufacturing to specialists";
+        precondition: !SourceFromAbroad;
+        effectGroup {
+            effect successSpecGood {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.7;
+                turnsTrue: deliveredGoodQualitySpec;
+            }
+
+            effect successSpecBad {
+                description: "Successful";
+                satisfying: true;
+                probability: 0.3;
+                turnsTrue: deliveredBadQualitySpec;
+            }
+        }
+    }
+}

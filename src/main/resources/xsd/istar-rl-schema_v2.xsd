@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns="https://example.org/istar-t"
+        targetNamespace="https://example.org/istar-t"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+
+    <!-- Root element -->
+    <xsd:element name="actor" type="ActorType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Root element representing an actor in the iStar-RL framework.
+                Contains all behavioral elements including predicates, preBoxes, indirectEffects, qualities, goals, and tasks.
+                This model-driven approach facilitates the creation of training simulators for Reinforcement Learning (RL) agents by providing a structured representation of goals, actions, and their effects.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+    <!-- ===== ActorType ===== -->
+    <!-- Allows the subelements (predicates, preBoxes, indirectEffects, qualities, goals, tasks) -->
+    <xsd:complexType name="ActorType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Complex type defining an actor's structure in the model.
+                Contains:
+                - Predicates
+                - PreBoxes: Containers for preconditions
+                - Indirect Effects
+                - Qualities
+                - Goals
+                - Tasks
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:all>
+            <xsd:element name="predicates" type="PredicatesType" minOccurs="0"/>
+            <xsd:element name="preBoxes" type="PreBoxesType" minOccurs="0"/>
+            <xsd:element name="indirectEffects" type="IndirectEffectsType" minOccurs="0"/>
+            <xsd:element name="qualities" type="QualitiesType" minOccurs="0"/>
+            <xsd:element name="goals" type="GoalsType" minOccurs="0"/>
+            <xsd:element name="tasks" type="TasksType" minOccurs="0"/>
+        </xsd:all>
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: name
+                    Unique identifier for the actor.
+                    Used to reference the actor within goals, tasks, and other model components.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <!-- ===== Predicates ===== -->
+    <xsd:complexType name="PredicatesType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Container for predicates defining the actor's state conditions.
+                Each predicate represents a boolean condition that can influence the actor's behavior.
+                Predicates are used to model the state of the environment and the actor's internal state, essential for RL agent decision-making.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="predicate" type="PredicateType"
+                         minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Defines a single predicate.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="PredicateType" mixed="true">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Boolean condition with state management attributes.
+                Attributes:
+                - primitive: Indicates if the predicate is a basic, non-derived condition. (default: false)
+                - init: Specifies the initial state of the predicate. (default: false)
+                - exported: Determines if the predicate is visible to other actors or used in the exported state set for RL. (default: false)
+                - description: Provides an explanation of the predicate.
+                The content of the predicate element contains the identifier representing the condition.
+                Used in preconditions, effects, and as part of the exported state for RL simulations.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="primitive" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="init" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="exported" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
+    </xsd:complexType>
+
+    <!-- ===== PreBoxes ===== -->
+    <xsd:complexType name="PreBoxesType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Container for precondition boxes.
+                Each preBox defines a named boolean expression that serves as a precondition for goals or tasks.
+                PreBoxes allow for the encapsulation of complex boolean conditions, facilitating reuse and clarity in goal and task definitions.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="preBox" type="PreBoxType"
+                         minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Defines a single precondition box.
+                        Attributes:
+                        - name: Unique identifier for the preBox.
+                        - description: Optional explanation of the preBox's purpose.
+                        Contains the boolean expression representing the precondition, which can include references to predicates.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:group name="BooleanExpressionElements">
+        <xsd:choice>
+            <xsd:element name="boolConst" type="BoolConstType"/>
+            <xsd:element name="boolAtom" type="xsd:string"/>
+            <xsd:element name="previous" type="PreviousType"/>
+
+            <xsd:element name="gt" type="NumericComparisonType"/>
+            <xsd:element name="gte" type="NumericComparisonType"/>
+
+            <xsd:element name="lt" type="NumericComparisonType"/>
+            <xsd:element name="lte" type="NumericComparisonType"/>
+
+            <xsd:element name="eq" type="NumericComparisonType"/>
+            <xsd:element name="neq" type="NumericComparisonType"/>
+
+            <xsd:element name="and" type="BooleanAndType"/>
+            <xsd:element name="or" type="BooleanOrType"/>
+            <xsd:element name="not" type="BooleanNotType"/>
+        </xsd:choice>
+    </xsd:group>
+
+    <!-- BooleanExpressionType.
+         This type now forces a structured XML syntax (no free text)
+         and allows the following alternatives:
+           • A boolean constant (<boolConst>),
+           • A boolean identifier (<atom>),
+           • A previous() function call (<previous>),
+           • A numeric comparison (<gt>, <lt>, <eq>, etc),
+           • Or combinations via logical operators (<and>, <or>, <not>).
+    -->
+    <xsd:complexType name="BooleanExpressionType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A boolean expression is defined recursively as follows:
+
+                • A boolean constant: boolConst (true or false)
+                • A boolean identifier: atom (goal, task, or predicate identifier)
+                • A previous call: previous wrapping an atom
+                • A numeric comparison: one of gt, gte, lt, lte, eq, or neq (each with left/right numeric expressions)
+                • Or a combination of boolean expressions using:
+                and (conjunction), or (disjunction), and not (negation).
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:group ref="BooleanExpressionElements"/>
+    </xsd:complexType>
+
+    <!-- Boolean constant: must be "true" or "false" -->
+    <xsd:simpleType name="BoolConstType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Boolean constants; allowed values are "true" and "false".
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="true"/>
+            <xsd:enumeration value="false"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- The "previous" function: wraps an atom -->
+    <xsd:complexType name="PreviousType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Represents a previous value reference. For example,
+                previous(predicate_identifier) is modeled as:
+                &lt;previous&gt;&lt;atom&gt;predicate_identifier&lt;/atom&gt;&lt;/previous&gt;
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="boolAtom" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- ===== Numeric Expression Type Structure ===== -->
+    <!-- Define a group for numeric expression elements -->
+    <xsd:group name="NumericExpressionElements">
+        <xsd:choice>
+            <xsd:element name="const" type="xsd:decimal"/>
+            <xsd:element name="numAtom" type="xsd:string"/>
+            <xsd:element name="previous" type="NumericPreviousType"/>
+            <xsd:element name="add" type="NumericNaryOpType"/>
+            <xsd:element name="subtract" type="NumericBinaryOpType"/>
+            <xsd:element name="multiply" type="NumericNaryOpType"/>
+            <xsd:element name="divide" type="NumericBinaryOpType"/>
+            <xsd:element name="negate" type="NumericUnaryOpType"/>
+        </xsd:choice>
+    </xsd:group>
+
+    <!-- Numeric expression type that uses the group -->
+    <xsd:complexType name="NumericExpressionType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A numeric expression is defined recursively as follows:
+                • A numeric constant: const (e.g., 5, 10.5)
+                • A numeric identifier: atom (references a quality)
+                • A previous call: previous wrapping an atom (for historical values)
+                • Arithmetic operations: add, subtract, multiply, divide
+                • Unary negation: negate (for negative values)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:group ref="NumericExpressionElements"/>
+    </xsd:complexType>
+
+    <!-- Numeric Previous Type for quality references -->
+    <xsd:complexType name="NumericPreviousType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Represents a previous value reference for a numeric value. For example,
+                previous(quality_identifier) is modeled as:
+                &lt;previous&gt;&lt;atom&gt;quality_identifier&lt;/atom&gt;&lt;/previous&gt;
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="numAtom" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- Numeric Binary Operations (subtract, divide) -->
+    <xsd:complexType name="NumericBinaryOpType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Represents a binary arithmetic operation (subtract, divide)
+                with exactly two operands (left and right) that are themselves numeric expressions.
+                The order of operands matters for these non-commutative operations.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="left" type="NumericExpressionType"/>
+            <xsd:element name="right" type="NumericExpressionType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- Numeric N-ary Operations (add, multiply) -->
+    <xsd:complexType name="NumericNaryOpType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Represents an n-ary arithmetic operation (add, multiply)
+                with two or more operands that are themselves numeric expressions.
+                These operations are commutative and associative, allowing any number of operands.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="NumericExpressionElements" minOccurs="2" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- Numeric Unary Operation (negate) -->
+    <xsd:complexType name="NumericUnaryOpType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Represents a unary arithmetic operation (negate)
+                with one operand that is itself a numeric expression.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="NumericExpressionElements" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- A numeric comparison: both operands are numeric expressions -->
+    <xsd:complexType name="NumericComparisonType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A numeric comparison consists of a left and right operand.
+                Use this type for expressions like numericExpr > numericConstant,
+                numericExpr numericConstant, or numericExpr == numericConstant.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="left" type="NumericExpressionType"/>
+            <xsd:element name="right" type="NumericExpressionType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="BooleanAndType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The and element represents logical conjunction. It must contain at least two boolean expressions.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="BooleanExpressionElements" minOccurs="2" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="BooleanOrType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The or element represents logical disjunction. It must contain at least one boolean expression.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="BooleanExpressionElements" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="BooleanNotType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The not element represents logical negation and must contain exactly one boolean expression.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:group ref="BooleanExpressionElements" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+
+    <!-- Example: Updating PreBoxType to force structured boolean content -->
+    <xsd:complexType name="PreBoxType">
+        <xsd:complexContent>
+            <xsd:extension base="BooleanExpressionType">
+                <xsd:attribute name="name" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Unique identifier for the preBox.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="description" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Optional description for the preBox.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <!-- ===== IndirectEffects ===== -->
+    <xsd:complexType name="IndirectEffectsType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Container for indirect effects derived from actor behavior.
+                Indirect effects represent outcomes that are not directly caused by tasks but result from the actor's actions and their interaction with the environment.
+                They can depend on previous states or other effects, facilitating the modeling of complex dependencies within the RL environment.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="indirectEffect" type="IndirectEffectType"
+                         minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Defines a single indirect effect.
+                        Attributes:
+                        - name: Unique identifier for the indirect effect.
+                        - exported: Indicates if the effect is visible to other actors. (default: false)
+                        - description: Provides a human-readable explanation of the effect.
+                        The formula element represents the mathematical or logical expression defining the effect, potentially referencing cross-run elements.
+                        Indirect effects are essential for modeling state dependencies and temporal dynamics in RL simulations.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="IndirectEffectType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Derived effect with formulaic representation.
+                Attributes:
+                - name: Unique identifier for the indirect effect.
+                - exported: Indicates if the effect is visible to other actors. (default: false)
+                - description: Provides a human-readable explanation of the effect.
+                The formula element contains the expression that defines how the indirect effect is calculated, potentially involving cross-run elements to capture dependencies across episodes.
+                Indirect effects are utilized to model the influence of previous states or actions on current outcomes, enabling more sophisticated RL training scenarios.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="formula" type="NumericExpressionType" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Element: formula
+                        Defines the mathematical or logical formula representing the indirect effect.
+                        Can reference cross-run elements to incorporate historical state information into the effect calculation.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: name
+                    Unique identifier for the indirect effect.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="exported" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="description" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: description
+                    Optional description providing details about the indirect effect.
+                    Helps in understanding the role and computation of the indirect effect within the model.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <!-- ===== Qualities ===== -->
+    <!-- Modified to use the new NumericExpressionType -->
+    <xsd:complexType name="QualitiesType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Container for quality attributes with numeric values.
+                Qualities represent measurable aspects of the actor's state or performance, influencing the RL agent's reward structure.
+                Each quality can be a root quality aggregating other qualities, facilitating hierarchical evaluation of the actor's performance.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="quality" type="QualityType"
+                         minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Defines a single quality attribute.
+                        Attributes:
+                        - name: Unique identifier for the quality.
+                        - description: Optional explanation of the quality.
+                        - exported: Indicates if the quality is visible externally or used in the exported state set for RL. (default: false)
+                        - root: Marks the quality as a root attribute for analysis. (default: false)
+                        The value element contains the numeric expression representing the quality's value, which can aggregate multiple contributions from effects.
+                        Root qualities typically represent aggregate measures like overall performance or satisfaction.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="QualityType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Numeric quality attribute with a structured value representation.
+                The quality now contains a formula element which holds the numeric expression.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="formula" type="NumericExpressionType" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Defines the formula representing the quality.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
+        <xsd:attribute name="exported" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
+    </xsd:complexType>
+
+
+    <!-- ===== Goals ===== -->
+    <!-- Allows <pre> or <npr> as direct children, then an optional <refinement> -->
+    <xsd:complexType name="GoalsType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Container for actor goals with refinement structures.
+                Goals represent the objectives the actor aims to achieve, which can be decomposed into sub-goals or tasks.
+                Supports modeling of goal hierarchies and dependencies, essential for defining the agent's objectives in RL simulations.
+                Includes constructs for defining preconditions and negative preconditions that influence goal fulfillment.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="goal" type="GoalType"
+                         minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Defines a single goal.
+                        Attributes:
+                        - name: Unique identifier for the goal.
+                        - description: Optional explanation of the goal.
+                        - root: Indicates if the goal is a root objective. (default: false)
+                        - episodeLength: Specifies the temporal scope of the goal, particularly important for modeling episodes in RL simulations.
+                        Each goal can have preconditions (pre or npr) and an optional refinement structure to decompose the goal into sub-goals or tasks.
+                        Supports the modeling of episodes and multi-run scenarios in RL training environments.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="GoalType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Strategic objective with preconditions and decomposition.
+                Attributes:
+                - name: Unique identifier for the goal.
+                - root: Marks the goal as a root objective. (default: false)
+                - description: Optional explanation of the goal.
+                - episodeLength: Defines the temporal scope for achieving the goal, used to model episodes in RL simulations.
+                Goals can include preconditions (pre or npr) and can be refined into sub-goals or tasks using the refinement element.
+                Supports the definition of episodes and multi-run scenarios by specifying episode lengths and cross-run elements.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <!-- allow multiple <pre> or <npr> lines to capture your new usage -->
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element name="pre" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: pre
+                            Specifies a precondition by referencing a preBox, goal, task, or effect.
+                            Used to define conditions that must be met for the goal to be achievable.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="npr" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: npr
+                            Specifies a negative precondition by referencing a preBox, goal, task, or effect.
+                            Used to define conditions that must not be met for the goal to be achievable.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+
+            <xsd:element name="refinement" type="RefinementType"
+                         minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Element: refinement
+                        Defines how the goal is decomposed into sub-goals or tasks.
+                        Supports hierarchical goal structures, enabling the modeling of complex objective fulfillment processes.
+                        Essential for breaking down high-level goals into actionable steps for RL agents.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
+        <xsd:attribute name="episodeLength" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: episodeLength
+                    Specifies the temporal scope of the goal, indicating how many runs constitute an episode in RL simulations.
+                    Used to model multi-run episodes where an episode may consist of multiple goal runs.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="RefinementType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Goal decomposition structure (AND/OR) with child references.
+                Used to break down a goal into smaller, more manageable sub-goals or tasks.
+                Attributes:
+                - type: Specifies the type of refinement, typically "AND" for all children being necessary or "OR" for any one child being sufficient.
+                Supports the hierarchical structuring of goals, enabling complex goal fulfillment paths essential for RL agent training.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:choice minOccurs="1" maxOccurs="unbounded">
+                <xsd:element name="childGoal" type="ChildRefType">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: childGoal
+                            References a sub-goal within the refinement structure.
+                            Enables hierarchical goal definitions, allowing RL agents to decompose complex objectives into simpler tasks.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="childTask" type="ChildRefType">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: childTask
+                            References a sub-task within the refinement structure.
+                            Connects tasks directly to goals, facilitating action-based objective fulfillment in RL simulations.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="type" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: type
+                    Defines the nature of the refinement, such as "AND" for all children being necessary or "OR" for any one child being sufficient.
+                    Determines how the satisfaction of child goals or tasks contributes to the parent goal's fulfillment.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="ChildRefType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Reference to a child goal or task within a refinement structure.
+                Attributes:
+                - ref: Identifier for the referenced child element (goal or task).
+                Facilitates the linking of sub-goals and sub-tasks to their parent goals, enabling hierarchical goal modeling essential for RL agent training.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="ref" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <!-- ===== Tasks ===== -->
+    <!-- Allows <pre>, and <npr> as described; then one effectGroup -->
+    <xsd:complexType name="TasksType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Container for tasks that the actor can perform.
+                Tasks represent the actions or operations the actor can execute to achieve its goals.
+                Essential for defining the action space available to RL agents within the simulation environment.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="task" type="TaskType"
+                         minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Defines a single task.
+                        Attributes:
+                        - name: Unique identifier for the task.
+                        - description: Optional explanation of the task's purpose.
+                        Each task can have preconditions (pre or npr) and an optional effectGroup detailing the outcomes of the task.
+                        Tasks are the primary actions through which RL agents interact with the environment, influencing state and quality attributes.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="TaskType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Represents an executable task with associated preconditions and effects.
+                Attributes:
+                - name: Unique identifier for the task.
+                - description: Optional explanation of the task's purpose.
+                Tasks can include pre/npr and can specify the effects of executing the task through the effectGroup element.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <!-- This choice block allows multiple lines of pre / npr -->
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element name="pre" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: pre
+                            Specifies a precondition by referencing a preBox, goal, task, or effect.
+                            Ensures that certain conditions are met before the task can be executed.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="npr" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: npr
+                            Specifies a negative precondition by referencing a preBox, goal, task, or effect.
+                            Ensures that certain conditions are not met before the task can be executed.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+
+            <xsd:element name="effectGroup" type="EffectGroupType"
+                         minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Element: effectGroup
+                        Defines the group of effects resulting from the execution of the task.
+                        Each effect within the group can have different probabilities, allowing for the modeling of stochastic task outcomes essential for RL simulations.
+                        Effect groups enable the representation of multiple possible outcomes from a single task execution.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
+    </xsd:complexType>
+
+    <!-- Effect group within a task -->
+    <xsd:complexType name="EffectGroupType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Group of effects resulting from the execution of a task.
+                Each effect represents a possible outcome of the task, including its probability and conditions.
+                Allows for the modeling of non-deterministic task outcomes, which are crucial for simulating realistic RL environments.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="effect" type="EffectType"
+                         minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Defines a single effect within the effect group.
+                        Each effect specifies the outcome of the task, including whether it satisfies the task's objectives and the probability of occurrence.
+                        Effects can include conditions that turn predicates true or false, influencing the state and quality attributes.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- Individual effect: requires name, probability; has optional satisfying, description;
+         can have multiple <turnsTrue> / <turnsFalse> lines. -->
+    <xsd:complexType name="EffectType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Represents an effect of a task with associated probabilities and conditions.
+                Attributes:
+                - name: Unique identifier for the effect.
+                - satisfying: Indicates if the effect satisfies the task's objective. (default: true)
+                - probability: The probability of the effect occurring. Required.
+                - description: Optional explanation of the effect's significance.
+                Effects can include conditions that turn predicates true or false, allowing the modeling of state changes resulting from task execution.
+                Essential for defining the stochastic nature of tasks in RL simulations.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="turnsTrue" type="xsd:string"
+                         minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Element: turnsTrue
+                        Specifies a predicate that is set to true when the effect occurs.
+                        Used to model positive state changes resulting from task execution.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="turnsFalse" type="xsd:string"
+                         minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                        Element: turnsFalse
+                        Specifies a predicate that is set to false when the effect occurs.
+                        Used to model negative state changes resulting from task execution.
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element name="pre" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: pre
+                            Specifies a precondition associated with the effect.
+                            Ensures that certain conditions are met for the effect to be applicable.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="npr" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+                            Element: npr
+                            Specifies a negative precondition associated with the effect.
+                            Ensures that certain conditions are not met for the effect to be applicable.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:sequence>
+
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: name
+                    Unique identifier for the effect.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="satisfying" type="xsd:boolean" use="optional" default="true"/>
+        <xsd:attribute name="probability" type="xsd:float" use="required"/>
+        <xsd:attribute name="description" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: description
+                    Optional description providing details about the effect.
+                    Helps in understanding the significance and impact of the effect within the model.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,97 @@
+actor Controller {
+    primitive predicate singalOnS {
+        description: "Signal On Success";
+        init: false;
+    }
+
+    primitive predicate singalOnF {
+        description: "Signal On Failure";
+        init: false;
+    }
+
+    primitive predicate signalOffS {
+        description: "Signal Off Success";
+        init: false;
+    }
+
+    primitive predicate signalOffF {
+        description: "Signal Off Failure";
+        init: false;
+    }
+
+    exported derived effect heaterOn {
+        description: "Heater is On" //[String]
+        contributesTo: (ReachIdealTemperature,1.0),(MinimizeRunningTime, f3); //[String] (for now)
+        formula: f1; // predicateExpr: (previous(heaterOn) and those signals
+    }
+
+    exported quality ReachIdealTemperature {
+        description: "Reach Ideal Temperature";
+        value: previous(ReachIdealTemperature) + 1.0; // f2
+    }
+
+    quality MaximizeComfort {
+        description: "Maximize Comfort";
+        value: f5;
+    }
+
+    quality MinimizeCost {
+        description: "Minimize Cost";
+        value: f4;
+    }
+
+    quality MinimizeRunningTime {
+        description: "Minimize Running Time";
+        value: f3;
+    }
+
+    root quality totalValue {
+        description: "Total Value"
+        value: 0.2 + 0.8 + ...;
+    }
+
+    root goal MaintainOptimalRoomTemperature(param1, param2, ...) {
+        description: "Maintain Optimal Room Temperature";
+        episodeLength: 4;
+        refined: or;
+        children: SignalHeaterOn(param1, param2,...), SignalHeaterOff(param1, param2,...);
+    }
+
+    task SignalHeaterOn(param1, param2, ...) {
+        description: "Signal the heater to turn on";
+        effectGroup {
+            effect successSignalOnS {
+              description: "Successful";
+              satisfying: true;
+              probability: 0.95;
+              turnsTrue: SignalOnS;
+            }
+
+            effect successSignalOnF {
+              description: "Successful";
+              satisfying: true;
+              probability: 0.05;
+              turnsTrue: SignalOnF;
+            }
+        }
+    }
+
+    task SignalHeaterOff(param1, param2, ...) {
+        description: "Signal the heater to turn off";
+        effectGroup {
+            effect successSignalOffS {
+              description: "Successful";
+              satisfying: true;
+              probability: 0.95;
+              turnsTrue: SignalOffS;
+            }
+
+            effect successSignalOffF {
+              description: "Successful";
+              satisfying: true;
+              probability: 0.05;
+              turnsTrue: SignalOffF;
+            }
+        }
+    }
+}

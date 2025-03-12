@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actor
+        xmlns="https://example.org/istar-t"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://example.org/istar-t ../xsd/istar-rl-schema_v2.xsd"
+        name="HeatingController">
+    <predicates>
+        <!--        Each predicate is wrapped inside an effect, content inside predicate is variable/identifier-->
+        <predicate primitive="true" init="false" exported="false"
+                   description="Signal On Success">
+            signalOnS
+        </predicate>
+
+        <predicate primitive="true" init="false" exported="false"
+                   description="Signal On Failure">
+            signalOnF
+        </predicate>
+
+        <predicate primitive="true" init="false" exported="false"
+                   description="Signal Off Success">
+            signalOffS
+        </predicate>
+
+        <predicate primitive="true" init="false" exported="false"
+                   description="Signal Off Failure">
+            signalOffF
+        </predicate>
+    </predicates>
+
+
+    <!-- Comments
+		1. "Indirect" effects
+		2. We dont need the contributesTo
+	-->
+    <indirectEffects>
+        <indirectEffect name="heaterOn" exported="true" description="Heater is on">
+            <formula>
+                ...
+            </formula>
+        </indirectEffect>
+    </indirectEffects>
+
+
+    <qualities>
+        <quality name="ReachIdealTemperature" exported="true" description="Reach Ideal Temperature">
+            <formula>
+                <add>
+                    <previous>
+                        <numAtom>ReachIdealTemperature</numAtom>
+                    </previous>
+                    <const>1</const>
+                </add>
+            </formula>
+        </quality>
+
+        <quality name="MaximizeComfort" description="Maximize Comfort" exported="false">
+            <formula>
+                <numAtom>f5</numAtom>
+            </formula>
+        </quality>
+
+        <quality name="MinimizeCost" description="Minimize Cost" exported="false">
+            <formula>
+                <numAtom>f4</numAtom>
+            </formula>
+        </quality>
+
+        <quality name="MinimizeRunningTime" description="Minimize Running Time" exported="false">
+            <formula>
+                <numAtom>f3</numAtom>
+            </formula>
+        </quality>
+
+        <quality name="TotalValue" root="true" exported="false" description="Total Value">
+            <formula>
+                <add>
+                    <const>0.2</const>
+                    <const>0.8</const>
+                </add>
+            </formula>
+        </quality>
+    </qualities>
+
+    <goals>
+        <!-- Top-level Goal -->
+        <goal name="MaintainOptimalRoomTemperature" root="true" description="Maintain Optimal Room Temperature" episodeLength="4">
+            <refinement type="OR">
+                <childTask ref="SignalHeaterOn"/>
+                <childTask ref="SignalHeaterOff"/>
+            </refinement>
+        </goal>
+    </goals>
+
+    <tasks>
+        <task name="SignalHeaterOn" description="Signal the heater to turn on">
+            <effectGroup>
+                <effect name="successSignalOnS" satisfying="true" probability="0.95" description="Successful">
+                    <turnsTrue>signalOnS</turnsTrue>
+                </effect>
+                <effect name="successSignalOnF" satisfying="true" probability="0.05" description="Successful">
+                    <turnsTrue>signalOnF</turnsTrue>
+                </effect>
+            </effectGroup>
+        </task>
+
+        <task name="SignalHeaterOff" description="Signal the heater to turn off">
+            <effectGroup>
+                <effect name="successSignalOffS" satisfying="true" probability="0.95" description="Successful">
+                    <turnsTrue>signalOffS</turnsTrue>
+                </effect>
+                <effect name="successSignalOffF" satisfying="true" probability="0.05" description="Successful">
+                    <turnsTrue>signalOffF</turnsTrue>
+                </effect>
+            </effectGroup>
+        </task>
+    </tasks>
+</actor>
