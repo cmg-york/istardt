@@ -1,16 +1,26 @@
 package com.example.objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Extensions to the DecompositionElement class to add functionality needed for XML mapping
+ * DecompositionElement class representing an element that can be decomposed into child elements.
+ * Modified to support Jackson XML unmarshalling and prevent circular reference issues.
  */
 public class DecompositionElement extends Element {
-    public List<DecompositionElement> children;
-    public DecompType decompType;
-    public Formula preFormula;
-    public Formula nprFormula;
+
+    private List<DecompositionElement> children;
+
+    @JacksonXmlProperty(isAttribute = true)
+    private DecompType decompType;
+
+    private Formula preFormula;
+    private Formula nprFormula;
+
+    @JsonIgnore
     private DecompositionElement parent;
 
     public DecompositionElement() {
@@ -57,6 +67,11 @@ public class DecompositionElement extends Element {
         this.parent = parent;
     }
 
+    /**
+     * Get the siblings of this element.
+     *
+     * @return The list of sibling elements
+     */
     public List<DecompositionElement> getSiblings() {
         if (parent == null) {
             return new ArrayList<>();
@@ -67,14 +82,29 @@ public class DecompositionElement extends Element {
         return siblings;
     }
 
+    /**
+     * Check if this element has siblings.
+     *
+     * @return True if this element has siblings, false otherwise
+     */
     public boolean isSiblings() {
         return !getSiblings().isEmpty();
     }
 
+    /**
+     * Check if this element is a root element.
+     *
+     * @return True if this element is a root element, false otherwise
+     */
     public boolean isRoot() {
         return parent == null;
     }
 
+    /**
+     * Add a child element using AND decomposition.
+     *
+     * @param child The child element to add
+     */
     public void addANDChild(DecompositionElement child) {
         if (decompType == null || decompType == DecompType.AND) {
             decompType = DecompType.AND;
@@ -85,6 +115,11 @@ public class DecompositionElement extends Element {
         }
     }
 
+    /**
+     * Add a child element using OR decomposition.
+     *
+     * @param child The child element to add
+     */
     public void addORChild(DecompositionElement child) {
         if (decompType == null || decompType == DecompType.OR) {
             decompType = DecompType.OR;
@@ -93,5 +128,17 @@ public class DecompositionElement extends Element {
         } else {
             throw new IllegalStateException("Cannot add OR child to a decomposition with type " + decompType);
         }
+    }
+
+    /**
+     * Override toString to prevent infinite recursion from parent-child circular references.
+     * Only includes essential information without traversing the object graph.
+     */
+    @Override
+    public String toString() {
+        return "DecompositionElement{id=" + getId() +
+                ", decompType=" + decompType +
+                ", childCount=" + (children != null ? children.size() : 0) +
+                ", hasParent=" + (parent != null) + "}";
     }
 }

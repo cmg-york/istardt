@@ -1,19 +1,67 @@
 package com.example.objects;
 
+import com.example.xml.ReferenceResolver;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.example.xml.deserializers.ActorDeserializer;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Extensions to the Actor class to add functionality needed for XML mapping
+ * Actor class representing an agent in the iStar-T model.
+ * Modified to support Jackson XML unmarshalling.
  */
+@JsonRootName("actor")
+@JsonDeserialize(using = ActorDeserializer.class)
 public class Actor extends Element {
+
+    @JacksonXmlProperty(isAttribute = true)
     private String name;
+
+    @JacksonXmlElementWrapper(localName = "goals")
+    @JacksonXmlProperty(localName = "goal")
+    @JsonManagedReference("actor-goals")
     private List<Goal> goals;
+
+    @JacksonXmlElementWrapper(localName = "tasks")
+    @JacksonXmlProperty(localName = "task")
+    @JsonManagedReference("actor-tasks")
     private List<Task> tasks;
+
+    @JsonIgnore
     private List<Effect> directEffects;
+
+    @JacksonXmlElementWrapper(localName = "qualities")
+    @JacksonXmlProperty(localName = "quality")
+    @JsonManagedReference("actor-qualities")
     private List<Quality> qualities;
-    
+
+    public Actor() {
+        this.goals = new ArrayList<>();
+        this.tasks = new ArrayList<>();
+        this.qualities = new ArrayList<>();
+        this.directEffects = new ArrayList<>();
+    }
+
+    @Override
+    public void setId(String id) {
+        super.setId(id);
+        // Register this actor with the reference resolver
+        ReferenceResolver.getInstance().registerElement(id, this);
+    }
+
     public void setName(String name) {
         this.name = name;
+
+        // If ID isn't set, use name as ID
+        if (getId() == null) {
+            setId(name);
+        }
     }
 
     public String getName() {
@@ -52,6 +100,12 @@ public class Actor extends Element {
         return qualities;
     }
 
+    /**
+     * Gets the root element among the goals.
+     *
+     * @return The root element, or null if not found
+     */
+    @JsonIgnore
     public Element getRoot() {
         // Find the root element among the goals
         if (goals != null) {
@@ -62,5 +116,41 @@ public class Actor extends Element {
             }
         }
         return null;
+    }
+
+    /**
+     * Adds a goal to this actor.
+     *
+     * @param goal The goal to add
+     */
+    public void addGoal(Goal goal) {
+        if (goals == null) {
+            goals = new ArrayList<>();
+        }
+        goals.add(goal);
+    }
+
+    /**
+     * Adds a task to this actor.
+     *
+     * @param task The task to add
+     */
+    public void addTask(Task task) {
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+        }
+        tasks.add(task);
+    }
+
+    /**
+     * Adds a quality to this actor.
+     *
+     * @param quality The quality to add
+     */
+    public void addQuality(Quality quality) {
+        if (qualities == null) {
+            qualities = new ArrayList<>();
+        }
+        qualities.add(quality);
     }
 }
