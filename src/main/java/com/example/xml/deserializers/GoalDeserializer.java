@@ -2,6 +2,7 @@ package com.example.xml.deserializers;
 
 import com.example.objects.*;
 import com.example.xml.ReferenceResolver;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,9 +30,9 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         Goal goal = new Goal();
 
         // Set basic properties
-        String name = getName(node);
-        String description = getDescription(node);
-        boolean root = getBooleanAttribute(node, "root", false);
+        String name = DeserializerUtils.getStringAttribute(node, "name", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
 
         goal.setId(name);
         goal.setRoot(root);
@@ -41,8 +42,8 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         goal.setRepresentation(atom);
 
         // Set episode length if specified
-        if (node.has("episodeLength")) {
-            String episodeLength = node.get("episodeLength").asText();
+        String episodeLength = DeserializerUtils.getStringAttribute(node, "episodeLength", null);
+        if (episodeLength != null) {
             goal.setEpisodeLength(episodeLength);
 
             // Convert to runs if possible
@@ -55,21 +56,25 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         }
 
         // Process preconditions
-        List<String> preconditions = getStringList(node, "pre");
+        List<String> preconditions = DeserializerUtils.getStringList(node, "pre");
         for (String pre : preconditions) {
             goal.addPrecondition(pre);
         }
 
         // Process negative preconditions
-        List<String> negPreconditions = getStringList(node, "npr");
+        List<String> negPreconditions = DeserializerUtils.getStringList(node, "npr");
         for (String npr : negPreconditions) {
             goal.addNegPrecondition(npr);
         }
 
         // Process refinements
-        if (node.has("refinement")) {
-            JsonNode refinementNode = node.get("refinement");
-            processRefinement(goal, refinementNode);
+        try {
+            if (node.has("refinement")) {
+                JsonNode refinementNode = node.get("refinement");
+                processRefinement(goal, refinementNode);
+            }
+        } catch (Exception e) {
+            LOGGER.warning("Error processing refinement for goal " + name + ": " + e.getMessage());
         }
 
         // Register the goal for reference resolution
@@ -90,15 +95,11 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         }
 
         // Set decomposition type
-        if (refinementNode.has("type")) {
-            String type = refinementNode.get("type").asText();
-            if ("AND".equalsIgnoreCase(type)) {
-                goal.setDecompType(DecompType.AND);
-            } else if ("OR".equalsIgnoreCase(type)) {
-                goal.setDecompType(DecompType.OR);
-            } else {
-                goal.setDecompType(DecompType.TERM);
-            }
+        String type = DeserializerUtils.getStringAttribute(refinementNode, "type", "TERM");
+        if ("AND".equalsIgnoreCase(type)) {
+            goal.setDecompType(DecompType.AND);
+        } else if ("OR".equalsIgnoreCase(type)) {
+            goal.setDecompType(DecompType.OR);
         } else {
             goal.setDecompType(DecompType.TERM);
         }

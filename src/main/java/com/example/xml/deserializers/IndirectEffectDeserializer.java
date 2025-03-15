@@ -3,6 +3,7 @@ package com.example.xml.deserializers;
 import com.example.objects.Atom;
 import com.example.objects.Formula;
 import com.example.objects.IndirectEffect;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,9 +29,9 @@ public class IndirectEffectDeserializer extends BaseDeserializer<IndirectEffect>
         IndirectEffect indirectEffect = new IndirectEffect();
 
         // Set basic properties
-        String name = getName(node);
-        String description = getDescription(node);
-        boolean exported = getBooleanAttribute(node, "exported", false);
+        String name = DeserializerUtils.getStringAttribute(node, "name", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        boolean exported = DeserializerUtils.getBooleanAttribute(node, "exported", false);
 
         indirectEffect.setId(name);
         indirectEffect.setExported(exported);
@@ -40,9 +41,13 @@ public class IndirectEffectDeserializer extends BaseDeserializer<IndirectEffect>
         indirectEffect.setAtom(atom);
 
         // Process formula
-        if (node.has("formula")) {
-            Formula formula = ctxt.readValue(node.get("formula").traverse(p.getCodec()), Formula.class);
-            indirectEffect.setValueFormula(formula);
+        try {
+            if (node.has("formula")) {
+                Formula formula = ctxt.readValue(node.get("formula").traverse(p.getCodec()), Formula.class);
+                indirectEffect.setValueFormula(formula);
+            }
+        } catch (IOException e) {
+            DeserializerUtils.handleDeserializationError(LOGGER, "Error processing formula for indirect effect " + name, e);
         }
 
         // Register the indirect effect for reference resolution

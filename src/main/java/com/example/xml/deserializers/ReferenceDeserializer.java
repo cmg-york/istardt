@@ -2,6 +2,7 @@ package com.example.xml.deserializers;
 
 import com.example.objects.Element;
 import com.example.xml.ReferenceResolver;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,16 +35,20 @@ public class ReferenceDeserializer<T extends Element> extends BaseDeserializer<T
     public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
 
-        // If it's a direct reference (just the ID as a string)
-        if (node.isTextual()) {
-            String id = node.asText();
-            return resolveReference(id);
-        }
+        try {
+            // If it's a direct reference (just the ID as a string)
+            if (node.isTextual()) {
+                String id = node.asText();
+                return resolveReference(id);
+            }
 
-        // If it's a reference node with a "ref" attribute
-        if (node.has("ref")) {
-            String id = node.get("ref").asText();
-            return resolveReference(id);
+            // If it's a reference node with a "ref" attribute
+            if (node.has("ref")) {
+                String id = node.get("ref").asText();
+                return resolveReference(id);
+            }
+        } catch (Exception e) {
+            DeserializerUtils.handleDeserializationError(LOGGER, "Error resolving reference", new IOException(e));
         }
 
         LOGGER.warning("Unable to resolve reference from node: " + node);

@@ -3,6 +3,7 @@ package com.example.xml.deserializers;
 import com.example.objects.Actor;
 import com.example.objects.Environment;
 import com.example.objects.Model;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,48 +43,24 @@ public class ModelDeserializer extends StdDeserializer<Model> {
         // Determine if this is a single actor or multiple actors
         List<Actor> actors = new ArrayList<>();
 
-        // If root node is an actor, deserialize it directly
-        if (node.has("name")) {
-            Actor actor = ctxt.readValue(node.traverse(p.getCodec()), Actor.class);
-            actors.add(actor);
-            LOGGER.info("Deserialized single actor model");
-        }
-        // If root has multiple actor elements, deserialize each one
-        else if (node.has("actor")) {
-            JsonNode actorNodes = node.get("actor");
-            if (actorNodes.isArray()) {
-                for (JsonNode actorNode : actorNodes) {
-                    Actor actor = ctxt.readValue(actorNode.traverse(p.getCodec()), Actor.class);
-                    actors.add(actor);
-                }
-            } else {
-                Actor actor = ctxt.readValue(actorNodes.traverse(p.getCodec()), Actor.class);
+        try {
+            // If root node is an actor, deserialize it directly
+            if (node.has("name")) {
+                Actor actor = ctxt.readValue(node.traverse(p.getCodec()), Actor.class);
                 actors.add(actor);
+                LOGGER.info("Deserialized single actor model");
             }
-            LOGGER.info("Deserialized multi-actor model with " + actors.size() + " actors");
+            // If root has multiple actor elements, deserialize each one
+            else if (node.has("actor")) {
+                JsonNode actorNodes = node.get("actor");
+                actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
+                LOGGER.info("Deserialized multi-actor model with " + actors.size() + " actors");
+            }
+        } catch (IOException e) {
+            DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing actors in model", e);
         }
 
         model.setActors(actors);
         return model;
-    }
-
-    /**
-     * Extracts the name/ID attribute from a node.
-     *
-     * @param node The JSON node to extract from
-     * @return The name/ID attribute, or null if not found
-     */
-    protected String getName(JsonNode node) {
-        return node.has("name") ? node.get("name").asText() : null;
-    }
-
-    /**
-     * Extracts the description attribute from a node.
-     *
-     * @param node The JSON node to extract from
-     * @return The description attribute, or null if not found
-     */
-    protected String getDescription(JsonNode node) {
-        return node.has("description") ? node.get("description").asText() : null;
     }
 }

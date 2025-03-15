@@ -3,6 +3,7 @@ package com.example.xml.deserializers;
 import com.example.objects.Atom;
 import com.example.objects.Formula;
 import com.example.objects.Quality;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,10 +29,10 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
         Quality quality = new Quality();
 
         // Set basic properties
-        String name = getName(node);
-        String description = getDescription(node);
-        boolean root = getBooleanAttribute(node, "root", false);
-        boolean exported = getBooleanAttribute(node, "exported", false);
+        String name = DeserializerUtils.getStringAttribute(node, "name", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
+        boolean exported = DeserializerUtils.getBooleanAttribute(node, "exported", false);
 
         quality.setId(name);
         quality.setRoot(root);
@@ -42,9 +43,13 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
         quality.setAtom(atom);
 
         // Process formula
-        if (node.has("formula")) {
-            Formula formula = ctxt.readValue(node.get("formula").traverse(p.getCodec()), Formula.class);
-            quality.setValueFormula(formula);
+        try {
+            if (node.has("formula")) {
+                Formula formula = ctxt.readValue(node.get("formula").traverse(p.getCodec()), Formula.class);
+                quality.setValueFormula(formula);
+            }
+        } catch (IOException e) {
+            DeserializerUtils.handleDeserializationError(LOGGER, "Error processing formula for quality " + name, e);
         }
 
         // Register the quality for reference resolution

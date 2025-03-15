@@ -2,12 +2,12 @@ package com.example.xml.deserializers;
 
 import com.example.objects.Atom;
 import com.example.objects.Effect;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,10 +29,10 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
         Effect effect = new Effect();
 
         // Set basic properties
-        String name = getName(node);
-        String description = getDescription(node);
-        boolean satisfying = getBooleanAttribute(node, "satisfying", true);
-        float probability = getFloatAttribute(node, "probability", 1.0f);
+        String name = DeserializerUtils.getStringAttribute(node, "name", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        boolean satisfying = DeserializerUtils.getBooleanAttribute(node, "satisfying", true);
+        float probability = DeserializerUtils.getFloatAttribute(node, "probability", 1.0f);
 
         effect.setId(name);
         effect.setSatisfying(satisfying);
@@ -43,25 +43,25 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
         effect.setAtom(atom);
 
         // Process turnsTrue
-        List<String> turnsTrue = getStringList(node, "turnsTrue");
+        List<String> turnsTrue = DeserializerUtils.getStringList(node, "turnsTrue");
         for (String predicate : turnsTrue) {
             effect.addTurnsTrue(predicate);
         }
 
         // Process turnsFalse
-        List<String> turnsFalse = getStringList(node, "turnsFalse");
+        List<String> turnsFalse = DeserializerUtils.getStringList(node, "turnsFalse");
         for (String predicate : turnsFalse) {
             effect.addTurnsFalse(predicate);
         }
 
         // Process preconditions
-        List<String> preconditions = getStringList(node, "pre");
+        List<String> preconditions = DeserializerUtils.getStringList(node, "pre");
         for (String pre : preconditions) {
             effect.addPrecondition(pre);
         }
 
         // Process negative preconditions
-        List<String> negPreconditions = getStringList(node, "npr");
+        List<String> negPreconditions = DeserializerUtils.getStringList(node, "npr");
         for (String npr : negPreconditions) {
             effect.addNegPrecondition(npr);
         }

@@ -84,7 +84,7 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
             return Formula.createConstantFormula("Unknown Formula");
         } catch (IOException e) {
             DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing formula", e);
-            return null; // This line won't be reached
+            return null; // This line won't be reached due to exception handling in handleDeserializationError
         }
     }
 }

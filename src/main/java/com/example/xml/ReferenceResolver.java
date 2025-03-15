@@ -4,6 +4,7 @@ import com.example.objects.Element;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -74,6 +75,15 @@ public class ReferenceResolver {
             return (T) element;
         }
         return null;
+    }
+
+    /**
+     * Gets all element IDs registered in the resolver.
+     *
+     * @return A set of all element IDs
+     */
+    public Set<String> getAllElementIds() {
+        return elementsById.keySet();
     }
 
     /**

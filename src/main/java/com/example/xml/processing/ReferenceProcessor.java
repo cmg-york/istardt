@@ -61,6 +61,12 @@ public class ReferenceProcessor {
             }
         }
 
+        // Collect all Condition objects (preBoxes) from ReferenceResolver
+        collectConditions(nonDecompElements);
+
+        // Collect all IndirectEffect objects from ReferenceResolver
+        collectIndirectEffects(nonDecompElements);
+
         // Add all collected non-decomposition elements to the environment
         for (NonDecompositionElement element : nonDecompElements) {
             environment.addNonDecompElement(element);
@@ -70,6 +76,42 @@ public class ReferenceProcessor {
         LOGGER.info("Added " + nonDecompElements.size() + " non-decomposition elements to environment");
 
         LOGGER.info("Reference processing completed successfully");
+    }
+
+    /**
+     * Collect all Condition objects from the ReferenceResolver and add them to the list.
+     *
+     * @param nonDecompElements The list to add the conditions to
+     */
+    private void collectConditions(List<NonDecompositionElement> nonDecompElements) {
+        ReferenceResolver resolver = ReferenceResolver.getInstance();
+
+        // Get all elements registered in the resolver
+        for (String id : resolver.getAllElementIds()) {
+            Element element = resolver.getElementById(id);
+            if (element instanceof Condition) {
+                nonDecompElements.add((Condition) element);
+                LOGGER.fine("Added condition: " + id);
+            }
+        }
+    }
+
+    /**
+     * Collect all IndirectEffect objects from the ReferenceResolver and add them to the list.
+     *
+     * @param nonDecompElements The list to add the indirect effects to
+     */
+    private void collectIndirectEffects(List<NonDecompositionElement> nonDecompElements) {
+        ReferenceResolver resolver = ReferenceResolver.getInstance();
+
+        // Get all elements registered in the resolver
+        for (String id : resolver.getAllElementIds()) {
+            Element element = resolver.getElementById(id);
+            if (element instanceof IndirectEffect) {
+                nonDecompElements.add((IndirectEffect) element);
+                LOGGER.fine("Added indirect effect: " + id);
+            }
+        }
     }
 
     /**

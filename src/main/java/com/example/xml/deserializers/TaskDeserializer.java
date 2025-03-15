@@ -2,6 +2,7 @@ package com.example.xml.deserializers;
 
 import com.example.objects.*;
 import com.example.xml.ReferenceResolver;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,8 +30,8 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         Task task = new Task();
 
         // Set basic properties
-        String name = getName(node);
-        String description = getDescription(node);
+        String name = DeserializerUtils.getStringAttribute(node, "name", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", null);
 
         task.setId(name);
 
@@ -39,37 +40,41 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         task.setRepresentation(atom);
 
         // Process preconditions
-        List<String> preconditions = getStringList(node, "pre");
+        List<String> preconditions = DeserializerUtils.getStringList(node, "pre");
         for (String pre : preconditions) {
             task.addPrecondition(pre);
         }
 
         // Process negative preconditions
-        List<String> negPreconditions = getStringList(node, "npr");
+        List<String> negPreconditions = DeserializerUtils.getStringList(node, "npr");
         for (String npr : negPreconditions) {
             task.addNegPrecondition(npr);
         }
 
         // Process effect group
-        if (node.has("effectGroup") && node.get("effectGroup").has("effect")) {
-            JsonNode effectGroupNode = node.get("effectGroup");
-            JsonNode effectNodes = effectGroupNode.get("effect");
+        try {
+            if (node.has("effectGroup") && node.get("effectGroup").has("effect")) {
+                JsonNode effectGroupNode = node.get("effectGroup");
+                JsonNode effectNodes = effectGroupNode.get("effect");
 
-            List<Effect> effects = new ArrayList<>();
+                List<Effect> effects = new ArrayList<>();
 
-            if (effectNodes.isArray()) {
-                for (JsonNode effectNode : effectNodes) {
-                    Effect effect = deserializeEffect(effectNode, ctxt);
+                if (effectNodes.isArray()) {
+                    for (JsonNode effectNode : effectNodes) {
+                        Effect effect = deserializeEffect(effectNode, ctxt);
+                        effect.setTask(task);
+                        effects.add(effect);
+                    }
+                } else {
+                    Effect effect = deserializeEffect(effectNodes, ctxt);
                     effect.setTask(task);
                     effects.add(effect);
                 }
-            } else {
-                Effect effect = deserializeEffect(effectNodes, ctxt);
-                effect.setTask(task);
-                effects.add(effect);
-            }
 
-            task.setEffects(effects);
+                task.setEffects(effects);
+            }
+        } catch (IOException e) {
+            DeserializerUtils.handleDeserializationError(LOGGER, "Error processing effects for task " + name, e);
         }
 
         // Register the task for reference resolution
@@ -90,10 +95,10 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         Effect effect = new Effect();
 
         // Set basic properties
-        String name = getName(effectNode);
-        String description = getDescription(effectNode);
-        boolean satisfying = getBooleanAttribute(effectNode, "satisfying", true);
-        float probability = getFloatAttribute(effectNode, "probability", 1.0f);
+        String name = DeserializerUtils.getStringAttribute(effectNode, "name", null);
+        String description = DeserializerUtils.getStringAttribute(effectNode, "description", null);
+        boolean satisfying = DeserializerUtils.getBooleanAttribute(effectNode, "satisfying", true);
+        float probability = DeserializerUtils.getFloatAttribute(effectNode, "probability", 1.0f);
 
         effect.setId(name);
         effect.setSatisfying(satisfying);
@@ -104,19 +109,19 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         effect.setAtom(atom);
 
         // Process turnsTrue
-        List<String> turnsTrue = getStringList(effectNode, "turnsTrue");
+        List<String> turnsTrue = DeserializerUtils.getStringList(effectNode, "turnsTrue");
         effect.setTurnsTrue(turnsTrue);
 
         // Process turnsFalse
-        List<String> turnsFalse = getStringList(effectNode, "turnsFalse");
+        List<String> turnsFalse = DeserializerUtils.getStringList(effectNode, "turnsFalse");
         effect.setTurnsFalse(turnsFalse);
 
         // Process preconditions
-        List<String> preconditions = getStringList(effectNode, "pre");
+        List<String> preconditions = DeserializerUtils.getStringList(effectNode, "pre");
         effect.setPreconditions(preconditions);
 
         // Process negative preconditions
-        List<String> negPreconditions = getStringList(effectNode, "npr");
+        List<String> negPreconditions = DeserializerUtils.getStringList(effectNode, "npr");
         effect.setNegPreconditions(negPreconditions);
 
         // Register the effect for reference resolution

@@ -3,6 +3,7 @@ package com.example.xml.deserializers;
 import com.example.objects.Atom;
 import com.example.objects.Element;
 import com.example.xml.ReferenceResolver;
+import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,7 +11,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,26 +27,31 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
 
     /**
      * Extracts the name/ID attribute from a node.
+     * Using this method for backward compatibility and cases where we want defaults
+     * other than null.
      *
      * @param node The JSON node to extract from
      * @return The name/ID attribute, or null if not found
      */
     protected String getName(JsonNode node) {
-        return node.has("name") ? node.get("name").asText() : null;
+        return DeserializerUtils.getStringAttribute(node, "name", null);
     }
 
     /**
      * Extracts the description attribute from a node.
+     * Using this method for backward compatibility and cases where we want defaults
+     * other than null.
      *
      * @param node The JSON node to extract from
      * @return The description attribute, or null if not found
      */
     protected String getDescription(JsonNode node) {
-        return node.has("description") ? node.get("description").asText() : null;
+        return DeserializerUtils.getStringAttribute(node, "description", null);
     }
 
     /**
      * Extracts a boolean attribute from a node.
+     * Using this method for backward compatibility.
      *
      * @param node The JSON node to extract from
      * @param attributeName The name of the attribute
@@ -54,22 +59,12 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
      * @return The boolean value of the attribute
      */
     protected boolean getBooleanAttribute(JsonNode node, String attributeName, boolean defaultValue) {
-        return node.has(attributeName) ? node.get(attributeName).asBoolean() : defaultValue;
-    }
-
-    /**
-     * Extracts a string attribute from a node.
-     *
-     * @param node The JSON node to extract from
-     * @param attributeName The name of the attribute
-     * @return The string value of the attribute, or null if not found
-     */
-    protected String getStringAttribute(JsonNode node, String attributeName) {
-        return node.has(attributeName) ? node.get(attributeName).asText() : null;
+        return DeserializerUtils.getBooleanAttribute(node, attributeName, defaultValue);
     }
 
     /**
      * Extracts a float attribute from a node.
+     * Using this method for backward compatibility.
      *
      * @param node The JSON node to extract from
      * @param attributeName The name of the attribute
@@ -77,7 +72,7 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
      * @return The float value of the attribute
      */
     protected float getFloatAttribute(JsonNode node, String attributeName, float defaultValue) {
-        return node.has(attributeName) ? (float) node.get(attributeName).asDouble() : defaultValue;
+        return DeserializerUtils.getFloatAttribute(node, attributeName, defaultValue);
     }
 
     /**
@@ -107,24 +102,14 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
 
     /**
      * Extracts a list of string values from child nodes with a specific name.
+     * Using this method for backward compatibility.
      *
      * @param node The parent JSON node
      * @param childName The name of the child nodes
      * @return A list of string values
      */
     protected List<String> getStringList(JsonNode node, String childName) {
-        List<String> result = new ArrayList<>();
-        if (node.has(childName)) {
-            JsonNode childNode = node.get(childName);
-            if (childNode.isArray()) {
-                for (JsonNode item : childNode) {
-                    result.add(item.asText());
-                }
-            } else {
-                result.add(childNode.asText());
-            }
-        }
-        return result;
+        return DeserializerUtils.getStringList(node, childName);
     }
 
     /**
