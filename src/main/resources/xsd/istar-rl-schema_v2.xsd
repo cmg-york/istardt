@@ -325,26 +325,30 @@
     </xsd:complexType>
 
 
-    <!-- Example: Updating PreBoxType to force structured boolean content -->
     <xsd:complexType name="PreBoxType">
-        <xsd:complexContent>
-            <xsd:extension base="BooleanExpressionType">
-                <xsd:attribute name="name" type="xsd:string" use="required">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Unique identifier for the preBox.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:attribute>
-                <xsd:attribute name="description" type="xsd:string" use="optional">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Optional description for the preBox.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:attribute>
-            </xsd:extension>
-        </xsd:complexContent>
+        <xsd:sequence>
+            <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Defines the boolean formula representing the precondition.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Unique identifier for the preBox.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="description" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Optional description for the preBox.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
     </xsd:complexType>
 
     <!-- ===== IndirectEffects ===== -->
@@ -387,13 +391,14 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="formula" type="NumericExpressionType" minOccurs="0" maxOccurs="1">
+            <xsd:element name="formula" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
-                        Element: formula
-                        Defines the mathematical or logical formula representing the indirect effect.
-                        Can reference cross-run elements to incorporate historical state information into the effect calculation.
-                    ]]></xsd:documentation>
+                Element: formula
+                Defines the logical formula representing the indirect effect.
+                Can reference cross-run elements to incorporate historical state information into the effect calculation.
+                Represents boolean conditions rather than numeric calculations.
+            ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>

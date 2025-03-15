@@ -67,6 +67,27 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
                 return visitor.visitGreaterThan(node.get("gt"));
             }
 
+            // New operators
+            if (node.has("gte")) {
+                return visitor.visitGreaterThanEquals(node.get("gte"));
+            }
+
+            if (node.has("lt")) {
+                return visitor.visitLessThan(node.get("lt"));
+            }
+
+            if (node.has("lte")) {
+                return visitor.visitLessThanEquals(node.get("lte"));
+            }
+
+            if (node.has("eq")) {
+                return visitor.visitEquals(node.get("eq"));
+            }
+
+            if (node.has("neq")) {
+                return visitor.visitNotEquals(node.get("neq"));
+            }
+
             if (node.has("and")) {
                 return visitor.visitAnd(node.get("and"));
             }

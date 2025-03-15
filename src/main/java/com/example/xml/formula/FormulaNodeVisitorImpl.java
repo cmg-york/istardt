@@ -99,8 +99,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             Formula right = visitOperand(node.get("right"));
 
             if (left != null && right != null) {
-                // Since there's no DivideOperator defined, we create a custom representation
-                return Formula.createConstantFormula("(" + left.getFormula() + " / " + right.getFormula() + ")");
+                return new DivideOperator(left, right);
             }
         }
 
@@ -115,6 +114,75 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
             if (left != null && right != null) {
                 return new GTOperator(left, right);
+            }
+        }
+
+        return Formula.createBooleanFormula(false);
+    }
+    @Override
+    public Formula visitLessThan(JsonNode node) throws IOException {
+        if (node.has("left") && node.has("right")) {
+            Formula left = visitOperand(node.get("left"));
+            Formula right = visitOperand(node.get("right"));
+
+            if (left != null && right != null) {
+                return new LTOperator(left, right);
+            }
+        }
+
+        return Formula.createBooleanFormula(false);
+    }
+
+    @Override
+    public Formula visitLessThanEquals(JsonNode node) throws IOException {
+        if (node.has("left") && node.has("right")) {
+            Formula left = visitOperand(node.get("left"));
+            Formula right = visitOperand(node.get("right"));
+
+            if (left != null && right != null) {
+                return new LTEOperator(left, right);
+            }
+        }
+
+        return Formula.createBooleanFormula(false);
+    }
+
+    @Override
+    public Formula visitGreaterThanEquals(JsonNode node) throws IOException {
+        if (node.has("left") && node.has("right")) {
+            Formula left = visitOperand(node.get("left"));
+            Formula right = visitOperand(node.get("right"));
+
+            if (left != null && right != null) {
+                return new GTEOperator(left, right);
+            }
+        }
+
+        return Formula.createBooleanFormula(false);
+    }
+
+    @Override
+    public Formula visitEquals(JsonNode node) throws IOException {
+        if (node.has("left") && node.has("right")) {
+            Formula left = visitOperand(node.get("left"));
+            Formula right = visitOperand(node.get("right"));
+
+            if (left != null && right != null) {
+                return new EQOperator(left, right);
+            }
+        }
+
+        return Formula.createBooleanFormula(false);
+    }
+
+    @Override
+    public Formula visitNotEquals(JsonNode node) throws IOException {
+        if (node.has("left") && node.has("right")) {
+            Formula left = visitOperand(node.get("left"));
+            Formula right = visitOperand(node.get("right"));
+
+            if (left != null && right != null) {
+                return new NEQOperator(left, right);
             }
         }
 
@@ -198,6 +266,18 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             return visitMultiply(node.get("multiply"));
         } else if (node.has("divide")) {
             return visitDivide(node.get("divide"));
+        } else if (node.has("gt")) {
+            return visitGreaterThan(node.get("gt"));
+        } else if (node.has("gte")) {
+            return visitGreaterThanEquals(node.get("gte"));
+        } else if (node.has("lt")) {
+            return visitLessThan(node.get("lt"));
+        } else if (node.has("lte")) {
+            return visitLessThanEquals(node.get("lte"));
+        } else if (node.has("eq")) {
+            return visitEquals(node.get("eq"));
+        } else if (node.has("neq")) {
+            return visitNotEquals(node.get("neq"));
         }
 
         return Formula.createConstantFormula("Unknown");
@@ -276,6 +356,26 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         // Process nested gt operations
         if (node.has("gt")) {
             operands.add(visitGreaterThan(node.get("gt")));
+        }
+
+        if (node.has("gte")) {
+            operands.add(visitGreaterThanEquals(node.get("gte")));
+        }
+
+        if (node.has("lt")) {
+            operands.add(visitLessThan(node.get("lt")));
+        }
+
+        if (node.has("lte")) {
+            operands.add(visitLessThanEquals(node.get("lte")));
+        }
+
+        if (node.has("eq")) {
+            operands.add(visitEquals(node.get("eq")));
+        }
+
+        if (node.has("neq")) {
+            operands.add(visitNotEquals(node.get("neq")));
         }
 
         return operands;

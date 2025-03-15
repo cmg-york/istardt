@@ -51,6 +51,30 @@ class FormulaFactory {
         return new GTOperator(createFromConstant(left), createFromConstant(right));
     }
 
+    public static Formula createLTFormula(String left, String right) {
+        return new LTOperator(createFromConstant(left), createFromConstant(right));
+    }
+
+    public static Formula createLTEFormula(String left, String right) {
+        return new LTEOperator(createFromConstant(left), createFromConstant(right));
+    }
+
+    public static Formula createGTEFormula(String left, String right) {
+        return new GTEOperator(createFromConstant(left), createFromConstant(right));
+    }
+
+    public static Formula createEQFormula(String left, String right) {
+        return new EQOperator(createFromConstant(left), createFromConstant(right));
+    }
+
+    public static Formula createNEQFormula(String left, String right) {
+        return new NEQOperator(createFromConstant(left), createFromConstant(right));
+    }
+
+    public static Formula createDivideFormula(Formula left, Formula right) {
+        return new DivideOperator(left, right);
+    }
+
     public static Formula createAndFormula(Formula left, Formula right) {
         return new ANDOperator(left, right);
     }
