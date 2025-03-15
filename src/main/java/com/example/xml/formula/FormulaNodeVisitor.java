@@ -1,0 +1,24 @@
+package com.example.xml.formula;
+
+import com.example.objects.*;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
+
+/**
+ * Visitor interface for processing formula JSON nodes.
+ */
+public interface FormulaNodeVisitor {
+    Formula visitConstant(JsonNode node);
+    Formula visitNumAtom(JsonNode node);
+    Formula visitBoolConst(JsonNode node);
+    Formula visitBoolAtom(JsonNode node);
+    Formula visitAdd(JsonNode node) throws IOException;
+    Formula visitSubtract(JsonNode node) throws IOException;
+    Formula visitMultiply(JsonNode node) throws IOException;
+    Formula visitDivide(JsonNode node) throws IOException;
+    Formula visitGreaterThan(JsonNode node) throws IOException;
+    Formula visitAnd(JsonNode node) throws IOException;
+    Formula visitOr(JsonNode node) throws IOException;
+    Formula visitNot(JsonNode node) throws IOException;
+}
