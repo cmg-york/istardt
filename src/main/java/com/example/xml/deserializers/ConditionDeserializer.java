@@ -1,6 +1,5 @@
 package com.example.xml.deserializers;
 
-import com.example.objects.Atom;
 import com.example.objects.Condition;
 import com.example.objects.Formula;
 import com.example.xml.utils.DeserializerUtils;
@@ -28,15 +27,8 @@ public class ConditionDeserializer extends BaseDeserializer<Condition> {
         // Create new Condition
         Condition condition = new Condition();
 
-        // Set basic properties
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
-
-        condition.setId(name);
-
-        // Create an atom for the condition
-        Atom atom = createAtom(name, description);
-        condition.setAtom(atom);
+        // Extract common attributes (id, name, description, atom)
+        extractCommonAttributes(condition, node);
 
         // Process formula - this could be a direct formula element or various boolean expressions
         Formula formula = null;
@@ -63,16 +55,14 @@ public class ConditionDeserializer extends BaseDeserializer<Condition> {
                 }
             }
         } catch (IOException e) {
-            DeserializerUtils.handleDeserializationError(LOGGER, "Error processing formula for condition " + name, e);
+            DeserializerUtils.handleDeserializationError(LOGGER,
+                    "Error processing formula for condition " + condition.getAtom().getTitleText(), e);
         }
 
         // Set the formula if found
         if (formula != null) {
             condition.setValueFormula(formula);
         }
-
-        // Register the condition for reference resolution
-        registerElement(condition);
 
         return condition;
     }

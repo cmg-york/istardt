@@ -10,6 +10,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Root model class containing actors and environment.
@@ -74,5 +76,65 @@ public class Model {
             }
         }
         return null;
+    }
+
+    /**
+     * Compares this model to the specified object.
+     * Models are considered equal if they have similar actors (based on names)
+     * and environment.
+     *
+     * @param obj The object to compare this model to
+     * @return true if the objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Model model = (Model) obj;
+
+        // Compare actor names
+        List<String> thisActorNames = actors != null ?
+                actors.stream().map(Actor::getName).sorted().collect(Collectors.toList()) :
+                new ArrayList<>();
+
+        List<String> thatActorNames = model.actors != null ?
+                model.actors.stream().map(Actor::getName).sorted().collect(Collectors.toList()) :
+                new ArrayList<>();
+
+        return thisActorNames.equals(thatActorNames) &&
+                Objects.equals(environment, model.environment);
+    }
+
+    /**
+     * Returns a hash code value for this model.
+     * The hash code is computed based on the actor names and environment
+     * to ensure it satisfies the contract with equals().
+     *
+     * @return A hash code value for this model
+     */
+    @Override
+    public int hashCode() {
+        List<String> actorNames = actors != null ?
+                actors.stream().map(Actor::getName).sorted().collect(Collectors.toList()) :
+                new ArrayList<>();
+
+        return Objects.hash(actorNames, environment);
+    }
+
+    /**
+     * Returns a string representation of this model.
+     * Includes counts of actors and environment information.
+     *
+     * @return A string representation of this model
+     */
+    @Override
+    public String toString() {
+        int actorCount = actors != null ? actors.size() : 0;
+        int envElementCount = environment != null && environment.getNonDecompElements() != null ?
+                environment.getNonDecompElements().size() : 0;
+
+        return "Model{actors=" + actorCount +
+                ", environmentElements=" + envElementCount + "}";
     }
 }

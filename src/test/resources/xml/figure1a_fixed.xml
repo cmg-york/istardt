@@ -133,11 +133,8 @@
             3. Change precondition to pre
 
     -->
-
-<!--    TODO: fix pre/npr for goals and tasks (should be more formula based) -->
     <goals>
         <goal name="ProductManufactured" root="true" description="Product Manufactured" episodeLength="1">
-            <pre>hasManufacturingCapacity</pre>
             <refinement type="AND">
                 <childGoal ref="MaterialOrdered"/>
                 <childGoal ref="ManufacturingCompleted"/>

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -29,14 +30,27 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         // Create new Task
         Task task = new Task();
 
-        // Set basic properties
+        // Generate a UUID for the element ID
+        String uuid = UUID.randomUUID().toString();
+        task.setId(uuid);
+
+        // Get the name attribute from XML
         String name = DeserializerUtils.getStringAttribute(node, "name", null);
         String description = DeserializerUtils.getStringAttribute(node, "description", null);
 
-        task.setId(name);
+        // Create an atom with a UUID as its ID
+        Atom atom = new Atom();
+        atom.setId(UUID.randomUUID().toString());
 
-        // Create an atom for the task
-        Atom atom = createAtom(name, description);
+        // IMPORTANT: Set the titleText to the name from XML for content-based comparison
+        atom.setTitleText(name);
+
+        // Set description if available
+        if (description != null) {
+            atom.setTitleHTMLText(description);
+        }
+
+        // Set the atom as the task's representation
         task.setRepresentation(atom);
 
         // Process preconditions
@@ -94,18 +108,32 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
     private Effect deserializeEffect(JsonNode effectNode, DeserializationContext ctxt) throws IOException {
         Effect effect = new Effect();
 
-        // Set basic properties
+        // Generate a UUID for the element ID
+        String uuid = UUID.randomUUID().toString();
+        effect.setId(uuid);
+
+        // Get the attributes from XML
         String name = DeserializerUtils.getStringAttribute(effectNode, "name", null);
         String description = DeserializerUtils.getStringAttribute(effectNode, "description", null);
         boolean satisfying = DeserializerUtils.getBooleanAttribute(effectNode, "satisfying", true);
         float probability = DeserializerUtils.getFloatAttribute(effectNode, "probability", 1.0f);
 
-        effect.setId(name);
         effect.setSatisfying(satisfying);
         effect.setProbability(probability);
 
-        // Create an atom for the effect
-        Atom atom = createAtom(name, description);
+        // Create an atom with a UUID as its ID
+        Atom atom = new Atom();
+        atom.setId(UUID.randomUUID().toString());
+
+        // IMPORTANT: Set the titleText to the name from XML for content-based comparison
+        atom.setTitleText(name);
+
+        // Set description if available
+        if (description != null) {
+            atom.setTitleHTMLText(description);
+        }
+
+        // Set the atom as the effect's representation
         effect.setAtom(atom);
 
         // Process turnsTrue
@@ -125,7 +153,7 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         effect.setNegPreconditions(negPreconditions);
 
         // Register the effect for reference resolution
-        ReferenceResolver.getInstance().registerElement(name, effect);
+        ReferenceResolver.getInstance().registerElement(uuid, effect);
 
         return effect;
     }

@@ -1,6 +1,5 @@
 package com.example.xml.deserializers;
 
-import com.example.objects.Atom;
 import com.example.objects.Formula;
 import com.example.objects.Quality;
 import com.example.xml.utils.DeserializerUtils;
@@ -28,19 +27,15 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
         // Create new Quality
         Quality quality = new Quality();
 
-        // Set basic properties
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        // Extract common attributes (id, name, description, atom)
+        extractCommonAttributes(quality, node);
+
+        // Get specific attributes
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
         boolean exported = DeserializerUtils.getBooleanAttribute(node, "exported", false);
 
-        quality.setId(name);
         quality.setRoot(root);
         quality.setExported(exported);
-
-        // Create an atom for the quality
-        Atom atom = createAtom(name, description);
-        quality.setAtom(atom);
 
         // Process formula
         try {
@@ -49,11 +44,9 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
                 quality.setValueFormula(formula);
             }
         } catch (IOException e) {
-            DeserializerUtils.handleDeserializationError(LOGGER, "Error processing formula for quality " + name, e);
+            DeserializerUtils.handleDeserializationError(LOGGER,
+                    "Error processing formula for quality " + quality.getAtom().getTitleText(), e);
         }
-
-        // Register the quality for reference resolution
-        registerElement(quality);
 
         return quality;
     }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
 /**
@@ -63,16 +64,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     @Override
     public Formula visitSubtract(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new MinusOperator(left, right);
-            }
-        }
-
-        return Formula.createConstantFormula("0");
+        return visitBinaryOperator(node, MinusOperator::new, Formula.createConstantFormula("0"));
     }
 
     @Override
@@ -94,99 +86,37 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     @Override
     public Formula visitDivide(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new DivideOperator(left, right);
-            }
-        }
-
-        return Formula.createConstantFormula("1");
+        return visitBinaryOperator(node, DivideOperator::new, Formula.createConstantFormula("1"));
     }
 
     @Override
     public Formula visitGreaterThan(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new GTOperator(left, right);
-            }
-        }
-
-        return Formula.createBooleanFormula(false);
+        return visitBinaryOperator(node, GTOperator::new, Formula.createBooleanFormula(false));
     }
+
     @Override
     public Formula visitLessThan(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new LTOperator(left, right);
-            }
-        }
-
-        return Formula.createBooleanFormula(false);
+        return visitBinaryOperator(node, LTOperator::new, Formula.createBooleanFormula(false));
     }
 
     @Override
     public Formula visitLessThanEquals(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new LTEOperator(left, right);
-            }
-        }
-
-        return Formula.createBooleanFormula(false);
+        return visitBinaryOperator(node, LTEOperator::new, Formula.createBooleanFormula(false));
     }
 
     @Override
     public Formula visitGreaterThanEquals(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new GTEOperator(left, right);
-            }
-        }
-
-        return Formula.createBooleanFormula(false);
+        return visitBinaryOperator(node, GTEOperator::new, Formula.createBooleanFormula(false));
     }
 
     @Override
     public Formula visitEquals(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new EQOperator(left, right);
-            }
-        }
-
-        return Formula.createBooleanFormula(false);
+        return visitBinaryOperator(node, EQOperator::new, Formula.createBooleanFormula(false));
     }
 
     @Override
     public Formula visitNotEquals(JsonNode node) throws IOException {
-        if (node.has("left") && node.has("right")) {
-            Formula left = visitOperand(node.get("left"));
-            Formula right = visitOperand(node.get("right"));
-
-            if (left != null && right != null) {
-                return new NEQOperator(left, right);
-            }
-        }
-
-        return Formula.createBooleanFormula(false);
+        return visitBinaryOperator(node, NEQOperator::new, Formula.createBooleanFormula(false));
     }
 
     @Override
@@ -244,6 +174,30 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         }
 
         return Formula.createBooleanFormula(false);
+    }
+
+    /**
+     * Helper method for binary operators that take left and right operands.
+     * Consolidates the duplicated code from multiple visit methods.
+     *
+     * @param node The JSON node containing the operator data
+     * @param operatorFactory Function to create the specific operator type
+     * @param defaultValue Default value to return if operands are missing
+     * @return The formula representing the binary operation
+     */
+    private Formula visitBinaryOperator(
+            JsonNode node,
+            BiFunction<Formula, Formula, Formula> operatorFactory,
+            Formula defaultValue) throws IOException {
+        if (node.has("left") && node.has("right")) {
+            Formula left = visitOperand(node.get("left"));
+            Formula right = visitOperand(node.get("right"));
+
+            if (left != null && right != null) {
+                return operatorFactory.apply(left, right);
+            }
+        }
+        return defaultValue;
     }
 
     /**
@@ -353,7 +307,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             operands.add(visitNot(node.get("not")));
         }
 
-        // Process nested gt operations
+        // Process comparison operations
         if (node.has("gt")) {
             operands.add(visitGreaterThan(node.get("gt")));
         }

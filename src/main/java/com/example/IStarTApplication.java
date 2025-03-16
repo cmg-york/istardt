@@ -220,7 +220,10 @@ public class IStarTApplication {
         String titleText = goal.getAtom() != null && goal.getAtom().getTitleText() != null ?
                 " (" + goal.getAtom().getTitleText() + ")" : "";
         System.out.println(indent + "- " + goal.getId() + titleText +
-                " [Type: " + goal.getDecompType() + "]");
+                " [Type: " + goal.getDecompType() + "]" + (goal.isRoot() ? "[ROOT]" : ""));
+
+        System.out.println(indent + "  pre: " + goal.getPreFormula());
+        System.out.println(indent + "  npr: " + goal.getNprFormula());
 
         // Print child elements if this is a decomposition element
         if (goal.getChildren() != null && !goal.getChildren().isEmpty()) {
@@ -238,12 +241,16 @@ public class IStarTApplication {
         }
 
         // Print the current element's information
-        System.out.println(indent + "- " + decomp.getId() + " [Type: " + decomp.getDecompType() + "]");
+        System.out.println(indent + "- " + decomp.getId() + " ("+ decomp.getAtom().getTitleText() +")" + " [Type: " + decomp.getDecompType() + "]");
 
-        // Avoid recursive printing of parent by just showing parent's ID
-        if (decomp.getParent() != null) {
-            System.out.println(indent + "  Parent: " + decomp.getParent().getId());
-        }
+        System.out.println(indent + "  pre: " + decomp.getPreFormula());
+        System.out.println(indent + "  npr: " + decomp.getNprFormula());
+        System.out.println(indent + "  Parent: " + decomp.getParent().getAtom().getTitleText());
+
+
+//        if (decomp.getParent() != null) {
+//            System.out.println(indent + "  Parent: " + decomp.getParent().getId() + " ("+ decomp.getParent().getAtom().getTitleText() +")" );
+//        }
 
         // Print children (but limit depth to avoid too much output)
         if (decomp.getChildren() != null && !decomp.getChildren().isEmpty() && indentLevel < 8) {
@@ -269,13 +276,18 @@ public class IStarTApplication {
         String titleText = task.getAtom() != null && task.getAtom().getTitleText() != null ?
                 " (" + task.getAtom().getTitleText() + ")" : "";
         System.out.println(indent + "- " + task.getId() + titleText +
-                " [Deterministic: " + task.isDeterministic() + "]");
+                " [Deterministic: " + task.isDeterministic() + "]" + (task.isRoot()? "[ROOT]" : "") + "(Type: " + task.getDecompType()+")");
+
+        System.out.println(indent + "  pre: " + task.getPreFormula());
+        System.out.println(indent + "  npr: " + task.getNprFormula());
+        System.out.println(indent + "  Parent: " + task.getParent().getAtom().getTitleText());
+
 
         // Print effects
         if (task.getEffects() != null && !task.getEffects().isEmpty()) {
             System.out.println(indent + "  Effects:");
             for (Effect effect : task.getEffects()) {
-                System.out.println(indent + "    - " + effect.getId() +
+                System.out.println(indent + "    - " + effect.getId() + " (" + effect.getAtom().getTitleText() + ")" +
                         " (Probability: " + effect.getProbability() +
                         ", Satisfying: " + effect.isSatisfying() + ")");
             }

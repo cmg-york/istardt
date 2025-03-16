@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -29,10 +30,31 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
         // Create new Actor
         Actor actor = new Actor();
 
-        // Set ID/name
+        // Generate a UUID for the element ID
+        String uuid = UUID.randomUUID().toString();
+        actor.setId(uuid);
+
+        // Get the name attribute from XML
         String name = DeserializerUtils.getStringAttribute(node, "name", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+
+        // Set the name attribute
         actor.setName(name);
-        actor.setId(name); // Using name as ID for actors
+
+        // Create an atom with a UUID as its ID
+        Atom atom = new Atom();
+        atom.setId(UUID.randomUUID().toString());
+
+        // IMPORTANT: Set the titleText to the name from XML for content-based comparison
+        atom.setTitleText(name);
+
+        // Set description if available
+        if (description != null) {
+            atom.setTitleHTMLText(description);
+        }
+
+        // Set the atom as the actor's representation
+        actor.setRepresentation(atom);
 
         // Register the actor for reference resolution
         registerElement(actor);
@@ -118,8 +140,12 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
         String description = DeserializerUtils.getStringAttribute(predicateNode, "description", null);
 
         Atom atom = new Atom();
-        atom.setId(value);
-        atom.setTitleText(description);
+        atom.setId(UUID.randomUUID().toString()); // Generate UUID for atom ID
+        atom.setTitleText(value); // Use predicate value as titleText
+
+        if (description != null) {
+            atom.setTitleHTMLText(description);
+        }
 
         // We don't register atoms in the reference resolver as they don't extend Element
         return atom;

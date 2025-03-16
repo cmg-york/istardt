@@ -4,7 +4,9 @@ import com.example.objects.*;
 import com.example.xml.ReferenceResolver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -37,10 +39,13 @@ public class ReferenceProcessor {
         // List to collect all non-decomposition elements
         List<NonDecompositionElement> nonDecompElements = new ArrayList<>();
 
+        // Create a name-based lookup map for referencing by name instead of ID
+        Map<String, Element> elementsByName = buildNameLookupMap(model);
+
         // Process each actor and its elements
         for (Actor actor : model.getActors()) {
             // Process goal hierarchies and refinements
-            processGoalRefinements(actor.getGoals());
+            processGoalRefinements(actor.getGoals(), elementsByName);
 
             // Process task-effect relationships and collect effects
             for (Task task : actor.getTasks()) {
@@ -62,10 +67,10 @@ public class ReferenceProcessor {
         }
 
         // Collect all Condition objects (preBoxes) from ReferenceResolver
-        collectConditions(nonDecompElements);
+        collectNonDecompositionElements(nonDecompElements, Condition.class);
 
         // Collect all IndirectEffect objects from ReferenceResolver
-        collectIndirectEffects(nonDecompElements);
+        collectNonDecompositionElements(nonDecompElements, IndirectEffect.class);
 
         // Add all collected non-decomposition elements to the environment
         for (NonDecompositionElement element : nonDecompElements) {
@@ -79,47 +84,91 @@ public class ReferenceProcessor {
     }
 
     /**
-     * Collect all Condition objects from the ReferenceResolver and add them to the list.
+     * Builds a map of elements by their names (atom's titleText) for name-based lookup
+     * This allows looking up elements by their XML name attribute rather than UUID
      *
-     * @param nonDecompElements The list to add the conditions to
+     * @param model The model to process
+     * @return A map of elements by name
      */
-    private void collectConditions(List<NonDecompositionElement> nonDecompElements) {
-        ReferenceResolver resolver = ReferenceResolver.getInstance();
+    private Map<String, Element> buildNameLookupMap(Model model) {
+        Map<String, Element> elementsByName = new HashMap<>();
 
-        // Get all elements registered in the resolver
-        for (String id : resolver.getAllElementIds()) {
-            Element element = resolver.getElementById(id);
-            if (element instanceof Condition) {
-                nonDecompElements.add((Condition) element);
-                LOGGER.fine("Added condition: " + id);
+        for (Actor actor : model.getActors()) {
+            // Add actor
+            if (actor.getName() != null) {
+                elementsByName.put(actor.getName(), actor);
             }
+
+            // Add goals
+            for (Goal goal : actor.getGoals()) {
+                addElementByNameToMap(goal, elementsByName);
+            }
+
+            // Add tasks
+            for (Task task : actor.getTasks()) {
+                addElementByNameToMap(task, elementsByName);
+
+                // Add effects
+                if (task.getEffects() != null) {
+                    for (Effect effect : task.getEffects()) {
+                        addElementByNameToMap(effect, elementsByName);
+                    }
+                }
+            }
+
+            // Add qualities
+            for (Quality quality : actor.getQualities()) {
+                addElementByNameToMap(quality, elementsByName);
+            }
+        }
+
+        // Add elements from the ReferenceResolver that might not be in actors
+        for (String id : ReferenceResolver.getInstance().getAllElementIds()) {
+            Element element = ReferenceResolver.getInstance().getElementById(id);
+            addElementByNameToMap(element, elementsByName);
+        }
+
+        return elementsByName;
+    }
+
+    /**
+     * Helper method to add an element to the name lookup map
+     */
+    private void addElementByNameToMap(Element element, Map<String, Element> map) {
+        if (element != null && element.getAtom() != null && element.getAtom().getTitleText() != null) {
+            map.put(element.getAtom().getTitleText(), element);
         }
     }
 
     /**
-     * Collect all IndirectEffect objects from the ReferenceResolver and add them to the list.
+     * Collects elements of the specified type from the ReferenceResolver and adds them to the list.
      *
-     * @param nonDecompElements The list to add the indirect effects to
+     * @param nonDecompElements The list to add the elements to
+     * @param elementClass The class of elements to collect
      */
-    private void collectIndirectEffects(List<NonDecompositionElement> nonDecompElements) {
+    private <T extends NonDecompositionElement> void collectNonDecompositionElements(
+            List<NonDecompositionElement> nonDecompElements, Class<T> elementClass) {
         ReferenceResolver resolver = ReferenceResolver.getInstance();
 
         // Get all elements registered in the resolver
         for (String id : resolver.getAllElementIds()) {
             Element element = resolver.getElementById(id);
-            if (element instanceof IndirectEffect) {
-                nonDecompElements.add((IndirectEffect) element);
-                LOGGER.fine("Added indirect effect: " + id);
+            if (elementClass.isInstance(element)) {
+                nonDecompElements.add((NonDecompositionElement) element);
+                LOGGER.fine("Added " + elementClass.getSimpleName() + ": " +
+                        (element.getAtom() != null ? element.getAtom().getTitleText() : id));
             }
         }
     }
 
     /**
      * Process goal refinements to establish parent-child relationships.
+     * Uses name-based lookup rather than ID-based lookup.
      *
      * @param goals The list of goals to process
+     * @param elementsByName The map of elements by name for lookup
      */
-    private void processGoalRefinements(List<Goal> goals) {
+    private void processGoalRefinements(List<Goal> goals, Map<String, Element> elementsByName) {
         if (goals == null) return;
 
         for (Goal goal : goals) {
@@ -130,7 +179,7 @@ public class ReferenceProcessor {
             // Process child goal references
             if (childGoalRefs != null) {
                 for (String ref : childGoalRefs) {
-                    Element element = ReferenceResolver.getInstance().getElementById(ref);
+                    Element element = elementsByName.get(ref);
                     if (element instanceof Goal) {
                         if (goal.getDecompType() == DecompType.AND) {
                             goal.addANDChild((Goal) element);
@@ -144,7 +193,7 @@ public class ReferenceProcessor {
             // Process child task references
             if (childTaskRefs != null) {
                 for (String ref : childTaskRefs) {
-                    Element element = ReferenceResolver.getInstance().getElementById(ref);
+                    Element element = elementsByName.get(ref);
                     if (element instanceof Task) {
                         if (goal.getDecompType() == DecompType.AND) {
                             goal.addANDChild((Task) element);

@@ -1,6 +1,5 @@
 package com.example.xml.deserializers;
 
-import com.example.objects.Atom;
 import com.example.objects.Formula;
 import com.example.objects.IndirectEffect;
 import com.example.xml.utils.DeserializerUtils;
@@ -28,17 +27,12 @@ public class IndirectEffectDeserializer extends BaseDeserializer<IndirectEffect>
         // Create new IndirectEffect
         IndirectEffect indirectEffect = new IndirectEffect();
 
-        // Set basic properties
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        // Extract common attributes (id, name, description, atom)
+        extractCommonAttributes(indirectEffect, node);
+
+        // Get specific attributes
         boolean exported = DeserializerUtils.getBooleanAttribute(node, "exported", false);
-
-        indirectEffect.setId(name);
         indirectEffect.setExported(exported);
-
-        // Create an atom for the indirect effect
-        Atom atom = createAtom(name, description);
-        indirectEffect.setAtom(atom);
 
         // Process formula
         try {
@@ -47,11 +41,9 @@ public class IndirectEffectDeserializer extends BaseDeserializer<IndirectEffect>
                 indirectEffect.setValueFormula(formula);
             }
         } catch (IOException e) {
-            DeserializerUtils.handleDeserializationError(LOGGER, "Error processing formula for indirect effect " + name, e);
+            DeserializerUtils.handleDeserializationError(LOGGER,
+                    "Error processing formula for indirect effect " + indirectEffect.getAtom().getTitleText(), e);
         }
-
-        // Register the indirect effect for reference resolution
-        registerElement(indirectEffect);
 
         return indirectEffect;
     }

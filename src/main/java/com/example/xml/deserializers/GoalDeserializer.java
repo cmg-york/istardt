@@ -1,7 +1,6 @@
 package com.example.xml.deserializers;
 
 import com.example.objects.*;
-import com.example.xml.ReferenceResolver;
 import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -9,7 +8,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /**
@@ -29,17 +31,12 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         // Create new Goal
         Goal goal = new Goal();
 
-        // Set basic properties
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        // Extract common attributes (id, name, description, atom)
+        extractCommonAttributes(goal, node);
+
+        // Set specific attributes
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
-
-        goal.setId(name);
         goal.setRoot(root);
-
-        // Create an atom for the goal
-        Atom atom = createAtom(name, description);
-        goal.setRepresentation(atom);
 
         // Set episode length if specified
         String episodeLength = DeserializerUtils.getStringAttribute(node, "episodeLength", null);
@@ -55,17 +52,11 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
             }
         }
 
-        // Process preconditions
-        List<String> preconditions = DeserializerUtils.getStringList(node, "pre");
-        for (String pre : preconditions) {
-            goal.addPrecondition(pre);
-        }
-
-        // Process negative preconditions
-        List<String> negPreconditions = DeserializerUtils.getStringList(node, "npr");
-        for (String npr : negPreconditions) {
-            goal.addNegPrecondition(npr);
-        }
+        // Process string list properties
+        Map<String, BiConsumer<Goal, String>> propertyConfigs = new HashMap<>();
+        propertyConfigs.put("pre", Goal::addPrecondition);
+        propertyConfigs.put("npr", Goal::addNegPrecondition);
+        processStringListProperties(goal, node, propertyConfigs);
 
         // Process refinements
         try {
@@ -74,11 +65,9 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
                 processRefinement(goal, refinementNode);
             }
         } catch (Exception e) {
-            LOGGER.warning("Error processing refinement for goal " + name + ": " + e.getMessage());
+            LOGGER.warning("Error processing refinement for goal " + goal.getAtom().getTitleText() +
+                    ": " + e.getMessage());
         }
-
-        // Register the goal for reference resolution
-        registerElement(goal);
 
         return goal;
     }

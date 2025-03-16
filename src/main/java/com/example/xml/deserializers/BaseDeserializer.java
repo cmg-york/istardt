@@ -12,6 +12,10 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.logging.Logger;
 
 /**
  * Base deserializer with common functionality for all iStar-T elements.
@@ -20,13 +24,61 @@ import java.util.List;
  * @param <T> The type of element being deserialized, must extend Element
  */
 public abstract class BaseDeserializer<T extends Element> extends StdDeserializer<T> {
+    private static final Logger LOGGER = Logger.getLogger(BaseDeserializer.class.getName());
 
     protected BaseDeserializer(Class<T> vc) {
         super(vc);
     }
 
     /**
-     * Extracts the name/ID attribute from a node.
+     * Extracts common attributes from a node and sets them on an element.
+     * Handles name, description, and ID generation in a consistent way.
+     *
+     * @param element The element to set attributes on
+     * @param node The JSON node to extract from
+     * @return The element with attributes set
+     */
+    protected T extractCommonAttributes(T element, JsonNode node) {
+        // Generate a UUID for the element ID
+        String uuid = UUID.randomUUID().toString();
+        element.setId(uuid);
+
+        // Get the attributes from XML
+        String name = DeserializerUtils.getStringAttribute(node, "name", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+
+        // Create and set the atom
+        Atom atom = createAtom(name, description);
+        element.setRepresentation(atom);
+
+        // Register the element
+        registerElement(element);
+
+        return element;
+    }
+
+    /**
+     * Processes common string list properties that appear in multiple element types.
+     *
+     * @param element The element to set properties on
+     * @param node The JSON node to extract from
+     * @param propertyConfigs Map of property names to setter methods
+     */
+    protected void processStringListProperties(T element, JsonNode node,
+                                               Map<String, BiConsumer<T, String>> propertyConfigs) {
+        for (Map.Entry<String, BiConsumer<T, String>> entry : propertyConfigs.entrySet()) {
+            String propertyName = entry.getKey();
+            BiConsumer<T, String> setter = entry.getValue();
+
+            List<String> values = DeserializerUtils.getStringList(node, propertyName);
+            for (String value : values) {
+                setter.accept(element, value);
+            }
+        }
+    }
+
+    /**
+     * Extracts the name attribute from a node.
      * Using this method for backward compatibility and cases where we want defaults
      * other than null.
      *
@@ -77,15 +129,25 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
 
     /**
      * Creates an Atom object from a name and description.
+     * IMPORTANT: The name should be used as the titleText for proper content-based comparison.
      *
-     * @param id The ID for the atom
+     * @param id The ID for the atom (should be the element's name attribute from XML)
      * @param description The description for the atom
      * @return A new Atom object
      */
     protected Atom createAtom(String id, String description) {
         Atom atom = new Atom();
-        atom.setId(id);
-        atom.setTitleText(description);
+        atom.setId(UUID.randomUUID().toString());
+
+        // IMPORTANT: Set the titleText to the name/id for proper content comparison
+        // This ensures that the atom's titleText contains the actual name from the XML
+        atom.setTitleText(id);  // Using id (which should be the name from XML) as titleText
+
+        // Set the description as HTML text if provided
+        if (description != null && !description.isEmpty()) {
+            atom.setTitleHTMLText(description);
+        }
+
         return atom;
     }
 

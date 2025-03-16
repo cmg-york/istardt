@@ -56,19 +56,29 @@
 
         <quality name="MaximizeComfort" description="Maximize Comfort" exported="false">
             <formula>
-                <numAtom>f5</numAtom>
+                <const>5</const>
             </formula>
         </quality>
 
         <quality name="MinimizeCost" description="Minimize Cost" exported="false">
             <formula>
-                <numAtom>f4</numAtom>
+                <subtract>
+                    <left>
+                        <const>5</const>
+                    </left>
+                    <right>
+                        <const>10</const>
+                    </right>
+                </subtract>
             </formula>
         </quality>
 
         <quality name="MinimizeRunningTime" description="Minimize Running Time" exported="false">
             <formula>
-                <numAtom>f3</numAtom>
+                <multiply>
+                    <numAtom>MinimizeCost</numAtom>
+                    <const>2</const>
+                </multiply>
             </formula>
         </quality>
 
@@ -77,6 +87,7 @@
                 <add>
                     <const>0.2</const>
                     <const>0.8</const>
+                    <numAtom>MinimizeRunningTime</numAtom>
                 </add>
             </formula>
         </quality>
