@@ -15,11 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
- * Base deserializer with common functionality for all iStar-T elements.
- * Provides helper methods for extracting common attributes and processing nodes.
+ * Enhanced base deserializer with expanded common functionality for all iStar-T elements.
+ * Provides standardized helpers for extracting attributes, processing nodes, and handling lists.
  *
  * @param <T> The type of element being deserialized, must extend Element
  */
@@ -31,6 +32,38 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
     }
 
     /**
+     * Main deserialize method that sets up the standard deserializing process.
+     * Subclasses should override handleSpecificAttributes to add their customizations.
+     */
+    @Override
+    public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        JsonNode node = p.getCodec().readTree(p);
+
+        // Create and initialize element
+        T element = createNewElement();
+
+        // Extract common attributes
+        extractCommonAttributes(element, node);
+
+        // Handle specific attributes based on element type
+        handleSpecificAttributes(element, node, p, ctxt);
+
+        return element;
+    }
+
+    /**
+     * Create a new instance of the element being deserialized.
+     * Subclasses must implement this to provide their specific element type.
+     */
+    protected abstract T createNewElement();
+
+    /**
+     * Handle specific attributes for each element type.
+     * Subclasses should override this to add element-specific logic.
+     */
+    protected abstract void handleSpecificAttributes(T element, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException;
+
+    /**
      * Extracts common attributes from a node and sets them on an element.
      * Handles name, description, and ID generation in a consistent way.
      *
@@ -39,9 +72,9 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
      * @return The element with attributes set
      */
     protected T extractCommonAttributes(T element, JsonNode node) {
-        // Generate a UUID for the element ID
-        String uuid = UUID.randomUUID().toString();
-        element.setId(uuid);
+        // Generate a UUID for the element ID if not provided
+        String id = DeserializerUtils.getStringAttribute(node, "id", UUID.randomUUID().toString());
+        element.setId(id);
 
         // Get the attributes from XML
         String name = DeserializerUtils.getStringAttribute(node, "name", null);
@@ -78,53 +111,71 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
     }
 
     /**
-     * Extracts the name attribute from a node.
-     * Using this method for backward compatibility and cases where we want defaults
-     * other than null.
+     * Processes a list property with a standard setter taking a List.
      *
+     * @param element The element to set properties on
      * @param node The JSON node to extract from
-     * @return The name/ID attribute, or null if not found
+     * @param propertyName The name of the property in the XML
+     * @param setter The setter method that accepts a List
      */
-    protected String getName(JsonNode node) {
-        return DeserializerUtils.getStringAttribute(node, "name", null);
+    protected <V> void processListProperty(T element, JsonNode node,
+                                           String propertyName,
+                                           BiConsumer<T, List<V>> setter,
+                                           Function<JsonNode, V> itemConverter) {
+        if (node.has(propertyName)) {
+            JsonNode propertyNode = node.get(propertyName);
+            List<V> items = new ArrayList<>();
+
+            if (propertyNode.isArray()) {
+                for (JsonNode itemNode : propertyNode) {
+                    items.add(itemConverter.apply(itemNode));
+                }
+            } else {
+                items.add(itemConverter.apply(propertyNode));
+            }
+
+            setter.accept(element, items);
+        }
     }
 
     /**
-     * Extracts the description attribute from a node.
-     * Using this method for backward compatibility and cases where we want defaults
-     * other than null.
+     * Processes a nested element that needs to be deserialized with a custom deserializer.
      *
-     * @param node The JSON node to extract from
-     * @return The description attribute, or null if not found
+     * @param node The node containing the nested element
+     * @param fieldName The field name of the nested element
+     * @param parser The original parser
+     * @param context The deserialization context
+     * @param elementType The type of the nested element
+     * @return The deserialized element or null if not found
      */
-    protected String getDescription(JsonNode node) {
-        return DeserializerUtils.getStringAttribute(node, "description", null);
+    protected <E> E processNestedElement(JsonNode node, String fieldName,
+                                         JsonParser parser, DeserializationContext context,
+                                         Class<E> elementType) throws IOException {
+        if (node.has(fieldName)) {
+            return context.readValue(node.get(fieldName).traverse(parser.getCodec()), elementType);
+        }
+        return null;
     }
 
     /**
-     * Extracts a boolean attribute from a node.
-     * Using this method for backward compatibility.
+     * Processes a list of nested elements that need to be deserialized.
      *
-     * @param node The JSON node to extract from
-     * @param attributeName The name of the attribute
-     * @param defaultValue The default value if the attribute is not found
-     * @return The boolean value of the attribute
+     * @param node The node containing the nested elements
+     * @param fieldName The field name of the nested elements
+     * @param parser The original parser
+     * @param context The deserialization context
+     * @param elementType The type of the nested elements
+     * @return The list of deserialized elements
      */
-    protected boolean getBooleanAttribute(JsonNode node, String attributeName, boolean defaultValue) {
-        return DeserializerUtils.getBooleanAttribute(node, attributeName, defaultValue);
-    }
-
-    /**
-     * Extracts a float attribute from a node.
-     * Using this method for backward compatibility.
-     *
-     * @param node The JSON node to extract from
-     * @param attributeName The name of the attribute
-     * @param defaultValue The default value if the attribute is not found
-     * @return The float value of the attribute
-     */
-    protected float getFloatAttribute(JsonNode node, String attributeName, float defaultValue) {
-        return DeserializerUtils.getFloatAttribute(node, attributeName, defaultValue);
+    protected <E> List<E> processNestedElementList(JsonNode node, String fieldName,
+                                                   JsonParser parser, DeserializationContext context,
+                                                   Class<E> elementType) throws IOException {
+        List<E> result = new ArrayList<>();
+        if (node.has(fieldName)) {
+            JsonNode elementsNode = node.get(fieldName);
+            return DeserializerUtils.deserializeList(elementsNode, parser, context, elementType);
+        }
+        return result;
     }
 
     /**
@@ -163,18 +214,6 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
     }
 
     /**
-     * Extracts a list of string values from child nodes with a specific name.
-     * Using this method for backward compatibility.
-     *
-     * @param node The parent JSON node
-     * @param childName The name of the child nodes
-     * @return A list of string values
-     */
-    protected List<String> getStringList(JsonNode node, String childName) {
-        return DeserializerUtils.getStringList(node, childName);
-    }
-
-    /**
      * Gets all child nodes with a specific field name.
      *
      * @param node The parent JSON node
@@ -203,5 +242,27 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
      */
     protected JsonNode getChildNode(JsonNode node, String fieldName) {
         return node.has(fieldName) ? node.get(fieldName) : null;
+    }
+
+    /**
+     * Extract references from nodes that may be single or array.
+     *
+     * @param node The node containing references
+     * @return List of reference strings
+     */
+    protected List<String> extractReferences(JsonNode node) {
+        List<String> refs = new ArrayList<>();
+
+        if (node.isArray()) {
+            for (JsonNode childNode : node) {
+                if (childNode.has("ref")) {
+                    refs.add(childNode.get("ref").asText());
+                }
+            }
+        } else if (node.has("ref")) {
+            refs.add(node.get("ref").asText());
+        }
+
+        return refs;
     }
 }

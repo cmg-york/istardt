@@ -7,15 +7,13 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /**
- * Deserializer for Goal objects.
+ * Refactored deserializer for Goal objects.
  */
 public class GoalDeserializer extends BaseDeserializer<Goal> {
     private static final Logger LOGGER = Logger.getLogger(GoalDeserializer.class.getName());
@@ -25,15 +23,12 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
     }
 
     @Override
-    public Goal deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
+    protected Goal createNewElement() {
+        return new Goal();
+    }
 
-        // Create new Goal
-        Goal goal = new Goal();
-
-        // Extract common attributes (id, name, description, atom)
-        extractCommonAttributes(goal, node);
-
+    @Override
+    protected void handleSpecificAttributes(Goal goal, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
         // Set specific attributes
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
         goal.setRoot(root);
@@ -52,24 +47,14 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
             }
         }
 
-        // Process string list properties
+        // Process preconditions and negPreconditions
         Map<String, BiConsumer<Goal, String>> propertyConfigs = new HashMap<>();
         propertyConfigs.put("pre", Goal::addPrecondition);
         propertyConfigs.put("npr", Goal::addNegPrecondition);
         processStringListProperties(goal, node, propertyConfigs);
 
         // Process refinements
-        try {
-            if (node.has("refinement")) {
-                JsonNode refinementNode = node.get("refinement");
-                processRefinement(goal, refinementNode);
-            }
-        } catch (Exception e) {
-            LOGGER.warning("Error processing refinement for goal " + goal.getAtom().getTitleText() +
-                    ": " + e.getMessage());
-        }
-
-        return goal;
+        processRefinement(goal, getChildNode(node, "refinement"));
     }
 
     /**
@@ -95,38 +80,12 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
 
         // Process child goal references
         if (refinementNode.has("childGoal")) {
-            List<String> childGoalRefs = new ArrayList<>();
-            JsonNode childGoalNodes = refinementNode.get("childGoal");
-
-            if (childGoalNodes.isArray()) {
-                for (JsonNode childNode : childGoalNodes) {
-                    if (childNode.has("ref")) {
-                        childGoalRefs.add(childNode.get("ref").asText());
-                    }
-                }
-            } else if (childGoalNodes.has("ref")) {
-                childGoalRefs.add(childGoalNodes.get("ref").asText());
-            }
-
-            goal.setChildGoalRefs(childGoalRefs);
+            goal.setChildGoalRefs(extractReferences(refinementNode.get("childGoal")));
         }
 
         // Process child task references
         if (refinementNode.has("childTask")) {
-            List<String> childTaskRefs = new ArrayList<>();
-            JsonNode childTaskNodes = refinementNode.get("childTask");
-
-            if (childTaskNodes.isArray()) {
-                for (JsonNode childNode : childTaskNodes) {
-                    if (childNode.has("ref")) {
-                        childTaskRefs.add(childNode.get("ref").asText());
-                    }
-                }
-            } else if (childTaskNodes.has("ref")) {
-                childTaskRefs.add(childTaskNodes.get("ref").asText());
-            }
-
-            goal.setChildTaskRefs(childTaskRefs);
+            goal.setChildTaskRefs(extractReferences(refinementNode.get("childTask")));
         }
     }
 }

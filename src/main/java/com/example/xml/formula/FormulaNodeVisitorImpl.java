@@ -7,12 +7,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
 /**
- * Implementation of FormulaNodeVisitor for deserializing formulas.
+ * Refactored implementation of FormulaNodeVisitor for deserializing formulas.
+ * Consolidates duplicate code into helper methods.
  */
 public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private static final Logger LOGGER = Logger.getLogger(FormulaNodeVisitorImpl.class.getName());
@@ -20,9 +23,36 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private final JsonParser parser;
     private final DeserializationContext context;
 
+    // Maps to match node types to visitor methods
+    private final Map<String, OperandVisitor> operandVisitors = new HashMap<>();
+
     public FormulaNodeVisitorImpl(JsonParser parser, DeserializationContext context) {
         this.parser = parser;
         this.context = context;
+        initializeOperandVisitors();
+    }
+
+    /**
+     * Initialize the map of operand visitors
+     */
+    private void initializeOperandVisitors() {
+        operandVisitors.put("const", this::visitConstant);
+        operandVisitors.put("numAtom", this::visitNumAtom);
+        operandVisitors.put("boolConst", this::visitBoolConst);
+        operandVisitors.put("boolAtom", this::visitBoolAtom);
+        operandVisitors.put("add", this::visitAdd);
+        operandVisitors.put("subtract", this::visitSubtract);
+        operandVisitors.put("multiply", this::visitMultiply);
+        operandVisitors.put("divide", this::visitDivide);
+        operandVisitors.put("gt", this::visitGreaterThan);
+        operandVisitors.put("gte", this::visitGreaterThanEquals);
+        operandVisitors.put("lt", this::visitLessThan);
+        operandVisitors.put("lte", this::visitLessThanEquals);
+        operandVisitors.put("eq", this::visitEquals);
+        operandVisitors.put("neq", this::visitNotEquals);
+        operandVisitors.put("and", this::visitAnd);
+        operandVisitors.put("or", this::visitOr);
+        operandVisitors.put("not", this::visitNot);
     }
 
     @Override
@@ -47,19 +77,8 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     @Override
     public Formula visitAdd(JsonNode node) throws IOException {
-        List<Formula> operands = collectNumericOperands(node);
-
-        if (operands.size() >= 2) {
-            Formula result = new PlusOperator(operands.get(0), operands.get(1));
-            for (int i = 2; i < operands.size(); i++) {
-                result = new PlusOperator(result, operands.get(i));
-            }
-            return result;
-        } else if (operands.size() == 1) {
-            return operands.get(0);
-        }
-
-        return Formula.createConstantFormula("0");
+        return visitMultiOperator(node, PlusOperator::new, Formula.createConstantFormula("0"),
+                this::collectNumericOperands);
     }
 
     @Override
@@ -69,19 +88,8 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     @Override
     public Formula visitMultiply(JsonNode node) throws IOException {
-        List<Formula> operands = collectNumericOperands(node);
-
-        if (operands.size() >= 2) {
-            Formula result = new MultiplyOperator(operands.get(0), operands.get(1));
-            for (int i = 2; i < operands.size(); i++) {
-                result = new MultiplyOperator(result, operands.get(i));
-            }
-            return result;
-        } else if (operands.size() == 1) {
-            return operands.get(0);
-        }
-
-        return Formula.createConstantFormula("1");
+        return visitMultiOperator(node, MultiplyOperator::new, Formula.createConstantFormula("1"),
+                this::collectNumericOperands);
     }
 
     @Override
@@ -121,56 +129,28 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     @Override
     public Formula visitAnd(JsonNode node) throws IOException {
-        List<Formula> operands = collectBooleanOperands(node);
-
-        if (operands.size() >= 2) {
-            Formula result = new ANDOperator(operands.get(0), operands.get(1));
-            for (int i = 2; i < operands.size(); i++) {
-                result = new ANDOperator(result, operands.get(i));
-            }
-            return result;
-        } else if (operands.size() == 1) {
-            return operands.get(0);
-        }
-
-        return Formula.createBooleanFormula(true);
+        return visitMultiOperator(node, ANDOperator::new, Formula.createBooleanFormula(true),
+                this::collectBooleanOperands);
     }
 
     @Override
     public Formula visitOr(JsonNode node) throws IOException {
-        List<Formula> operands = collectBooleanOperands(node);
-
-        if (operands.size() >= 2) {
-            Formula result = new OROperator(operands.get(0), operands.get(1));
-            for (int i = 2; i < operands.size(); i++) {
-                result = new OROperator(result, operands.get(i));
-            }
-            return result;
-        } else if (operands.size() == 1) {
-            return operands.get(0);
-        }
-
-        return Formula.createBooleanFormula(false);
+        return visitMultiOperator(node, OROperator::new, Formula.createBooleanFormula(false),
+                this::collectBooleanOperands);
     }
 
     @Override
     public Formula visitNot(JsonNode node) throws IOException {
-        Formula operand = null;
+        // List of possible operand types that can be negated
+        String[] operandTypes = {"boolAtom", "boolConst", "and", "or", "gt", "lt", "lte", "gte", "eq", "neq"};
 
-        if (node.has("boolAtom")) {
-            operand = visitBoolAtom(node.get("boolAtom"));
-        } else if (node.has("boolConst")) {
-            operand = visitBoolConst(node.get("boolConst"));
-        } else if (node.has("and")) {
-            operand = visitAnd(node.get("and"));
-        } else if (node.has("or")) {
-            operand = visitOr(node.get("or"));
-        } else if (node.has("gt")) {
-            operand = visitGreaterThan(node.get("gt"));
-        }
-
-        if (operand != null) {
-            return new NOTOperator(operand);
+        for (String type : operandTypes) {
+            if (node.has(type)) {
+                Formula operand = visitOperandByType(type, node.get(type));
+                if (operand != null) {
+                    return new NOTOperator(operand);
+                }
+            }
         }
 
         return Formula.createBooleanFormula(false);
@@ -201,6 +181,64 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     }
 
     /**
+     * Helper method for operators that can take multiple operands (add, multiply, and, or).
+     * Consolidates the duplicated code from multiple visit methods.
+     *
+     * @param node The JSON node containing the operator data
+     * @param operatorFactory Function to create the specific operator type
+     * @param defaultValue Default value to return if no operands are found
+     * @param operandsCollector Function to collect operands
+     * @return The formula representing the operation with multiple operands
+     */
+    private Formula visitMultiOperator(
+            JsonNode node,
+            BiFunction<Formula, Formula, Formula> operatorFactory,
+            Formula defaultValue,
+            OperandsCollector operandsCollector) throws IOException {
+
+        List<Formula> operands = operandsCollector.collectOperands(node);
+
+        if (operands.size() >= 2) {
+            Formula result = operatorFactory.apply(operands.get(0), operands.get(1));
+            for (int i = 2; i < operands.size(); i++) {
+                result = operatorFactory.apply(result, operands.get(i));
+            }
+            return result;
+        } else if (operands.size() == 1) {
+            return operands.get(0);
+        }
+
+        return defaultValue;
+    }
+
+    /**
+     * Interface for operand visitors
+     */
+    @FunctionalInterface
+    private interface OperandVisitor {
+        Formula visit(JsonNode node) throws IOException;
+    }
+
+    /**
+     * Interface for operands collectors
+     */
+    @FunctionalInterface
+    private interface OperandsCollector {
+        List<Formula> collectOperands(JsonNode node) throws IOException;
+    }
+
+    /**
+     * Visits a child operand based on its type.
+     */
+    private Formula visitOperandByType(String type, JsonNode node) throws IOException {
+        OperandVisitor visitor = operandVisitors.get(type);
+        if (visitor != null) {
+            return visitor.visit(node);
+        }
+        return null;
+    }
+
+    /**
      * Helper method to visit an operand node and return the corresponding Formula.
      */
     private Formula visitOperand(JsonNode node) throws IOException {
@@ -208,30 +246,11 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             return null;
         }
 
-        if (node.has("const")) {
-            return visitConstant(node.get("const"));
-        } else if (node.has("numAtom")) {
-            return visitNumAtom(node.get("numAtom"));
-        } else if (node.has("add")) {
-            return visitAdd(node.get("add"));
-        } else if (node.has("subtract")) {
-            return visitSubtract(node.get("subtract"));
-        } else if (node.has("multiply")) {
-            return visitMultiply(node.get("multiply"));
-        } else if (node.has("divide")) {
-            return visitDivide(node.get("divide"));
-        } else if (node.has("gt")) {
-            return visitGreaterThan(node.get("gt"));
-        } else if (node.has("gte")) {
-            return visitGreaterThanEquals(node.get("gte"));
-        } else if (node.has("lt")) {
-            return visitLessThan(node.get("lt"));
-        } else if (node.has("lte")) {
-            return visitLessThanEquals(node.get("lte"));
-        } else if (node.has("eq")) {
-            return visitEquals(node.get("eq"));
-        } else if (node.has("neq")) {
-            return visitNotEquals(node.get("neq"));
+        for (Map.Entry<String, OperandVisitor> entry : operandVisitors.entrySet()) {
+            String type = entry.getKey();
+            if (node.has(type)) {
+                return visitOperandByType(type, node.get(type));
+            }
         }
 
         return Formula.createConstantFormula("Unknown");
@@ -243,34 +262,25 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private List<Formula> collectNumericOperands(JsonNode node) throws IOException {
         List<Formula> operands = new ArrayList<>();
 
-        // Process const operands
-        if (node.has("const")) {
-            addNodeToOperands(node.get("const"), operands, this::visitConstant);
-        }
+        // Numeric operand types
+        String[] operandTypes = {"const", "numAtom", "add", "subtract", "multiply", "divide"};
 
-        // Process numAtom operands
-        if (node.has("numAtom")) {
-            addNodeToOperands(node.get("numAtom"), operands, this::visitNumAtom);
-        }
-
-        // Process nested add operations
-        if (node.has("add")) {
-            operands.add(visitAdd(node.get("add")));
-        }
-
-        // Process nested subtract operations
-        if (node.has("subtract")) {
-            operands.add(visitSubtract(node.get("subtract")));
-        }
-
-        // Process nested multiply operations
-        if (node.has("multiply")) {
-            operands.add(visitMultiply(node.get("multiply")));
-        }
-
-        // Process nested divide operations
-        if (node.has("divide")) {
-            operands.add(visitDivide(node.get("divide")));
+        for (String type : operandTypes) {
+            if (node.has(type)) {
+                if (type.equals("const") || type.equals("numAtom")) {
+                    addNodeToOperands(node.get(type), operands,
+                            n -> {
+                                try {
+                                    return visitOperandByType(type, n);
+                                } catch (IOException e) {
+                                    LOGGER.severe("Error processing operand: " + e.getMessage());
+                                    return null;
+                                }
+                            });
+                } else {
+                    operands.add(visitOperandByType(type, node.get(type)));
+                }
+            }
         }
 
         return operands;
@@ -282,54 +292,28 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private List<Formula> collectBooleanOperands(JsonNode node) throws IOException {
         List<Formula> operands = new ArrayList<>();
 
-        // Process boolConst operands
-        if (node.has("boolConst")) {
-            addNodeToOperands(node.get("boolConst"), operands, this::visitBoolConst);
-        }
+        // Boolean operand types
+        String[] operandTypes = {
+                "boolConst", "boolAtom", "and", "or", "not",
+                "gt", "gte", "lt", "lte", "eq", "neq"
+        };
 
-        // Process boolAtom operands
-        if (node.has("boolAtom")) {
-            addNodeToOperands(node.get("boolAtom"), operands, this::visitBoolAtom);
-        }
-
-        // Process nested and operations
-        if (node.has("and")) {
-            operands.add(visitAnd(node.get("and")));
-        }
-
-        // Process nested or operations
-        if (node.has("or")) {
-            operands.add(visitOr(node.get("or")));
-        }
-
-        // Process nested not operations
-        if (node.has("not")) {
-            operands.add(visitNot(node.get("not")));
-        }
-
-        // Process comparison operations
-        if (node.has("gt")) {
-            operands.add(visitGreaterThan(node.get("gt")));
-        }
-
-        if (node.has("gte")) {
-            operands.add(visitGreaterThanEquals(node.get("gte")));
-        }
-
-        if (node.has("lt")) {
-            operands.add(visitLessThan(node.get("lt")));
-        }
-
-        if (node.has("lte")) {
-            operands.add(visitLessThanEquals(node.get("lte")));
-        }
-
-        if (node.has("eq")) {
-            operands.add(visitEquals(node.get("eq")));
-        }
-
-        if (node.has("neq")) {
-            operands.add(visitNotEquals(node.get("neq")));
+        for (String type : operandTypes) {
+            if (node.has(type)) {
+                if (type.equals("boolConst") || type.equals("boolAtom")) {
+                    addNodeToOperands(node.get(type), operands,
+                            n -> {
+                                try {
+                                    return visitOperandByType(type, n);
+                                } catch (IOException e) {
+                                    LOGGER.severe("Error processing operand: " + e.getMessage());
+                                    return null;
+                                }
+                            });
+                } else {
+                    operands.add(visitOperandByType(type, node.get(type)));
+                }
+            }
         }
 
         return operands;

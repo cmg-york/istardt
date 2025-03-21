@@ -21,15 +21,12 @@ public class IndirectEffectDeserializer extends BaseDeserializer<IndirectEffect>
     }
 
     @Override
-    public IndirectEffect deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
+    protected IndirectEffect createNewElement() {
+        return new IndirectEffect();
+    }
 
-        // Create new IndirectEffect
-        IndirectEffect indirectEffect = new IndirectEffect();
-
-        // Extract common attributes (id, name, description, atom)
-        extractCommonAttributes(indirectEffect, node);
-
+    @Override
+    protected void handleSpecificAttributes(IndirectEffect indirectEffect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
         // Get specific attributes
         boolean exported = DeserializerUtils.getBooleanAttribute(node, "exported", false);
         indirectEffect.setExported(exported);
@@ -44,7 +41,5 @@ public class IndirectEffectDeserializer extends BaseDeserializer<IndirectEffect>
             DeserializerUtils.handleDeserializationError(LOGGER,
                     "Error processing formula for indirect effect " + indirectEffect.getAtom().getTitleText(), e);
         }
-
-        return indirectEffect;
     }
 }

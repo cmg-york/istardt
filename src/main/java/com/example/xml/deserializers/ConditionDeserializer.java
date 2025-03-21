@@ -21,15 +21,12 @@ public class ConditionDeserializer extends BaseDeserializer<Condition> {
     }
 
     @Override
-    public Condition deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
+    protected Condition createNewElement() {
+        return new Condition();
+    }
 
-        // Create new Condition
-        Condition condition = new Condition();
-
-        // Extract common attributes (id, name, description, atom)
-        extractCommonAttributes(condition, node);
-
+    @Override
+    protected void handleSpecificAttributes(Condition condition, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
         // Process formula - this could be a direct formula element or various boolean expressions
         Formula formula = null;
 
@@ -63,7 +60,5 @@ public class ConditionDeserializer extends BaseDeserializer<Condition> {
         if (formula != null) {
             condition.setValueFormula(formula);
         }
-
-        return condition;
     }
 }

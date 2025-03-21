@@ -7,14 +7,13 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
  * Deserializer for Actor objects.
  * This deserializer handles the conversion of XML actor elements to Actor domain objects.
+ * Simplified to rely on base deserializer for handling name via atom.
  */
 public class ActorDeserializer extends BaseDeserializer<Actor> {
     private static final Logger LOGGER = Logger.getLogger(ActorDeserializer.class.getName());
@@ -24,40 +23,14 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
     }
 
     @Override
-    public Actor deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
+    protected Actor createNewElement() {
+        return new Actor();
+    }
 
-        // Create new Actor
-        Actor actor = new Actor();
-
-        // Generate a UUID for the element ID
-        String uuid = UUID.randomUUID().toString();
-        actor.setId(uuid);
-
-        // Get the name attribute from XML
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
-
-        // Set the name attribute
-        actor.setName(name);
-
-        // Create an atom with a UUID as its ID
-        Atom atom = new Atom();
-        atom.setId(UUID.randomUUID().toString());
-
-        // IMPORTANT: Set the titleText to the name from XML for content-based comparison
-        atom.setTitleText(name);
-
-        // Set description if available
-        if (description != null) {
-            atom.setTitleHTMLText(description);
-        }
-
-        // Set the atom as the actor's representation
-        actor.setRepresentation(atom);
-
-        // Register the actor for reference resolution
-        registerElement(actor);
+    @Override
+    protected void handleSpecificAttributes(Actor actor, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        // The name is already handled by the base deserializer in extractCommonAttributes
+        // which sets up the atom with the name from the XML
 
         try {
             // Process predicates (create Atoms)
@@ -102,11 +75,14 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 actor.setTasks(tasks);
             }
         } catch (IOException e) {
+            // Get name from atom for logging
+            String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
             DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing actor " + name, e);
         }
 
+        // Log with name from atom for consistency
+        String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
         LOGGER.info("Deserialized actor: " + name);
-        return actor;
     }
 
     /**
@@ -116,17 +92,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
      * @return A list of Atom objects
      */
     private List<Atom> deserializePredicates(JsonNode predicatesNode) {
-        List<Atom> atoms = new ArrayList<>();
-
-        if (predicatesNode.isArray()) {
-            for (JsonNode predicateNode : predicatesNode) {
-                atoms.add(deserializePredicate(predicateNode));
-            }
-        } else {
-            atoms.add(deserializePredicate(predicatesNode));
-        }
-
-        return atoms;
+        return DeserializerUtils.processNodeItems(predicatesNode, this::deserializePredicate);
     }
 
     /**
@@ -140,14 +106,14 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
         String description = DeserializerUtils.getStringAttribute(predicateNode, "description", null);
 
         Atom atom = new Atom();
-        atom.setId(UUID.randomUUID().toString()); // Generate UUID for atom ID
+        atom.setId(java.util.UUID.randomUUID().toString()); // Generate UUID for atom ID
         atom.setTitleText(value); // Use predicate value as titleText
 
         if (description != null) {
             atom.setTitleHTMLText(description);
         }
 
-        // We don't register atoms in the reference resolver as they don't extend Element
+        // Don't register atoms in the reference resolver as they don't extend Element
         return atom;
     }
 }

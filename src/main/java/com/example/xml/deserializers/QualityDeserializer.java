@@ -21,15 +21,12 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
     }
 
     @Override
-    public Quality deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
+    protected Quality createNewElement() {
+        return new Quality();
+    }
 
-        // Create new Quality
-        Quality quality = new Quality();
-
-        // Extract common attributes (id, name, description, atom)
-        extractCommonAttributes(quality, node);
-
+    @Override
+    protected void handleSpecificAttributes(Quality quality, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
         // Get specific attributes
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
         boolean exported = DeserializerUtils.getBooleanAttribute(node, "exported", false);
@@ -47,7 +44,5 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
             DeserializerUtils.handleDeserializationError(LOGGER,
                     "Error processing formula for quality " + quality.getAtom().getTitleText(), e);
         }
-
-        return quality;
     }
 }

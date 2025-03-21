@@ -4,8 +4,8 @@ import com.example.objects.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
- * Jackson module for registering all custom deserializers for the iStar-T model.
- * This centralizes the registration of deserializers for complex types.
+ * Enhanced Jackson module for registering all custom deserializers for the iStar-T model.
+ * Organizes deserializers by their functional category.
  */
 public class IStarTModule extends SimpleModule {
 
@@ -15,15 +15,35 @@ public class IStarTModule extends SimpleModule {
     public IStarTModule() {
         super("IStarTModule");
 
-        // Register custom deserializers for complex types
-        addDeserializer(Actor.class, new ActorDeserializer());
+        registerStructuralDeserializers();
+        registerElementDeserializers();
+        registerFormulaDeserializers();
+    }
+
+    /**
+     * Register deserializers for structural elements (Model, Actor).
+     */
+    private void registerStructuralDeserializers() {
         addDeserializer(Model.class, new ModelDeserializer());
-        addDeserializer(Formula.class, new FormulaDeserializer());
+        addDeserializer(Actor.class, new ActorDeserializer());
+    }
+
+    /**
+     * Register deserializers for domain elements (Goal, Task, etc).
+     */
+    private void registerElementDeserializers() {
         addDeserializer(Goal.class, new GoalDeserializer());
         addDeserializer(Task.class, new TaskDeserializer());
         addDeserializer(Quality.class, new QualityDeserializer());
         addDeserializer(Condition.class, new ConditionDeserializer());
         addDeserializer(IndirectEffect.class, new IndirectEffectDeserializer());
         addDeserializer(Effect.class, new EffectDeserializer());
+    }
+
+    /**
+     * Register deserializers for formula-related elements.
+     */
+    private void registerFormulaDeserializers() {
+        addDeserializer(Formula.class, new FormulaDeserializer());
     }
 }

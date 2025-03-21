@@ -9,8 +9,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /**
@@ -24,46 +27,17 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
     }
 
     @Override
-    public Task deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
+    protected Task createNewElement() {
+        return new Task();
+    }
 
-        // Create new Task
-        Task task = new Task();
-
-        // Generate a UUID for the element ID
-        String uuid = UUID.randomUUID().toString();
-        task.setId(uuid);
-
-        // Get the name attribute from XML
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
-
-        // Create an atom with a UUID as its ID
-        Atom atom = new Atom();
-        atom.setId(UUID.randomUUID().toString());
-
-        // IMPORTANT: Set the titleText to the name from XML for content-based comparison
-        atom.setTitleText(name);
-
-        // Set description if available
-        if (description != null) {
-            atom.setTitleHTMLText(description);
-        }
-
-        // Set the atom as the task's representation
-        task.setRepresentation(atom);
-
-        // Process preconditions
-        List<String> preconditions = DeserializerUtils.getStringList(node, "pre");
-        for (String pre : preconditions) {
-            task.addPrecondition(pre);
-        }
-
-        // Process negative preconditions
-        List<String> negPreconditions = DeserializerUtils.getStringList(node, "npr");
-        for (String npr : negPreconditions) {
-            task.addNegPrecondition(npr);
-        }
+    @Override
+    protected void handleSpecificAttributes(Task task, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        // Process string list properties
+        Map<String, BiConsumer<Task, String>> propertyConfigs = new HashMap<>();
+        propertyConfigs.put("pre", Task::addPrecondition);
+        propertyConfigs.put("npr", Task::addNegPrecondition);
+        processStringListProperties(task, node, propertyConfigs);
 
         // Process effect group
         try {
@@ -88,13 +62,9 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
                 task.setEffects(effects);
             }
         } catch (IOException e) {
-            DeserializerUtils.handleDeserializationError(LOGGER, "Error processing effects for task " + name, e);
+            DeserializerUtils.handleDeserializationError(LOGGER,
+                    "Error processing effects for task " + task.getAtom().getTitleText(), e);
         }
-
-        // Register the task for reference resolution
-        registerElement(task);
-
-        return task;
     }
 
     /**
@@ -115,42 +85,29 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         // Get the attributes from XML
         String name = DeserializerUtils.getStringAttribute(effectNode, "name", null);
         String description = DeserializerUtils.getStringAttribute(effectNode, "description", null);
+
+        // Set specific attributes
         boolean satisfying = DeserializerUtils.getBooleanAttribute(effectNode, "satisfying", true);
         float probability = DeserializerUtils.getFloatAttribute(effectNode, "probability", 1.0f);
-
         effect.setSatisfying(satisfying);
         effect.setProbability(probability);
 
-        // Create an atom with a UUID as its ID
-        Atom atom = new Atom();
-        atom.setId(UUID.randomUUID().toString());
-
-        // IMPORTANT: Set the titleText to the name from XML for content-based comparison
-        atom.setTitleText(name);
-
-        // Set description if available
-        if (description != null) {
-            atom.setTitleHTMLText(description);
-        }
-
-        // Set the atom as the effect's representation
+        // Create an atom using the base deserializer method
+        Atom atom = createAtom(name, description);
         effect.setAtom(atom);
 
-        // Process turnsTrue
-        List<String> turnsTrue = DeserializerUtils.getStringList(effectNode, "turnsTrue");
-        effect.setTurnsTrue(turnsTrue);
+        // Process string list properties more efficiently
+        Map<String, BiConsumer<Effect, List<String>>> listSetters = new HashMap<>();
+        listSetters.put("turnsTrue", Effect::setTurnsTrue);
+        listSetters.put("turnsFalse", Effect::setTurnsFalse);
+        listSetters.put("pre", Effect::setPreconditions);
+        listSetters.put("npr", Effect::setNegPreconditions);
 
-        // Process turnsFalse
-        List<String> turnsFalse = DeserializerUtils.getStringList(effectNode, "turnsFalse");
-        effect.setTurnsFalse(turnsFalse);
-
-        // Process preconditions
-        List<String> preconditions = DeserializerUtils.getStringList(effectNode, "pre");
-        effect.setPreconditions(preconditions);
-
-        // Process negative preconditions
-        List<String> negPreconditions = DeserializerUtils.getStringList(effectNode, "npr");
-        effect.setNegPreconditions(negPreconditions);
+        // Apply all list-based properties
+        for (Map.Entry<String, BiConsumer<Effect, List<String>>> entry : listSetters.entrySet()) {
+            List<String> values = DeserializerUtils.getStringList(effectNode, entry.getKey());
+            entry.getValue().accept(effect, values);
+        }
 
         // Register the effect for reference resolution
         ReferenceResolver.getInstance().registerElement(uuid, effect);

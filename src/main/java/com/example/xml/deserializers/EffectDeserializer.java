@@ -1,6 +1,5 @@
 package com.example.xml.deserializers;
 
-import com.example.objects.Atom;
 import com.example.objects.Effect;
 import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
@@ -8,7 +7,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /**
@@ -22,53 +24,30 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
     }
 
     @Override
-    public Effect deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
+    protected Effect createNewElement() {
+        return new Effect();
+    }
 
-        // Create new Effect
-        Effect effect = new Effect();
-
-        // Set basic properties
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+    @Override
+    protected void handleSpecificAttributes(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        // Set specific attributes
         boolean satisfying = DeserializerUtils.getBooleanAttribute(node, "satisfying", true);
         float probability = DeserializerUtils.getFloatAttribute(node, "probability", 1.0f);
 
-        effect.setId(name);
         effect.setSatisfying(satisfying);
         effect.setProbability(probability);
 
-        // Create an atom for the effect
-        Atom atom = createAtom(name, description);
-        effect.setAtom(atom);
+        // Process string list properties with setter map
+        Map<String, BiConsumer<Effect, List<String>>> listSetters = new HashMap<>();
+        listSetters.put("turnsTrue", Effect::setTurnsTrue);
+        listSetters.put("turnsFalse", Effect::setTurnsFalse);
+        listSetters.put("pre", Effect::setPreconditions);
+        listSetters.put("npr", Effect::setNegPreconditions);
 
-        // Process turnsTrue
-        List<String> turnsTrue = DeserializerUtils.getStringList(node, "turnsTrue");
-        for (String predicate : turnsTrue) {
-            effect.addTurnsTrue(predicate);
+        // Apply all list-based properties
+        for (Map.Entry<String, BiConsumer<Effect, List<String>>> entry : listSetters.entrySet()) {
+            List<String> values = DeserializerUtils.getStringList(node, entry.getKey());
+            entry.getValue().accept(effect, values);
         }
-
-        // Process turnsFalse
-        List<String> turnsFalse = DeserializerUtils.getStringList(node, "turnsFalse");
-        for (String predicate : turnsFalse) {
-            effect.addTurnsFalse(predicate);
-        }
-
-        // Process preconditions
-        List<String> preconditions = DeserializerUtils.getStringList(node, "pre");
-        for (String pre : preconditions) {
-            effect.addPrecondition(pre);
-        }
-
-        // Process negative preconditions
-        List<String> negPreconditions = DeserializerUtils.getStringList(node, "npr");
-        for (String npr : negPreconditions) {
-            effect.addNegPrecondition(npr);
-        }
-
-        // Register the effect for reference resolution
-        registerElement(effect);
-
-        return effect;
     }
 }

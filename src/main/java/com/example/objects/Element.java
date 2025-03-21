@@ -14,7 +14,7 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public abstract class Element {
 
-    @JacksonXmlProperty(isAttribute = true, localName = "name")
+    @JacksonXmlProperty(isAttribute = true, localName = "id")
     private String id;
 
     @JsonIgnore
@@ -28,12 +28,30 @@ public abstract class Element {
         this.id = id;
     }
 
+    /**
+     * Get the atom representation of this element.
+     */
     public Atom getAtom() {
         return representation;
     }
 
+    /**
+     * Set the atom representation of this element.
+     */
     public void setRepresentation(Atom representation) {
         this.representation = representation;
+    }
+
+    /**
+     * Gets the name of this element, which is stored in the atom's titleText.
+     * This is a convenience method equivalent to getAtom().getTitleText().
+     * This method is also annotated for XML serialization/deserialization.
+     *
+     * @return The name of this element, or null if the atom is not set
+     */
+    @JacksonXmlProperty(isAttribute = true, localName = "name")
+    public String getName() {
+        return representation != null ? representation.getTitleText() : null;
     }
 
     /**

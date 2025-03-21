@@ -92,7 +92,7 @@ public class IStarTApplication {
         // Process each actor
         int actorCount = 1;
         for (Actor actor : model.getActors()) {
-            System.out.println("\nActor " + actorCount + ": " + actor.getName());
+            System.out.println("\nActor " + actorCount + ": " + actor.getAtom().getTitleText());
 
             // Goals
             List<Goal> goals = actor.getGoals();

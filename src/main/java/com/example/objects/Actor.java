@@ -17,13 +17,11 @@ import java.util.stream.Collectors;
 /**
  * Actor class representing an agent in the iStar-T model.
  * Modified to support Jackson XML unmarshalling.
+ * Simplified to rely entirely on atom's titleText for name.
  */
 @JsonRootName("actor")
 @JsonDeserialize(using = ActorDeserializer.class)
 public class Actor extends Element {
-
-    @JacksonXmlProperty(isAttribute = true)
-    private String name;
 
     @JacksonXmlElementWrapper(localName = "goals")
     @JacksonXmlProperty(localName = "goal")
@@ -55,19 +53,6 @@ public class Actor extends Element {
         super.setId(id);
         // Register this actor with the reference resolver
         ReferenceResolver.getInstance().registerElement(id, this);
-    }
-
-    public void setName(String name) {
-        this.name = name;
-
-        // If ID isn't set, use name as ID
-        if (getId() == null) {
-            setId(name);
-        }
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setGoals(List<Goal> goals) {
@@ -172,8 +157,7 @@ public class Actor extends Element {
 
         Actor actor = (Actor) obj;
 
-        // Name is the primary identifier for content-based comparison
-        if (!Objects.equals(name, actor.name)) return false;
+        // Name comparison is handled by super.equals() which compares atoms' titleTexts
 
         // Compare goals, tasks, and qualities by their atom titleTexts
         List<String> thisGoalNames = getElementNames(goals);
@@ -212,6 +196,9 @@ public class Actor extends Element {
      */
     @Override
     public int hashCode() {
+        // Get name from atom's titleText
+        String name = getAtom() != null ? getAtom().getTitleText() : null;
+
         List<String> goalNames = getElementNames(goals);
         List<String> taskNames = getElementNames(tasks);
         List<String> qualityNames = getElementNames(qualities);
@@ -227,6 +214,9 @@ public class Actor extends Element {
      */
     @Override
     public String toString() {
+        // Get name from atom's titleText
+        String name = getAtom() != null ? getAtom().getTitleText() : null;
+
         return "Actor{id=" + getId() +
                 ", name='" + name + '\'' +
                 ", goals=" + (goals != null ? goals.size() : 0) +
