@@ -15,9 +15,9 @@ import java.util.List;
 public class IStarTApplication {
 
     // File paths directly to resources
-    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v2.xsd";
+    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v3.xsd";
     private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron2.sch";
-    private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_fixed.xml";
+    private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_fixed2.xml";
 
     public static void main(String[] args) {
         try {
@@ -222,8 +222,12 @@ public class IStarTApplication {
         System.out.println(indent + "- " + goal.getId() + titleText +
                 " [Type: " + goal.getDecompType() + "]" + (goal.isRoot() ? "[ROOT]" : ""));
 
-        System.out.println(indent + "  pre: " + goal.getPreFormula());
-        System.out.println(indent + "  npr: " + goal.getNprFormula());
+        if (goal.getPreFormula() != null){
+            System.out.println(indent + "  pre: " + goal.getPreFormula().getFormula());
+        }
+        if (goal.getNprFormula() != null){
+            System.out.println(indent + "  npr: " + goal.getNprFormula().getFormula());
+        }
 
         // Print child elements if this is a decomposition element
         if (goal.getChildren() != null && !goal.getChildren().isEmpty()) {
@@ -243,8 +247,13 @@ public class IStarTApplication {
         // Print the current element's information
         System.out.println(indent + "- " + decomp.getId() + " ("+ decomp.getAtom().getTitleText() +")" + " [Type: " + decomp.getDecompType() + "]");
 
-        System.out.println(indent + "  pre: " + decomp.getPreFormula());
-        System.out.println(indent + "  npr: " + decomp.getNprFormula());
+        if (decomp.getPreFormula() != null){
+            System.out.println(indent + "  pre: " + decomp.getPreFormula().getFormula());
+        }
+        if (decomp.getNprFormula() != null){
+            System.out.println(indent + "  npr: " + decomp.getNprFormula().getFormula());
+        }
+
         System.out.println(indent + "  Parent: " + decomp.getParent().getAtom().getTitleText());
 
 
@@ -278,8 +287,12 @@ public class IStarTApplication {
         System.out.println(indent + "- " + task.getId() + titleText +
                 " [Deterministic: " + task.isDeterministic() + "]" + (task.isRoot()? "[ROOT]" : "") + "(Type: " + task.getDecompType()+")");
 
-        System.out.println(indent + "  pre: " + task.getPreFormula());
-        System.out.println(indent + "  npr: " + task.getNprFormula());
+        if (task.getPreFormula() != null){
+            System.out.println(indent + "  pre: " + task.getPreFormula().getFormula());
+        }
+        if (task.getNprFormula() != null){
+            System.out.println(indent + "  npr: " + task.getNprFormula().getFormula());
+        }
         System.out.println(indent + "  Parent: " + task.getParent().getAtom().getTitleText());
 
 

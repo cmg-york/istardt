@@ -27,15 +27,6 @@ public class Goal extends DecompositionElement {
     @JacksonXmlProperty(isAttribute = true)
     private String episodeLength;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "pre")
-    private List<String> preconditions;
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "npr")
-    private List<String> negPreconditions;
-
-    // For refinement deserialization - these will be processed later
     @JsonIgnore
     private List<String> childGoalRefs;
 
@@ -47,8 +38,6 @@ public class Goal extends DecompositionElement {
 
     public Goal() {
         super();
-        this.preconditions = new ArrayList<>();
-        this.negPreconditions = new ArrayList<>();
         this.childGoalRefs = new ArrayList<>();
         this.childTaskRefs = new ArrayList<>();
     }
@@ -82,36 +71,6 @@ public class Goal extends DecompositionElement {
 
     public void setEpisodeLength(String episodeLength) {
         this.episodeLength = episodeLength;
-    }
-
-    public List<String> getPreconditions() {
-        return preconditions;
-    }
-
-    public void setPreconditions(List<String> preconditions) {
-        this.preconditions = preconditions;
-    }
-
-    public List<String> getNegPreconditions() {
-        return negPreconditions;
-    }
-
-    public void setNegPreconditions(List<String> negPreconditions) {
-        this.negPreconditions = negPreconditions;
-    }
-
-    public void addPrecondition(String precondition) {
-        if (preconditions == null) {
-            preconditions = new ArrayList<>();
-        }
-        preconditions.add(precondition);
-    }
-
-    public void addNegPrecondition(String negPrecondition) {
-        if (negPreconditions == null) {
-            negPreconditions = new ArrayList<>();
-        }
-        negPreconditions.add(negPrecondition);
     }
 
     public List<String> getChildGoalRefs() {

@@ -24,21 +24,11 @@ public class Task extends DecompositionElement {
     @JsonManagedReference("task-effects")
     private List<Effect> effects;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "pre")
-    private List<String> preconditions;
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "npr")
-    private List<String> negPreconditions;
-
     @JsonBackReference("actor-tasks")
     private Actor actor;
 
     public Task() {
         this.effects = new ArrayList<>();
-        this.preconditions = new ArrayList<>();
-        this.negPreconditions = new ArrayList<>();
     }
 
     @Override
@@ -67,36 +57,6 @@ public class Task extends DecompositionElement {
 
     public List<Effect> getEffects() {
         return effects;
-    }
-
-    public List<String> getPreconditions() {
-        return preconditions;
-    }
-
-    public void setPreconditions(List<String> preconditions) {
-        this.preconditions = preconditions;
-    }
-
-    public List<String> getNegPreconditions() {
-        return negPreconditions;
-    }
-
-    public void setNegPreconditions(List<String> negPreconditions) {
-        this.negPreconditions = negPreconditions;
-    }
-
-    public void addPrecondition(String precondition) {
-        if (preconditions == null) {
-            preconditions = new ArrayList<>();
-        }
-        preconditions.add(precondition);
-    }
-
-    public void addNegPrecondition(String negPrecondition) {
-        if (negPreconditions == null) {
-            negPreconditions = new ArrayList<>();
-        }
-        negPreconditions.add(negPrecondition);
     }
 
     public Actor getActor() {

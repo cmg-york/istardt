@@ -7,13 +7,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /**
- * Refactored deserializer for Goal objects.
+ * Refactored deserializer for Goal objects with support for formula-based pre/npr.
  */
 public class GoalDeserializer extends BaseDeserializer<Goal> {
     private static final Logger LOGGER = Logger.getLogger(GoalDeserializer.class.getName());
@@ -47,14 +44,58 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
             }
         }
 
-        // Process preconditions and negPreconditions
-        Map<String, BiConsumer<Goal, String>> propertyConfigs = new HashMap<>();
-        propertyConfigs.put("pre", Goal::addPrecondition);
-        propertyConfigs.put("npr", Goal::addNegPrecondition);
-        processStringListProperties(goal, node, propertyConfigs);
+        // Process pre formula
+        processPreFormula(goal, node, p, ctxt);
+
+        // Process npr formula
+        processNprFormula(goal, node, p, ctxt);
 
         // Process refinements
         processRefinement(goal, getChildNode(node, "refinement"));
+    }
+
+    /**
+     * Process the pre formula element for a goal.
+     *
+     * @param goal The goal to set the pre formula on
+     * @param node The parent JSON node
+     * @param p The JSON parser
+     * @param ctxt The deserialization context
+     */
+    private void processPreFormula(Goal goal, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        if (node.has("pre")) {
+            JsonNode preNode = node.get("pre");
+            if (preNode.has("formula")) {
+                try {
+                    Formula formula = ctxt.readValue(preNode.get("formula").traverse(p.getCodec()), Formula.class);
+                    goal.setPreFormula(formula);
+                } catch (IOException e) {
+                    LOGGER.warning("Error processing pre formula for goal: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * Process the npr formula element for a goal.
+     *
+     * @param goal The goal to set the npr formula on
+     * @param node The parent JSON node
+     * @param p The JSON parser
+     * @param ctxt The deserialization context
+     */
+    private void processNprFormula(Goal goal, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        if (node.has("npr")) {
+            JsonNode nprNode = node.get("npr");
+            if (nprNode.has("formula")) {
+                try {
+                    Formula formula = ctxt.readValue(nprNode.get("formula").traverse(p.getCodec()), Formula.class);
+                    goal.setNprFormula(formula);
+                } catch (IOException e) {
+                    LOGGER.warning("Error processing npr formula for goal: " + e.getMessage());
+                }
+            }
+        }
     }
 
     /**

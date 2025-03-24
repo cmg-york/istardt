@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /**
- * Deserializer for Task objects.
+ * Deserializer for Task objects with support for formula-based pre/npr.
  */
 public class TaskDeserializer extends BaseDeserializer<Task> {
     private static final Logger LOGGER = Logger.getLogger(TaskDeserializer.class.getName());
@@ -33,11 +33,11 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
 
     @Override
     protected void handleSpecificAttributes(Task task, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        // Process string list properties
-        Map<String, BiConsumer<Task, String>> propertyConfigs = new HashMap<>();
-        propertyConfigs.put("pre", Task::addPrecondition);
-        propertyConfigs.put("npr", Task::addNegPrecondition);
-        processStringListProperties(task, node, propertyConfigs);
+        // Process pre formula
+        processPreFormula(task, node, p, ctxt);
+
+        // Process npr formula
+        processNprFormula(task, node, p, ctxt);
 
         // Process effect group
         try {
@@ -64,6 +64,50 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         } catch (IOException e) {
             DeserializerUtils.handleDeserializationError(LOGGER,
                     "Error processing effects for task " + task.getAtom().getTitleText(), e);
+        }
+    }
+
+    /**
+     * Process the pre formula element for a task.
+     *
+     * @param task The task to set the pre formula on
+     * @param node The parent JSON node
+     * @param p The JSON parser
+     * @param ctxt The deserialization context
+     */
+    private void processPreFormula(Task task, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        if (node.has("pre")) {
+            JsonNode preNode = node.get("pre");
+            if (preNode.has("formula")) {
+                try {
+                    Formula formula = ctxt.readValue(preNode.get("formula").traverse(p.getCodec()), Formula.class);
+                    task.setPreFormula(formula);
+                } catch (IOException e) {
+                    LOGGER.warning("Error processing pre formula for task: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * Process the npr formula element for a task.
+     *
+     * @param task The task to set the npr formula on
+     * @param node The parent JSON node
+     * @param p The JSON parser
+     * @param ctxt The deserialization context
+     */
+    private void processNprFormula(Task task, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        if (node.has("npr")) {
+            JsonNode nprNode = node.get("npr");
+            if (nprNode.has("formula")) {
+                try {
+                    Formula formula = ctxt.readValue(nprNode.get("formula").traverse(p.getCodec()), Formula.class);
+                    task.setNprFormula(formula);
+                } catch (IOException e) {
+                    LOGGER.warning("Error processing npr formula for task: " + e.getMessage());
+                }
+            }
         }
     }
 
@@ -100,8 +144,6 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         Map<String, BiConsumer<Effect, List<String>>> listSetters = new HashMap<>();
         listSetters.put("turnsTrue", Effect::setTurnsTrue);
         listSetters.put("turnsFalse", Effect::setTurnsFalse);
-        listSetters.put("pre", Effect::setPreconditions);
-        listSetters.put("npr", Effect::setNegPreconditions);
 
         // Apply all list-based properties
         for (Map.Entry<String, BiConsumer<Effect, List<String>>> entry : listSetters.entrySet()) {
