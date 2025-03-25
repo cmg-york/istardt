@@ -31,14 +31,6 @@ public class Effect extends NonDecompositionElement {
     @JacksonXmlProperty(localName = "turnsFalse")
     private List<String> turnsFalse;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "pre")
-    private List<String> preconditions;
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "npr")
-    private List<String> negPreconditions;
-
     private Formula preFormula;
     private Formula nprFormula;
 
@@ -51,8 +43,6 @@ public class Effect extends NonDecompositionElement {
     public Effect() {
         this.turnsTrue = new ArrayList<>();
         this.turnsFalse = new ArrayList<>();
-        this.preconditions = new ArrayList<>();
-        this.negPreconditions = new ArrayList<>();
     }
 
     @Override
@@ -106,36 +96,6 @@ public class Effect extends NonDecompositionElement {
             turnsFalse = new ArrayList<>();
         }
         turnsFalse.add(predicate);
-    }
-
-    public List<String> getPreconditions() {
-        return preconditions;
-    }
-
-    public void setPreconditions(List<String> preconditions) {
-        this.preconditions = preconditions;
-    }
-
-    public List<String> getNegPreconditions() {
-        return negPreconditions;
-    }
-
-    public void setNegPreconditions(List<String> negPreconditions) {
-        this.negPreconditions = negPreconditions;
-    }
-
-    public void addPrecondition(String precondition) {
-        if (preconditions == null) {
-            preconditions = new ArrayList<>();
-        }
-        preconditions.add(precondition);
-    }
-
-    public void addNegPrecondition(String negPrecondition) {
-        if (negPreconditions == null) {
-            negPreconditions = new ArrayList<>();
-        }
-        negPreconditions.add(negPrecondition);
     }
 
     /**

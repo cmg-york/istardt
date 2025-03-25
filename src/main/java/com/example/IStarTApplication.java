@@ -222,11 +222,20 @@ public class IStarTApplication {
         System.out.println(indent + "- " + goal.getId() + titleText +
                 " [Type: " + goal.getDecompType() + "]" + (goal.isRoot() ? "[ROOT]" : ""));
 
-        if (goal.getPreFormula() != null){
-            System.out.println(indent + "  pre: " + goal.getPreFormula().getFormula());
+        // Print pre formula if available
+        Formula preFormula = goal.getPreFormula();
+        if (preFormula != null) {
+            System.out.println(indent + "  pre formula: " + preFormula.getFormula());
+        } else {
+            System.out.println(indent + "  pre formula: none");
         }
-        if (goal.getNprFormula() != null){
-            System.out.println(indent + "  npr: " + goal.getNprFormula().getFormula());
+
+        // Print npr formula if available
+        Formula nprFormula = goal.getNprFormula();
+        if (nprFormula != null) {
+            System.out.println(indent + "  npr formula: " + nprFormula.getFormula());
+        } else {
+            System.out.println(indent + "  npr formula: none");
         }
 
         // Print child elements if this is a decomposition element
@@ -238,6 +247,9 @@ public class IStarTApplication {
         }
     }
 
+    /**
+     * Print information about a decomposition element.
+     */
     private static void printDecompInfo(DecompositionElement decomp, int indentLevel) {
         StringBuilder indent = new StringBuilder();
         for (int i = 0; i < indentLevel; i++) {
@@ -245,21 +257,27 @@ public class IStarTApplication {
         }
 
         // Print the current element's information
-        System.out.println(indent + "- " + decomp.getId() + " ("+ decomp.getAtom().getTitleText() +")" + " [Type: " + decomp.getDecompType() + "]");
+        System.out.println(indent + "- " + decomp.getId() +
+                (decomp.getAtom() != null ? " (" + decomp.getAtom().getTitleText() + ")" : "") +
+                " [Type: " + decomp.getDecompType() + "]");
 
-        if (decomp.getPreFormula() != null){
-            System.out.println(indent + "  pre: " + decomp.getPreFormula().getFormula());
+        // Print pre formula if available
+        Formula preFormula = decomp.getPreFormula();
+        if (preFormula != null) {
+            System.out.println(indent + "  pre formula: " + preFormula.getFormula());
         }
-        if (decomp.getNprFormula() != null){
-            System.out.println(indent + "  npr: " + decomp.getNprFormula().getFormula());
+
+        // Print npr formula if available
+        Formula nprFormula = decomp.getNprFormula();
+        if (nprFormula != null) {
+            System.out.println(indent + "  npr formula: " + nprFormula.getFormula());
         }
 
-        System.out.println(indent + "  Parent: " + decomp.getParent().getAtom().getTitleText());
-
-
-//        if (decomp.getParent() != null) {
-//            System.out.println(indent + "  Parent: " + decomp.getParent().getId() + " ("+ decomp.getParent().getAtom().getTitleText() +")" );
-//        }
+        if (decomp.getParent() != null && decomp.getParent().getAtom() != null) {
+            System.out.println(indent + "  Parent: " + decomp.getParent().getAtom().getTitleText());
+        } else {
+            System.out.println(indent + "  Parent: none");
+        }
 
         // Print children (but limit depth to avoid too much output)
         if (decomp.getChildren() != null && !decomp.getChildren().isEmpty() && indentLevel < 8) {
@@ -285,16 +303,29 @@ public class IStarTApplication {
         String titleText = task.getAtom() != null && task.getAtom().getTitleText() != null ?
                 " (" + task.getAtom().getTitleText() + ")" : "";
         System.out.println(indent + "- " + task.getId() + titleText +
-                " [Deterministic: " + task.isDeterministic() + "]" + (task.isRoot()? "[ROOT]" : "") + "(Type: " + task.getDecompType()+")");
+                " [Deterministic: " + task.isDeterministic() + "]" + (task.isRoot()? "[ROOT]" : "") + " (Type: " + task.getDecompType()+")");
 
-        if (task.getPreFormula() != null){
-            System.out.println(indent + "  pre: " + task.getPreFormula().getFormula());
+        // Print pre formula if available
+        Formula preFormula = task.getPreFormula();
+        if (preFormula != null) {
+            System.out.println(indent + "  pre formula: " + preFormula.getFormula());
+        } else {
+            System.out.println(indent + "  pre formula: none");
         }
-        if (task.getNprFormula() != null){
-            System.out.println(indent + "  npr: " + task.getNprFormula().getFormula());
-        }
-        System.out.println(indent + "  Parent: " + task.getParent().getAtom().getTitleText());
 
+        // Print npr formula if available
+        Formula nprFormula = task.getNprFormula();
+        if (nprFormula != null) {
+            System.out.println(indent + "  npr formula: " + nprFormula.getFormula());
+        } else {
+            System.out.println(indent + "  npr formula: none");
+        }
+
+        if (task.getParent() != null) {
+            System.out.println(indent + "  Parent: " + task.getParent().getAtom().getTitleText());
+        } else {
+            System.out.println(indent + "  Parent: none");
+        }
 
         // Print effects
         if (task.getEffects() != null && !task.getEffects().isEmpty()) {
@@ -303,6 +334,27 @@ public class IStarTApplication {
                 System.out.println(indent + "    - " + effect.getId() + " (" + effect.getAtom().getTitleText() + ")" +
                         " (Probability: " + effect.getProbability() +
                         ", Satisfying: " + effect.isSatisfying() + ")");
+
+                // Print effect pre formula if available
+                Formula effectPreFormula = effect.getPreFormula();
+                if (effectPreFormula != null) {
+                    System.out.println(indent + "      pre formula: " + effectPreFormula.getFormula());
+                }
+
+                // Print effect npr formula if available
+                Formula effectNprFormula = effect.getNprFormula();
+                if (effectNprFormula != null) {
+                    System.out.println(indent + "      npr formula: " + effectNprFormula.getFormula());
+                }
+
+                // Print turnsTrue and turnsFalse
+                if (effect.getTurnsTrue() != null && !effect.getTurnsTrue().isEmpty()) {
+                    System.out.println(indent + "      turns true: " + String.join(", ", effect.getTurnsTrue()));
+                }
+
+                if (effect.getTurnsFalse() != null && !effect.getTurnsFalse().isEmpty()) {
+                    System.out.println(indent + "      turns false: " + String.join(", ", effect.getTurnsFalse()));
+                }
             }
         }
     }

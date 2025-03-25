@@ -195,6 +195,11 @@
                 <effect name="successDeliveredInTimeDom" satisfying="true" probability="0.75"
                         description="Successful">
                     <turnsTrue>deliveredInTimeDom</turnsTrue>
+                    <pre>
+                        <formula>
+                            <boolAtom>SourceDomestically</boolAtom>
+                        </formula>
+                    </pre>
                 </effect>
                 <effect name="successDeliveredLateDom" satisfying="true" probability="0.20"
                         description="Successful">

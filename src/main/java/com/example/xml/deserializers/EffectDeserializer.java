@@ -1,6 +1,7 @@
 package com.example.xml.deserializers;
 
 import com.example.objects.Effect;
+import com.example.objects.Formula;
 import com.example.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -14,7 +15,7 @@ import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /**
- * Deserializer for Effect objects.
+ * Deserializer for Effect objects with support for formula-based pre/npr.
  */
 public class EffectDeserializer extends BaseDeserializer<Effect> {
     private static final Logger LOGGER = Logger.getLogger(EffectDeserializer.class.getName());
@@ -37,17 +38,65 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
         effect.setSatisfying(satisfying);
         effect.setProbability(probability);
 
-        // Process string list properties with setter map
+        // Process string list properties for turnsTrue and turnsFalse
         Map<String, BiConsumer<Effect, List<String>>> listSetters = new HashMap<>();
         listSetters.put("turnsTrue", Effect::setTurnsTrue);
         listSetters.put("turnsFalse", Effect::setTurnsFalse);
-        listSetters.put("pre", Effect::setPreconditions);
-        listSetters.put("npr", Effect::setNegPreconditions);
 
-        // Apply all list-based properties
+        // Apply list-based properties
         for (Map.Entry<String, BiConsumer<Effect, List<String>>> entry : listSetters.entrySet()) {
             List<String> values = DeserializerUtils.getStringList(node, entry.getKey());
             entry.getValue().accept(effect, values);
+        }
+
+        // Process pre formula
+        processPreFormula(effect, node, p, ctxt);
+
+        // Process npr formula
+        processNprFormula(effect, node, p, ctxt);
+    }
+
+    /**
+     * Process the pre formula element for an effect.
+     *
+     * @param effect The effect to set the pre formula on
+     * @param node The parent JSON node
+     * @param p The JSON parser
+     * @param ctxt The deserialization context
+     */
+    private void processPreFormula(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        if (node.has("pre")) {
+            JsonNode preNode = node.get("pre");
+            if (preNode.has("formula")) {
+                try {
+                    Formula formula = ctxt.readValue(preNode.get("formula").traverse(p.getCodec()), Formula.class);
+                    effect.setPreFormula(formula);
+                } catch (IOException e) {
+                    LOGGER.warning("Error processing pre formula for effect: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * Process the npr formula element for an effect.
+     *
+     * @param effect The effect to set the npr formula on
+     * @param node The parent JSON node
+     * @param p The JSON parser
+     * @param ctxt The deserialization context
+     */
+    private void processNprFormula(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
+        if (node.has("npr")) {
+            JsonNode nprNode = node.get("npr");
+            if (nprNode.has("formula")) {
+                try {
+                    Formula formula = ctxt.readValue(nprNode.get("formula").traverse(p.getCodec()), Formula.class);
+                    effect.setNprFormula(formula);
+                } catch (IOException e) {
+                    LOGGER.warning("Error processing npr formula for effect: " + e.getMessage());
+                }
+            }
         }
     }
 }
