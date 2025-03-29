@@ -92,7 +92,11 @@ public class IStarTApplication {
         // Process each actor
         int actorCount = 1;
         for (Actor actor : model.getActors()) {
-            System.out.println("\nActor " + actorCount + ": " + actor.getAtom().getTitleText());
+            String titleText = actor.getAtom() != null ? actor.getAtom().getTitleText() : "Unknown";
+            String description = actor.getAtom() != null && actor.getAtom().getDescription() != null ?
+                    "\n  Description: " + actor.getAtom().getDescription() : "";
+
+            System.out.println("\nActor " + actorCount + ": " + titleText + description);
 
             // Goals
             List<Goal> goals = actor.getGoals();
@@ -112,13 +116,15 @@ public class IStarTApplication {
             List<Quality> qualities = actor.getQualities();
             System.out.println("  Qualities (" + qualities.size() + "):");
             for (Quality quality : qualities) {
-                String titleText = quality.getAtom() != null && quality.getAtom().getTitleText() != null ?
+                String qualityTitleText = quality.getAtom() != null && quality.getAtom().getTitleText() != null ?
                         " (" + quality.getAtom().getTitleText() + ")" : "";
+                String qualityDescription = quality.getAtom() != null && quality.getAtom().getDescription() != null ?
+                        "\n      Description: " + quality.getAtom().getDescription() : "";
                 String formulaText = quality.getFormula() != null ?
                         " [Formula: " + quality.getFormula().getFormula() + "]" : "";
 
-                System.out.println("    - " + quality.getId() + titleText +
-                        (quality.isRoot() ? " [ROOT]" : "") + formulaText);
+                System.out.println("    - " + quality.getId() + qualityTitleText +
+                        (quality.isRoot() ? " [ROOT]" : "") + formulaText + qualityDescription);
             }
             actorCount++;
         }
@@ -155,10 +161,12 @@ public class IStarTApplication {
                     for (Condition condition : conditions) {
                         String titleText = condition.getAtom() != null && condition.getAtom().getTitleText() != null ?
                                 " (" + condition.getAtom().getTitleText() + ")" : "";
+                        String description = condition.getAtom() != null && condition.getAtom().getDescription() != null ?
+                                "\n      Description: " + condition.getAtom().getDescription() : "";
                         String formulaText = condition.getFormula() != null ?
                                 " [Formula: " + condition.getFormula().getFormula() + "]" : "";
 
-                        System.out.println("    - " + condition.getId() + titleText + formulaText);
+                        System.out.println("    - " + condition.getId() + titleText + formulaText + description);
                     }
                 }
 
@@ -168,11 +176,13 @@ public class IStarTApplication {
                     for (IndirectEffect indirectEffect : indirectEffects) {
                         String titleText = indirectEffect.getAtom() != null && indirectEffect.getAtom().getTitleText() != null ?
                                 " (" + indirectEffect.getAtom().getTitleText() + ")" : "";
+                        String description = indirectEffect.getAtom() != null && indirectEffect.getAtom().getDescription() != null ?
+                                "\n      Description: " + indirectEffect.getAtom().getDescription() : "";
                         String formulaText = indirectEffect.getFormula() != null ?
                                 " [Formula: " + indirectEffect.getFormula().getFormula() + "]" : "";
                         String exportedText = indirectEffect.isExported() ? " [Exported]" : "";
 
-                        System.out.println("    - " + indirectEffect.getId() + titleText + exportedText + formulaText);
+                        System.out.println("    - " + indirectEffect.getId() + titleText + exportedText + formulaText + description);
                     }
                 }
 
@@ -182,11 +192,13 @@ public class IStarTApplication {
                     for (Quality quality : qualities) {
                         String titleText = quality.getAtom() != null && quality.getAtom().getTitleText() != null ?
                                 " (" + quality.getAtom().getTitleText() + ")" : "";
+                        String description = quality.getAtom() != null && quality.getAtom().getDescription() != null ?
+                                "\n      Description: " + quality.getAtom().getDescription() : "";
                         String formulaText = quality.getFormula() != null ?
                                 " [Formula: " + quality.getFormula().getFormula() + "]" : "";
                         String rootText = quality.isRoot() ? " [ROOT]" : "";
 
-                        System.out.println("    - " + quality.getId() + titleText + rootText + formulaText);
+                        System.out.println("    - " + quality.getId() + titleText + rootText + formulaText + description);
                     }
                 }
 
@@ -196,10 +208,12 @@ public class IStarTApplication {
                     for (Effect effect : effects) {
                         String titleText = effect.getAtom() != null && effect.getAtom().getTitleText() != null ?
                                 " (" + effect.getAtom().getTitleText() + ")" : "";
+                        String description = effect.getAtom() != null && effect.getAtom().getDescription() != null ?
+                                "\n      Description: " + effect.getAtom().getDescription() : "";
 
                         System.out.println("    - " + effect.getId() + titleText +
                                 " (Probability: " + effect.getProbability() +
-                                ", Satisfying: " + effect.isSatisfying() + ")");
+                                ", Satisfying: " + effect.isSatisfying() + ")" + description);
                     }
                 }
             }
@@ -219,8 +233,11 @@ public class IStarTApplication {
 
         String titleText = goal.getAtom() != null && goal.getAtom().getTitleText() != null ?
                 " (" + goal.getAtom().getTitleText() + ")" : "";
+        String description = goal.getAtom() != null && goal.getAtom().getDescription() != null ?
+                "\n" + indent + "  Description: " + goal.getAtom().getDescription() : "";
+
         System.out.println(indent + "- " + goal.getId() + titleText +
-                " [Type: " + goal.getDecompType() + "]" + (goal.isRoot() ? "[ROOT]" : ""));
+                " [Type: " + goal.getDecompType() + "]" + (goal.isRoot() ? "[ROOT]" : "") + description);
 
         // Print pre formula if available
         Formula preFormula = goal.getPreFormula();
@@ -257,9 +274,12 @@ public class IStarTApplication {
         }
 
         // Print the current element's information
-        System.out.println(indent + "- " + decomp.getId() +
-                (decomp.getAtom() != null ? " (" + decomp.getAtom().getTitleText() + ")" : "") +
-                " [Type: " + decomp.getDecompType() + "]");
+        String titleText = decomp.getAtom() != null ? " (" + decomp.getAtom().getTitleText() + ")" : "";
+        String description = decomp.getAtom() != null && decomp.getAtom().getDescription() != null ?
+                "\n" + indent + "  Description: " + decomp.getAtom().getDescription() : "";
+
+        System.out.println(indent + "- " + decomp.getId() + titleText +
+                " [Type: " + decomp.getDecompType() + "]" + description);
 
         // Print pre formula if available
         Formula preFormula = decomp.getPreFormula();
@@ -302,8 +322,12 @@ public class IStarTApplication {
 
         String titleText = task.getAtom() != null && task.getAtom().getTitleText() != null ?
                 " (" + task.getAtom().getTitleText() + ")" : "";
+        String description = task.getAtom() != null && task.getAtom().getDescription() != null ?
+                "\n" + indent + "  Description: " + task.getAtom().getDescription() : "";
+
         System.out.println(indent + "- " + task.getId() + titleText +
-                " [Deterministic: " + task.isDeterministic() + "]" + (task.isRoot()? "[ROOT]" : "") + " (Type: " + task.getDecompType()+")");
+                " [Deterministic: " + task.isDeterministic() + "]" + (task.isRoot()? "[ROOT]" : "") +
+                " (Type: " + task.getDecompType()+")" + description);
 
         // Print pre formula if available
         Formula preFormula = task.getPreFormula();
@@ -331,9 +355,14 @@ public class IStarTApplication {
         if (task.getEffects() != null && !task.getEffects().isEmpty()) {
             System.out.println(indent + "  Effects:");
             for (Effect effect : task.getEffects()) {
-                System.out.println(indent + "    - " + effect.getId() + " (" + effect.getAtom().getTitleText() + ")" +
+                String effectTitleText = effect.getAtom() != null && effect.getAtom().getTitleText() != null ?
+                        " (" + effect.getAtom().getTitleText() + ")" : "";
+                String effectDescription = effect.getAtom() != null && effect.getAtom().getDescription() != null ?
+                        "\n" + indent + "      Description: " + effect.getAtom().getDescription() : "";
+
+                System.out.println(indent + "    - " + effect.getId() + effectTitleText +
                         " (Probability: " + effect.getProbability() +
-                        ", Satisfying: " + effect.isSatisfying() + ")");
+                        ", Satisfying: " + effect.isSatisfying() + ")" + effectDescription);
 
                 // Print effect pre formula if available
                 Formula effectPreFormula = effect.getPreFormula();

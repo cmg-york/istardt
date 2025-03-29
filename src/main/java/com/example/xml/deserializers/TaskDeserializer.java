@@ -122,15 +122,15 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         String name = DeserializerUtils.getStringAttribute(effectNode, "name", null);
         String description = DeserializerUtils.getStringAttribute(effectNode, "description", null);
 
+        // Create an atom using the base deserializer method
+        Atom atom = createAtom(name, description);
+        effect.setAtom(atom);
+
         // Set specific attributes
         boolean satisfying = DeserializerUtils.getBooleanAttribute(effectNode, "satisfying", true);
         float probability = DeserializerUtils.getFloatAttribute(effectNode, "probability", 1.0f);
         effect.setSatisfying(satisfying);
         effect.setProbability(probability);
-
-        // Create an atom using the base deserializer method
-        Atom atom = createAtom(name, description);
-        effect.setAtom(atom);
 
         // Process string list properties for turnsTrue and turnsFalse
         Map<String, BiConsumer<Effect, List<String>>> listSetters = new HashMap<>();

@@ -9,7 +9,7 @@
 
   <!-- Pattern to Check Descriptions -->
   <sch:pattern id="CheckDescriptions">
-    <sch:rule context="istar-t:quality | istar-t:goal | istar-t:task | istar-t:effect | istar-t:indirectEffect | istar-t:prebox">
+    <sch:rule context="istar-t:actor | istar-t:quality | istar-t:goal | istar-t:task | istar-t:effect | istar-t:indirectEffect | istar-t:prebox">
       <!-- Missing description => report (warning) -->
       <sch:report test="not(@description)" role="WARN">
         <sch:text>

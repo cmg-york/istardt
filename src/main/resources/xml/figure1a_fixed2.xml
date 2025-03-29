@@ -3,7 +3,7 @@
         xmlns="https://example.org/istar-t"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://example.org/istar-t ../xsd/istar-rl-schema_v3.xsd"
-        name="Manufacturer">
+        name="Manufacturer" description="A Manufacturer actor">
     <predicates>
         <predicate primitive="true" init="false" exported="false"
                    description="Materials delivered on time (domestic)">

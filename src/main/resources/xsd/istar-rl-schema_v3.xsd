@@ -49,6 +49,15 @@
                 ]]></xsd:documentation>
             </xsd:annotation>
         </xsd:attribute>
+        <xsd:attribute name="description" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Attribute: description
+                    Optional description providing details about the actor.
+                    Helps in understanding the role and responsibilities of the actor within the model.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
     </xsd:complexType>
 
     <!-- ===== Predicates ===== -->
