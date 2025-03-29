@@ -7,6 +7,7 @@ public class Atom extends Formula {
     private String id;
     private String titleText;
     private String titleHTMLText;
+    private String description;
 
     /**
      * Get the ID of this atom
@@ -48,6 +49,20 @@ public class Atom extends Formula {
      */
     public void setTitleHTMLText(String titleHTMLText) {
         this.titleHTMLText = titleHTMLText;
+    }
+
+    /**
+     * Get the description of this atom (from XML description attribute)
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Set the description of this atom (from XML description attribute)
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
