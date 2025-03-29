@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * Main application entry point demonstrating the use of the Jackson XML-based unmarshaller with validation.
- * This replaces the original JAXB-based implementation with a more maintainable Jackson XML approach.
  */
 public class IStarTApplication {
 

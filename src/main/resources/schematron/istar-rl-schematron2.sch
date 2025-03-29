@@ -27,6 +27,39 @@
     </sch:rule>
   </sch:pattern>
 
+  <!-- Pattern to Check Unique Names Across All Elements -->
+  <sch:pattern id="CheckUniqueNames">
+    <!-- Check that element names are unique across all element types in the whole XML -->
+    <sch:rule context="istar-t:actor | istar-t:quality | istar-t:goal | istar-t:task | istar-t:effect | istar-t:indirectEffect | istar-t:preBox">
+      <sch:let name="name" value="@name"/>
+      <sch:let name="currentType" value="local-name()"/>
+      <sch:let name="allNamed" value="//istar-t:actor[@name=$name] |
+                                    //istar-t:quality[@name=$name] |
+                                    //istar-t:goal[@name=$name] |
+                                    //istar-t:task[@name=$name] |
+                                    //istar-t:effect[@name=$name] |
+                                    //istar-t:indirectEffect[@name=$name] |
+                                    //istar-t:preBox[@name=$name]"/>
+
+      <sch:assert test="count($allNamed) = 1" role="ERROR">
+        <sch:text>
+          Element &lt;<sch:value-of select="$currentType"/>&gt; with name="<sch:value-of select="$name"/>" is not unique across all elements in the document.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+
+    <!-- Check that predicate content is unique across all predicates in the whole XML -->
+    <sch:rule context="istar-t:predicate">
+      <sch:let name="content" value="normalize-space(.)"/>
+      <sch:let name="allPredicates" value="//istar-t:predicate[normalize-space(.) = $content]"/>
+
+      <sch:assert test="count($allPredicates) = 1" role="ERROR">
+        <sch:text>
+          Predicate content "<sch:value-of select="$content"/>" is not unique across all predicates in the document.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+  </sch:pattern>
 
   <!-- Pattern to Check Root Goals Episode Length -->
   <sch:pattern id="CheckRootGoalsEpisodeLength">
