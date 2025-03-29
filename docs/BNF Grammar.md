@@ -2,12 +2,13 @@
 ```
 <istar-model> ::= "<actor" <actor-attributes> ">" <actor-content> "</actor>"
 
-<actor-attributes> ::= "name=\"" <string> "\"" [<namespaces>]
+<actor-attributes> ::= "name=\"" <string> "\"" [" description=\"" <string> "\""] [<namespaces>]
 
 <namespaces> ::= " xmlns=\"" <string> "\"" [" xmlns:xsi=\"" <string> "\""] [" xsi:schemaLocation=\"" <string> "\""]
 
-<actor-content> ::= [<predicates>] [<pre-boxes>] [<indirect-effects>] [<qualities>] [<goals>] [<tasks>]
+<actor-content> ::= [<predicates>] [<preBoxes>] [<indirectEffects>] [<qualities>] [<goals>] [<tasks>]
 ```
+
 # Predicates Section
 ```
 <predicates> ::= "<predicates>" <predicate>+ "</predicates>"
@@ -16,18 +17,20 @@
 
 <predicate-attributes> ::= [" primitive=\"" <boolean> "\""] [" init=\"" <boolean> "\""] [" exported=\"" <boolean> "\""] [" description=\"" <string> "\""]
 ```
+
 # PreBoxes Section
 ```
-<pre-boxes> ::= "<preBoxes>" <pre-box>+ "</preBoxes>"
+<preBoxes> ::= "<preBoxes>" <preBox>+ "</preBoxes>"
 
-<pre-box> ::= "<preBox name=\"" <string> "\"" [" description=\"" <string> "\""] ">" "<formula>" <boolean-expression> "</formula>" "</preBox>"
+<preBox> ::= "<preBox name=\"" <string> "\"" [" description=\"" <string> "\""] ">" "<formula>" <boolean-expression> "</formula>" "</preBox>"
 ```
+
 # Boolean Expressions
 ```
-<boolean-expression> ::= <bool-const> | <bool-atom> | <previous-bool> | <numeric-comparison> | <boolean-operator>
+<boolean-expression> ::= <boolConst> | <boolAtom> | <previous-bool> | <numeric-comparison> | <boolean-operator>
 
-<bool-const> ::= "<boolConst>" ("true" | "false") "</boolConst>"
-<bool-atom> ::= "<boolAtom>" <string> "</boolAtom>"
+<boolConst> ::= "<boolConst>" ("true" | "false") "</boolConst>"
+<boolAtom> ::= "<boolAtom>" <string> "</boolAtom>"
 <previous-bool> ::= "<previous>" "<boolAtom>" <string> "</boolAtom>" "</previous>"
 
 <numeric-comparison> ::= "<" <comparison-op> ">" "<left>" <numeric-expression> "</left>" "<right>" <numeric-expression> "</right>" "</" <comparison-op> ">"
@@ -38,36 +41,41 @@
 <or> ::= "<or>" <boolean-expression> <boolean-expression>+ "</or>"
 <not> ::= "<not>" <boolean-expression> "</not>"
 ```
+
 # Numeric Expressions
 ```
-<numeric-expression> ::= <const> | <num-atom> | <num-previous> | <arithmetic-operator>
+<numeric-expression> ::= <const> | <numAtom> | <num-previous> | <arithmetic-operator>
 
 <const> ::= "<const>" <decimal> "</const>"
-<num-atom> ::= "<numAtom>" <string> "</numAtom>"
+<numAtom> ::= "<numAtom>" <string> "</numAtom>"
 <num-previous> ::= "<previous>" "<numAtom>" <string> "</numAtom>" "</previous>"
 
-<arithmetic-operator> ::= <add> | <binary-arithmetic> | <multiply> | <negate>
+<arithmetic-operator> ::= <add> | <subtract> | <multiply> | <divide> | <negate>
 <add> ::= "<add>" <numeric-expression> <numeric-expression>+ "</add>"
 <multiply> ::= "<multiply>" <numeric-expression> <numeric-expression>+ "</multiply>"
-<binary-arithmetic> ::= "<" <binary-op> ">" "<left>" <numeric-expression> "</left>" "<right>" <numeric-expression> "</right>" "</" <binary-op> ">"
-<binary-op> ::= "subtract" | "divide"
+<subtract> ::= "<subtract>" "<left>" <numeric-expression> "</left>" "<right>" <numeric-expression> "</right>" "</subtract>"
+<divide> ::= "<divide>" "<left>" <numeric-expression> "</left>" "<right>" <numeric-expression> "</right>" "</divide>"
 <negate> ::= "<negate>" <numeric-expression> "</negate>"
 ```
+
 # IndirectEffects Section
 ```
-<indirect-effects> ::= "<indirectEffects>" <indirect-effect>+ "</indirectEffects>"
+<indirectEffects> ::= "<indirectEffects>" <indirectEffect>+ "</indirectEffects>"
 
-<indirect-effect> ::= "<indirectEffect name=\"" <string> "\"" [" exported=\"" <boolean> "\""] [" description=\"" <string> "\""] ">" [<boolean-formula>] "</indirectEffect>"
+<indirectEffect> ::= "<indirectEffect name=\"" <string> "\"" [" exported=\"" <boolean> "\""] [" description=\"" <string> "\""] ">" [<formula>] "</indirectEffect>"
 
-<boolean-formula> ::= "<formula>" <boolean-expression> "</formula>"
-<numeric-formula> ::= "<formula>" <numeric-expression> "</formula>"
+<formula> ::= "<formula>" <boolean-expression> "</formula>"
 ```
+
 # Qualities Section
 ```
 <qualities> ::= "<qualities>" <quality>+ "</qualities>"
 
-<quality> ::= "<quality name=\"" <string> "\"" [" description=\"" <string> "\""] [" exported=\"" <boolean> "\""] [" root=\"" <boolean> "\""] ">" <numeric-formula> "</quality>"
+<quality> ::= "<quality name=\"" <string> "\"" [" description=\"" <string> "\""] [" exported=\"" <boolean> "\""] [" root=\"" <boolean> "\""] ">" <formula-numeric> "</quality>"
+
+<formula-numeric> ::= "<formula>" <numeric-expression> "</formula>"
 ```
+
 # Goals Section
 ```
 <goals> ::= "<goals>" <goal>+ "</goals>"
@@ -76,31 +84,33 @@
 
 <goal-content> ::= [<pre>*] [<npr>*] [<refinement>]
 
-<pre> ::= "<pre>" <string> "</pre>"
-<npr> ::= "<npr>" <string> "</npr>"
+<pre> ::= "<pre>" <formula> "</pre>"
+<npr> ::= "<npr>" <formula> "</npr>"
 
-<refinement> ::= "<refinement type=\"" <string> "\">" (<child-goal> | <child-task>)+ "</refinement>"
+<refinement> ::= "<refinement type=\"" <string> "\">" (<childGoal> | <childTask>)+ "</refinement>"
 
-<child-goal> ::= "<childGoal ref=\"" <string> "\"/>"
-<child-task> ::= "<childTask ref=\"" <string> "\"/>"
+<childGoal> ::= "<childGoal ref=\"" <string> "\"/>"
+<childTask> ::= "<childTask ref=\"" <string> "\"/>"
 ```
+
 # Tasks Section
 ```
 <tasks> ::= "<tasks>" <task>+ "</tasks>"
 
 <task> ::= "<task name=\"" <string> "\"" [" description=\"" <string> "\""] ">" <task-content> "</task>"
 
-<task-content> ::= [<pre>*] [<npr>*] [<effect-group>]
+<task-content> ::= [<pre>*] [<npr>*] [<effectGroup>]
 
-<effect-group> ::= "<effectGroup>" <effect>+ "</effectGroup>"
+<effectGroup> ::= "<effectGroup>" <effect>+ "</effectGroup>"
 
 <effect> ::= "<effect name=\"" <string> "\"" [" satisfying=\"" <boolean> "\""] " probability=\"" <decimal> "\"" [" description=\"" <string> "\""] ">" <effect-content> "</effect>"
 
-<effect-content> ::= [<turns-true>*] [<turns-false>*] [<pre>*] [<npr>*]
+<effect-content> ::= [<turnsTrue>*] [<turnsFalse>*] [<pre>*] [<npr>*]
 
-<turns-true> ::= "<turnsTrue>" <string> "</turnsTrue>"
-<turns-false> ::= "<turnsFalse>" <string> "</turnsFalse>"
+<turnsTrue> ::= "<turnsTrue>" <string> "</turnsTrue>"
+<turnsFalse> ::= "<turnsFalse>" <string> "</turnsFalse>"
 ```
+
 # Basic Types
 ```
 <string> ::= <character>*
