@@ -134,7 +134,6 @@
 
     -->
 
-<!--    TODO: fix pre/npr for goals and tasks (should be more formula based) -->
     <goals>
         <goal name="ProductManufactured" root="true" description="Product Manufactured" episodeLength="1">
             <pre>
