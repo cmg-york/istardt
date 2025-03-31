@@ -4,6 +4,7 @@ package com.example.objects;
  * Implementation of the Atom class with required methods
  */
 public class Atom extends Formula {
+
     private String id;
     private String titleText;
     private String titleHTMLText;
@@ -74,6 +75,21 @@ public class Atom extends Formula {
      * Get the string representation of this atom
      */
     public String getAtomRepresentation() {
-        return id != null ? id : "";
+        return  "Atom{" +
+                "id='" + id + '\'' +
+                ", titleText='" + titleText + '\'' +
+                ", titleHTMLText='" + titleHTMLText + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
+    @Override
+    public String toString() {
+        return "Atom{" +
+                "id='" + id + '\'' +
+                ", titleText='" + titleText + '\'' +
+                ", titleHTMLText='" + titleHTMLText + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
