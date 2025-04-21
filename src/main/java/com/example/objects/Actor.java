@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 /**
  * Actor class representing an agent in the iStar-T model.
  * Modified to support Jackson XML unmarshalling.
- * Simplified to rely entirely on atom's titleText for name.
  */
 @JsonRootName("actor")
 @JsonDeserialize(using = ActorDeserializer.class)
@@ -139,71 +138,6 @@ public class Actor extends Element {
             qualities = new ArrayList<>();
         }
         qualities.add(quality);
-    }
-
-    /**
-     * Compares this actor to the specified object.
-     * Actors are considered equal if they have the same name and similar
-     * collections of elements based on their names/titleTexts.
-     *
-     * @param obj The object to compare this actor to
-     * @return true if the objects are equal, false otherwise
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        if (!super.equals(obj)) return false;
-
-        Actor actor = (Actor) obj;
-
-        // Name comparison is handled by super.equals() which compares atoms' titleTexts
-
-        // Compare goals, tasks, and qualities by their atom titleTexts
-        List<String> thisGoalNames = getElementNames(goals);
-        List<String> thatGoalNames = getElementNames(actor.goals);
-
-        List<String> thisTaskNames = getElementNames(tasks);
-        List<String> thatTaskNames = getElementNames(actor.tasks);
-
-        List<String> thisQualityNames = getElementNames(qualities);
-        List<String> thatQualityNames = getElementNames(actor.qualities);
-
-        return thisGoalNames.equals(thatGoalNames) &&
-                thisTaskNames.equals(thatTaskNames) &&
-                thisQualityNames.equals(thatQualityNames);
-    }
-
-    /**
-     * Helper method to extract names/titleTexts from a list of elements
-     *
-     * @param elements The list of elements
-     * @return A list of element names (from atoms' titleText)
-     */
-    private <T extends Element> List<String> getElementNames(List<T> elements) {
-        if (elements == null) return new ArrayList<>();
-        return elements.stream()
-                .map(e -> e.getAtom() != null ? e.getAtom().getTitleText() : e.getId())
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Returns a hash code value for this actor.
-     * The hash code is computed based on the name and element names
-     * to ensure it satisfies the contract with equals().
-     *
-     * @return A hash code value for this actor
-     */
-    @Override
-    public int hashCode() {
-        // Get name from atom's titleText
-        String name = getAtom() != null ? getAtom().getTitleText() : null;
-
-        List<String> goalNames = getElementNames(goals);
-        List<String> taskNames = getElementNames(tasks);
-        List<String> qualityNames = getElementNames(qualities);
-
-        return Objects.hash(name, goalNames, taskNames, qualityNames);
     }
 
     /**

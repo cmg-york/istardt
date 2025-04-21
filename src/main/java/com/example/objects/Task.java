@@ -77,10 +77,7 @@ public class Task extends DecompositionElement {
         return effects != null && effects.size() == 1 && effects.get(0).getProbability() == 1.0f;
     }
 
-    /**
-     * Override toString to prevent infinite recursion from parent-child circular references.
-     * Includes Task-specific information while avoiding circular references.
-     */
+
     @Override
     public String toString() {
         return "Task{id=" + getId() +

@@ -34,44 +34,19 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
 
     @Override
     protected void handleSpecificAttributes(Task task, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        LOGGER.info("Processing task: " + task.getId());
-
         // Process pre formula with detailed logging
-        if (node.has("pre")) {
-            JsonNode preNode = node.get("pre");
-            LOGGER.info("Processing pre node for task " + task.getId() + ": " + preNode.toString());
-
-            if (preNode.has("formula")) {
-                try {
-                    LOGGER.info("Found formula element in pre node: " + preNode.get("formula").toString());
-                    Formula formula = ctxt.readValue(preNode.get("formula").traverse(p.getCodec()), Formula.class);
-                    task.setPreFormula(formula);
-                    LOGGER.info("Successfully set preFormula: " + formula.getFormula());
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing pre formula for task " + task.getId() + ": " + e.getMessage(), e);
-                }
-            } else {
-                LOGGER.warning("Pre node exists but formula element not found in task " + task.getId());
-            }
+        DeserializerUtils.logInfo(LOGGER, "Processing task: " + task.getId());
+        Formula preFormula = DeserializerUtils.processFormula("pre", node, p, ctxt, LOGGER);
+        if (preFormula != null) {
+            task.setPreFormula(preFormula);
+            DeserializerUtils.logInfo(LOGGER, "Set pre formula for task: " + task.getId());
         }
 
         // Process npr formula with detailed logging
-        if (node.has("npr")) {
-            JsonNode nprNode = node.get("npr");
-            LOGGER.info("Processing npr node for task " + task.getId() + ": " + nprNode.toString());
-
-            if (nprNode.has("formula")) {
-                try {
-                    LOGGER.info("Found formula element in npr node: " + nprNode.get("formula").toString());
-                    Formula formula = ctxt.readValue(nprNode.get("formula").traverse(p.getCodec()), Formula.class);
-                    task.setNprFormula(formula);
-                    LOGGER.info("Successfully set nprFormula: " + formula.getFormula());
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing npr formula for task " + task.getId() + ": " + e.getMessage(), e);
-                }
-            } else {
-                LOGGER.warning("Npr node exists but formula element not found in task " + task.getId());
-            }
+        Formula nprFormula = DeserializerUtils.processFormula("npr", node, p, ctxt, LOGGER);
+        if (nprFormula != null) {
+            task.setNprFormula(nprFormula);
+            DeserializerUtils.logInfo(LOGGER, "Set npr formula for task: " + task.getId());
         }
 
         // Process effect group
@@ -144,41 +119,15 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
         }
 
         // Process pre formula with detailed logging
-        if (effectNode.has("pre")) {
-            JsonNode preNode = effectNode.get("pre");
-            LOGGER.info("Processing pre node for effect " + effect.getId() + ": " + preNode.toString());
-
-            if (preNode.has("formula")) {
-                try {
-                    LOGGER.info("Found formula element in pre node: " + preNode.get("formula").toString());
-                    Formula formula = ctxt.readValue(preNode.get("formula").traverse(p.getCodec()), Formula.class);
-                    effect.setPreFormula(formula);
-                    LOGGER.info("Successfully set preFormula for effect: " + formula.getFormula());
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing pre formula for effect " + effect.getId() + ": " + e.getMessage(), e);
-                }
-            } else {
-                LOGGER.warning("Pre node exists but formula element not found in effect " + effect.getId());
-            }
+        Formula preFormula = DeserializerUtils.processFormula("pre", effectNode, p, ctxt, LOGGER);
+        if (preFormula != null) {
+            effect.setPreFormula(preFormula);
         }
 
         // Process npr formula with detailed logging
-        if (effectNode.has("npr")) {
-            JsonNode nprNode = effectNode.get("npr");
-            LOGGER.info("Processing npr node for effect " + effect.getId() + ": " + nprNode.toString());
-
-            if (nprNode.has("formula")) {
-                try {
-                    LOGGER.info("Found formula element in npr node: " + nprNode.get("formula").toString());
-                    Formula formula = ctxt.readValue(nprNode.get("formula").traverse(p.getCodec()), Formula.class);
-                    effect.setNprFormula(formula);
-                    LOGGER.info("Successfully set nprFormula for effect: " + formula.getFormula());
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing npr formula for effect " + effect.getId() + ": " + e.getMessage(), e);
-                }
-            } else {
-                LOGGER.warning("Npr node exists but formula element not found in effect " + effect.getId());
-            }
+        Formula nprFormula = DeserializerUtils.processFormula("npr", effectNode, p, ctxt, LOGGER);
+        if (nprFormula != null) {
+            effect.setNprFormula(nprFormula);
         }
 
         // Register the effect for reference resolution

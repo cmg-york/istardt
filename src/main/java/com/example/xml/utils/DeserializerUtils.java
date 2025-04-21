@@ -1,5 +1,6 @@
 package com.example.xml.utils;
 
+import com.example.objects.Formula;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,16 @@ import java.util.logging.Logger;
  */
 public class DeserializerUtils {
     private static final Logger LOGGER = Logger.getLogger(DeserializerUtils.class.getName());
+
+    /**
+     * Centralized logging with appropriate level checking.
+     * Logs at INFO level for normal processing information.
+     */
+    public static void logInfo(Logger logger, String message) {
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info(message);
+        }
+    }
 
     /**
      * Deserializes a node or array of nodes into a list of objects.
@@ -49,6 +60,20 @@ public class DeserializerUtils {
         }
 
         return result;
+    }
+
+    public static Formula processFormula(String elementName, JsonNode node, JsonParser p, DeserializationContext ctxt, Logger logger) throws IOException {
+        if (node.has(elementName)) {
+            JsonNode formulaNode = node.get(elementName);
+            if (formulaNode.has("formula")) {
+                try {
+                    return ctxt.readValue(formulaNode.get("formula").traverse(p.getCodec()), Formula.class);
+                } catch (Exception e) {
+                    logger.warning("Error processing " + elementName + " formula: " + e.getMessage());
+                }
+            }
+        }
+        return null;
     }
 
     /**

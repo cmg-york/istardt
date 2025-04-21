@@ -72,14 +72,6 @@ public class Quality extends NonDecompositionElement {
         this.exported = exported;
     }
 
-    public Actor getActor() {
-        return actor;
-    }
-
-    public void setActor(Actor actor) {
-        this.actor = actor;
-    }
-
     @Override
     public Formula getFormula() {
         return super.getFormula();

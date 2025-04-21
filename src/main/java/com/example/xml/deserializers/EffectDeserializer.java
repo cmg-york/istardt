@@ -65,16 +65,10 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
      * @param ctxt The deserialization context
      */
     private void processPreFormula(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        if (node.has("pre")) {
-            JsonNode preNode = node.get("pre");
-            if (preNode.has("formula")) {
-                try {
-                    Formula formula = ctxt.readValue(preNode.get("formula").traverse(p.getCodec()), Formula.class);
-                    effect.setPreFormula(formula);
-                } catch (IOException e) {
-                    LOGGER.warning("Error processing pre formula for effect: " + e.getMessage());
-                }
-            }
+        Formula formula = DeserializerUtils.processFormula("pre", node, p, ctxt, LOGGER);
+        if (formula != null) {
+            effect.setPreFormula(formula);
+            DeserializerUtils.logInfo(LOGGER, "Set pre formula for effect: " + effect.getId());
         }
     }
 
@@ -87,16 +81,10 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
      * @param ctxt The deserialization context
      */
     private void processNprFormula(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        if (node.has("npr")) {
-            JsonNode nprNode = node.get("npr");
-            if (nprNode.has("formula")) {
-                try {
-                    Formula formula = ctxt.readValue(nprNode.get("formula").traverse(p.getCodec()), Formula.class);
-                    effect.setNprFormula(formula);
-                } catch (IOException e) {
-                    LOGGER.warning("Error processing npr formula for effect: " + e.getMessage());
-                }
-            }
+        Formula formula = DeserializerUtils.processFormula("npr", node, p, ctxt, LOGGER);
+        if (formula != null) {
+            effect.setNprFormula(formula);
+            DeserializerUtils.logInfo(LOGGER, "Set npr formula for effect: " + effect.getId());
         }
     }
 }
