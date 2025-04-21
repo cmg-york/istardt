@@ -8,9 +8,6 @@ package com.example.objects;
 public class IndirectEffect extends NonDecompositionElement {
     private boolean exported = false;
 
-    /**
-     * Default constructor
-     */
     public IndirectEffect() {
         super();
     }

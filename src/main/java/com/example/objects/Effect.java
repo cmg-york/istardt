@@ -1,6 +1,5 @@
 package com.example.objects;
 
-import com.example.xml.ReferenceResolver;
 import com.example.xml.deserializers.EffectDeserializer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

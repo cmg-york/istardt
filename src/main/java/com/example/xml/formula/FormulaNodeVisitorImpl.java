@@ -53,6 +53,8 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         operandVisitors.put("and", this::visitAnd);
         operandVisitors.put("or", this::visitOr);
         operandVisitors.put("not", this::visitNot);
+        operandVisitors.put("previous", this::visitPrevious);
+        operandVisitors.put("negate", this::visitNegate);
     }
 
     @Override
@@ -95,6 +97,36 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     @Override
     public Formula visitDivide(JsonNode node) throws IOException {
         return visitBinaryOperator(node, DivideOperator::new, Formula.createConstantFormula("1"));
+    }
+
+    @Override
+    public Formula visitPrevious(JsonNode node) throws IOException {
+        // Handle both boolean and numeric previous references
+        if (node.has("boolAtom")) {
+            Formula formula = visitBoolAtom(node.get("boolAtom"));
+            return new PreviousOperator(formula);
+        } else if (node.has("numAtom")) {
+            Formula formula = visitNumAtom(node.get("numAtom"));
+            return new PreviousOperator(formula);
+        }
+
+        LOGGER.warning("Previous node has neither boolAtom nor numAtom");
+        return Formula.createConstantFormula("Unknown Previous");
+    }
+
+    @Override
+    public Formula visitNegate(JsonNode node) throws IOException {
+        // Process the first child element found
+        for (Map.Entry<String, OperandVisitor> entry : operandVisitors.entrySet()) {
+            String type = entry.getKey();
+            if (node.has(type)) {
+                Formula formula = visitOperandByType(type, node.get(type));
+                return new NegateOperator(formula);
+            }
+        }
+
+        LOGGER.warning("No valid operand found in negate operation");
+        return Formula.createConstantFormula("0");
     }
 
     @Override

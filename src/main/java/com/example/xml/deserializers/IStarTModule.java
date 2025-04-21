@@ -27,5 +27,4 @@ public class IStarTModule extends SimpleModule {
 
         addDeserializer(Formula.class, new FormulaDeserializer());
     }
-
 }

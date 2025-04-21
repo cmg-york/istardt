@@ -8,7 +8,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * Modified to support Jackson XML unmarshalling.
  */
 public abstract class NonDecompositionElement extends Element {
-
     @JacksonXmlProperty(localName = "formula")
     private Formula valueFormula;
 

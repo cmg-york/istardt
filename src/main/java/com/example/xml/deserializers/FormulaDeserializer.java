@@ -74,6 +74,16 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
                 return visitor.visitDivide(node.get("divide"));
             }
 
+            if (node.has("previous")) {
+                LOGGER.info("Found previous operator formula");
+                return visitor.visitPrevious(node.get("previous"));
+            }
+
+            if (node.has("negate")) {
+                LOGGER.info("Found negate operator formula");
+                return visitor.visitNegate(node.get("negate"));
+            }
+
             if (node.has("gt")) {
                 LOGGER.info("Found greater than operator formula");
                 return visitor.visitGreaterThan(node.get("gt"));

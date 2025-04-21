@@ -17,6 +17,8 @@ public interface FormulaNodeVisitor {
     Formula visitSubtract(JsonNode node) throws IOException;
     Formula visitMultiply(JsonNode node) throws IOException;
     Formula visitDivide(JsonNode node) throws IOException;
+    Formula visitPrevious(JsonNode node) throws IOException;
+    Formula visitNegate(JsonNode node) throws IOException;
     Formula visitGreaterThan(JsonNode node) throws IOException;
     Formula visitGreaterThanEquals(JsonNode node) throws IOException;
     Formula visitLessThan(JsonNode node) throws IOException;

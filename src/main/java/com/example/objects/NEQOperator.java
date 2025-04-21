@@ -4,7 +4,6 @@ package com.example.objects;
  * Not Equals operator implementation
  */
 public class NEQOperator extends OperatorDecorator {
-
     public NEQOperator(Formula left, Formula right) {
         this.left = left;
         this.right = right;

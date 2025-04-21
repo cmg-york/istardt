@@ -7,7 +7,6 @@ public abstract class Formula {
     public abstract String getFormula();
 
     // Factory methods to create different formula types
-
     public static Formula createConstantFormula(final String value) {
         return new Formula() {
             @Override

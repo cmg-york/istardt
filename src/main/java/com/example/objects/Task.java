@@ -1,6 +1,5 @@
 package com.example.objects;
 
-import com.example.xml.ReferenceResolver;
 import com.example.xml.deserializers.TaskDeserializer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -69,7 +68,6 @@ public class Task extends DecompositionElement {
     public boolean isDeterministic() {
         return effects != null && effects.size() == 1 && effects.get(0).getProbability() == 1.0f;
     }
-
 
     @Override
     public String toString() {

@@ -1,6 +1,5 @@
 package com.example.objects;
 
-import com.example.xml.ReferenceResolver;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -11,8 +10,6 @@ import com.example.xml.deserializers.ActorDeserializer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Actor class representing an agent in the iStar-T model.
@@ -105,7 +102,6 @@ public class Actor extends Element {
      */
     @Override
     public String toString() {
-        // Get name from atom's titleText
         String name = getAtom() != null ? getAtom().getTitleText() : null;
 
         return "Actor{id=" + getId() +
