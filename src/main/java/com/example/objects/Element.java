@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import java.util.Objects;
-
 /**
  * Base class for all domain elements with ID and representation.
  * Modified to support Jackson XML unmarshalling.

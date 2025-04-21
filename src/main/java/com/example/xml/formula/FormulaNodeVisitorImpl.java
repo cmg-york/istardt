@@ -100,7 +100,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     }
 
     @Override
-    public Formula visitPrevious(JsonNode node) throws IOException {
+    public Formula visitPrevious(JsonNode node) {
         // Handle both boolean and numeric previous references
         if (node.has("boolAtom")) {
             Formula formula = visitBoolAtom(node.get("boolAtom"));
@@ -174,7 +174,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     @Override
     public Formula visitNot(JsonNode node) throws IOException {
         // List of possible operand types that can be negated
-        String[] operandTypes = {"boolAtom", "boolConst", "and", "or", "gt", "lt", "lte", "gte", "eq", "neq"};
+        String[] operandTypes = {"boolAtom", "boolConst", "and", "or", "gt", "lt", "lte", "gte", "eq", "neq", "previous"};
 
         for (String type : operandTypes) {
             if (node.has(type)) {
@@ -295,7 +295,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         List<Formula> operands = new ArrayList<>();
 
         // Numeric operand types
-        String[] operandTypes = {"const", "numAtom", "add", "subtract", "multiply", "divide"};
+        String[] operandTypes = {"const", "numAtom", "add", "subtract", "multiply", "divide", "negate", "previous"};
 
         for (String type : operandTypes) {
             if (node.has(type)) {
@@ -327,7 +327,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         // Boolean operand types
         String[] operandTypes = {
                 "boolConst", "boolAtom", "and", "or", "not",
-                "gt", "gte", "lt", "lte", "eq", "neq"
+                "gt", "gte", "lt", "lte", "eq", "neq", "previous"
         };
 
         for (String type : operandTypes) {

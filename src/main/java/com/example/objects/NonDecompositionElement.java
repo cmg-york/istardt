@@ -1,6 +1,5 @@
 package com.example.objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
