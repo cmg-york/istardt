@@ -47,13 +47,6 @@ public class Actor extends Element {
         this.directEffects = new ArrayList<>();
     }
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-        // Register this actor with the reference resolver
-        ReferenceResolver.getInstance().registerElement(id, this);
-    }
-
     public void setGoals(List<Goal> goals) {
         this.goals = goals;
     }
@@ -102,42 +95,6 @@ public class Actor extends Element {
             }
         }
         return null;
-    }
-
-    /**
-     * Adds a goal to this actor.
-     *
-     * @param goal The goal to add
-     */
-    public void addGoal(Goal goal) {
-        if (goals == null) {
-            goals = new ArrayList<>();
-        }
-        goals.add(goal);
-    }
-
-    /**
-     * Adds a task to this actor.
-     *
-     * @param task The task to add
-     */
-    public void addTask(Task task) {
-        if (tasks == null) {
-            tasks = new ArrayList<>();
-        }
-        tasks.add(task);
-    }
-
-    /**
-     * Adds a quality to this actor.
-     *
-     * @param quality The quality to add
-     */
-    public void addQuality(Quality quality) {
-        if (qualities == null) {
-            qualities = new ArrayList<>();
-        }
-        qualities.add(quality);
     }
 
     /**

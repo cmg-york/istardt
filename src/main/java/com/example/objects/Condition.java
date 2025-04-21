@@ -6,7 +6,6 @@ package com.example.objects;
  * In the XML schema, Conditions correspond to PreBox elements
  */
 public class Condition extends NonDecompositionElement {
-
     /**
      * Default constructor
      */

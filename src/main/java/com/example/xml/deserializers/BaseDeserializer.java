@@ -92,7 +92,6 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
 
     /**
      * Creates an Atom object from a name and description.
-     * IMPORTANT: The name should be used as the titleText for proper content-based comparison.
      *
      * @param name The ID for the atom (should be the element's name attribute from XML)
      * @param description The description for the atom
@@ -102,16 +101,12 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
         Atom atom = new Atom();
         atom.setId(UUID.randomUUID().toString());
 
-        // IMPORTANT: Set the titleText to the name/id for proper content comparison
-        // This ensures that the atom's titleText contains the actual name from the XML
         atom.setTitleText(name);
 
-        // Set the description as both description and HTML text if provided
         if (description != null && !description.isEmpty()) {
-            atom.setDescription(description); // Set the new description field
-            atom.setTitleHTMLText(description); // Keep setting titleHTMLText for backward compatibility
+            atom.setDescription(description);
+            atom.setTitleHTMLText(description);
         }
-
         return atom;
     }
 
@@ -175,7 +170,6 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
         } else if (node.has("ref")) {
             refs.add(node.get("ref").asText());
         }
-
         return refs;
     }
 }

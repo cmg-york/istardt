@@ -42,13 +42,6 @@ public class Goal extends DecompositionElement {
         this.childTaskRefs = new ArrayList<>();
     }
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-        // Register this goal with the reference resolver
-        ReferenceResolver.getInstance().registerElement(id, this);
-    }
-
     public int getRuns() {
         return runs;
     }

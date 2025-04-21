@@ -31,13 +31,6 @@ public class Task extends DecompositionElement {
         this.effects = new ArrayList<>();
     }
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-        // Register this task with the reference resolver
-        ReferenceResolver.getInstance().registerElement(id, this);
-    }
-
     public void setEffects(List<Effect> effects) {
         this.effects = effects;
 

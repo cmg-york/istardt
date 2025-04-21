@@ -29,13 +29,6 @@ public class Quality extends NonDecompositionElement {
         super();
     }
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-        // Register this quality with the reference resolver
-        ReferenceResolver.getInstance().registerElement(id, this);
-    }
-
     /**
      * Check if this quality is a root quality.
      *

@@ -45,13 +45,6 @@ public class Effect extends NonDecompositionElement {
         this.turnsFalse = new ArrayList<>();
     }
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-        // Register this effect with the reference resolver
-        ReferenceResolver.getInstance().registerElement(id, this);
-    }
-
     public boolean isSatisfying() {
         return satisfying;
     }

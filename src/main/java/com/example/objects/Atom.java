@@ -4,7 +4,6 @@ package com.example.objects;
  * Implementation of the Atom class with required methods
  */
 public class Atom extends Formula {
-
     private String id;
     private String titleText;
     private String titleHTMLText;

@@ -31,10 +31,8 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
 
     @Override
     protected void handleSpecificAttributes(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        // Set specific attributes
         boolean satisfying = DeserializerUtils.getBooleanAttribute(node, "satisfying", true);
         float probability = DeserializerUtils.getFloatAttribute(node, "probability", 1.0f);
-
         effect.setSatisfying(satisfying);
         effect.setProbability(probability);
 
