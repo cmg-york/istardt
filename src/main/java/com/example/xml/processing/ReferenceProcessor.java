@@ -48,14 +48,17 @@ public class ReferenceProcessor {
             processGoalRefinements(actor.getGoals(), elementsByName);
 
             // Process task-effect relationships and collect effects
+            List<Effect> allEffects = new ArrayList<>();
             for (Task task : actor.getTasks()) {
                 processTaskEffects(task);
 
                 // Collect effects
                 if (task.getEffects() != null) {
                     nonDecompElements.addAll(task.getEffects());
+                    allEffects.addAll(task.getEffects());
                 }
             }
+            actor.setDirectEffects(allEffects);
 
             // Process parent-child relationships in decomposition elements
             processDecompositionHierarchy(actor.getGoals());
