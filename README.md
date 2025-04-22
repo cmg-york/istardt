@@ -49,7 +49,7 @@ https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-
 
 > To download and install packages from a repository, your personal access token (classic) must have the read:packages scope, and your user account must have read permission.
 4. Rename `settingsExample.xml` to `settings.xml`
-5. Run mvn command:
+5. Install the project’s artifacts into your local Maven repository using your custom authentication settings:
 
 ```bash
 mvn clean install -s settings.xml
