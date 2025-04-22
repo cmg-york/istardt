@@ -20,6 +20,14 @@ import java.util.logging.Logger;
 public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private static final Logger LOGGER = Logger.getLogger(FormulaNodeVisitorImpl.class.getName());
 
+    private static final String[] NUMERIC_OPERAND_TYPES = {
+            "const", "numAtom", "add", "subtract", "multiply", "divide", "negate", "previous"
+    };
+
+    private static final String[] BOOLEAN_OPERAND_TYPES = {
+            "boolConst", "boolAtom", "and", "or", "not", "gt", "gte", "lt", "lte", "eq", "neq", "previous"
+    };
+
     private final JsonParser parser;
     private final DeserializationContext context;
 
@@ -171,12 +179,34 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                 this::collectBooleanOperands);
     }
 
-    @Override
-    public Formula visitNot(JsonNode node) throws IOException {
-        // List of possible operand types that can be negated
-        String[] operandTypes = {"boolAtom", "boolConst", "and", "or", "gt", "lt", "lte", "gte", "eq", "neq", "previous"};
+    private List<Formula> collectOperands(JsonNode node, String[] operandTypes) throws IOException {
+        List<Formula> operands = new ArrayList<>();
 
         for (String type : operandTypes) {
+            if (node.has(type)) {
+                if (type.equals("const") || type.equals("numAtom") ||
+                        type.equals("boolConst") || type.equals("boolAtom")) {
+                    addNodeToOperands(node.get(type), operands,
+                            n -> {
+                                try {
+                                    return visitOperandByType(type, n);
+                                } catch (IOException e) {
+                                    LOGGER.severe("Error processing operand: " + e.getMessage());
+                                    return null;
+                                }
+                            });
+                } else {
+                    operands.add(visitOperandByType(type, node.get(type)));
+                }
+            }
+        }
+
+        return operands;
+    }
+
+    @Override
+    public Formula visitNot(JsonNode node) throws IOException {
+        for (String type : BOOLEAN_OPERAND_TYPES) {
             if (node.has(type)) {
                 Formula operand = visitOperandByType(type, node.get(type));
                 if (operand != null) {
@@ -292,63 +322,14 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
      * Helper method to collect numeric operands from a node.
      */
     private List<Formula> collectNumericOperands(JsonNode node) throws IOException {
-        List<Formula> operands = new ArrayList<>();
-
-        // Numeric operand types
-        String[] operandTypes = {"const", "numAtom", "add", "subtract", "multiply", "divide", "negate", "previous"};
-
-        for (String type : operandTypes) {
-            if (node.has(type)) {
-                if (type.equals("const") || type.equals("numAtom")) {
-                    addNodeToOperands(node.get(type), operands,
-                            n -> {
-                                try {
-                                    return visitOperandByType(type, n);
-                                } catch (IOException e) {
-                                    LOGGER.severe("Error processing operand: " + e.getMessage());
-                                    return null;
-                                }
-                            });
-                } else {
-                    operands.add(visitOperandByType(type, node.get(type)));
-                }
-            }
-        }
-
-        return operands;
+        return collectOperands(node, NUMERIC_OPERAND_TYPES);
     }
 
     /**
      * Helper method to collect boolean operands from a node.
      */
     private List<Formula> collectBooleanOperands(JsonNode node) throws IOException {
-        List<Formula> operands = new ArrayList<>();
-
-        // Boolean operand types
-        String[] operandTypes = {
-                "boolConst", "boolAtom", "and", "or", "not",
-                "gt", "gte", "lt", "lte", "eq", "neq", "previous"
-        };
-
-        for (String type : operandTypes) {
-            if (node.has(type)) {
-                if (type.equals("boolConst") || type.equals("boolAtom")) {
-                    addNodeToOperands(node.get(type), operands,
-                            n -> {
-                                try {
-                                    return visitOperandByType(type, n);
-                                } catch (IOException e) {
-                                    LOGGER.severe("Error processing operand: " + e.getMessage());
-                                    return null;
-                                }
-                            });
-                } else {
-                    operands.add(visitOperandByType(type, node.get(type)));
-                }
-            }
-        }
-
-        return operands;
+        return collectOperands(node, BOOLEAN_OPERAND_TYPES);
     }
 
     /**

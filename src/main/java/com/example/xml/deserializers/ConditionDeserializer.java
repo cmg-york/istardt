@@ -27,29 +27,11 @@ public class ConditionDeserializer extends BaseDeserializer<Condition> {
 
     @Override
     protected void handleSpecificAttributes(Condition condition, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        // Process formula - this could be a direct formula element or various boolean expressions
         Formula formula = null;
 
         try {
             if (node.has("formula")) {
                 formula = ctxt.readValue(node.get("formula").traverse(p.getCodec()), Formula.class);
-            } else {
-                // Check for various boolean expressions that may be directly in the condition node
-                if (node.has("boolConst")) {
-                    String boolVal = node.get("boolConst").asText();
-                    formula = Formula.createBooleanFormula(Boolean.parseBoolean(boolVal));
-                } else if (node.has("boolAtom")) {
-                    String atom_id = node.get("boolAtom").asText();
-                    formula = Formula.createConstantFormula(atom_id);
-                } else if (node.has("gt")) {
-                    formula = ctxt.readValue(node.get("gt").traverse(p.getCodec()), Formula.class);
-                } else if (node.has("and")) {
-                    formula = ctxt.readValue(node.get("and").traverse(p.getCodec()), Formula.class);
-                } else if (node.has("or")) {
-                    formula = ctxt.readValue(node.get("or").traverse(p.getCodec()), Formula.class);
-                } else if (node.has("not")) {
-                    formula = ctxt.readValue(node.get("not").traverse(p.getCodec()), Formula.class);
-                }
             }
         } catch (IOException e) {
             DeserializerUtils.handleDeserializationError(LOGGER,

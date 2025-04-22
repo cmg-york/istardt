@@ -49,7 +49,6 @@ public class ReferenceResolver {
         if (id != null && element != null) {
             elementsById.put(id, element);
 
-            // Also register by name (titleText) if available
             if (element.getAtom() != null && element.getAtom().getTitleText() != null) {
                 String name = element.getAtom().getTitleText();
                 elementsByName.put(name, element);
