@@ -40,6 +40,10 @@ A Java-based system for deserializing iStar-T XML models into a structured objec
     </server>
 </servers>
 ```
+
+To make a personal access token (classic) on GitHub: Settings > Developer Settings > Personal access tokens > Tokens (classic) > Generate new token
+![img.png](docs/images/generate_token.png)
+![img.png](docs/images/personal_access_token.png)
 https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-github-packages#visibility-and-access-permissions-for-packages
 > In most registries, to pull a package, you must authenticate with a personal access token or GITHUB_TOKEN, regardless of whether the package is public or private.
 
@@ -120,11 +124,8 @@ src
 │   │                   └── DeserializerUtils.java
 │   └── resources
 │       ├── xsd                                  # XSD schemas
-│       │   └── istar-rl-schema_v3.xsd
 │       ├── schematron                           # Schematron schemas
-│       │   └── istar-rl-schematron3.sch
 │       └── xml                                  # Sample XML files
-│           └── figure1a_fixed3.xml
 └── pom.xml                                      # Maven configuration
 ```
 
@@ -141,7 +142,7 @@ The system follows a pipeline architecture with these main components:
 Configuration is handled through the Maven POM file. The main configurable elements are:
 
 - Java version (currently set to Java 17)
-- Jackson dependencies and versions
+- Jackson dependencies
 - XML validation library
 
 ## Testing
