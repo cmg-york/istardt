@@ -1,8 +1,5 @@
 package com.example.objects;
 
-/**
- * Implementation of the Formula abstract class with necessary methods
- */
 public abstract class Formula {
     public abstract String getFormula();
 

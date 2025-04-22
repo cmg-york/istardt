@@ -99,7 +99,7 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
 
         // Create an atom using the base deserializer method
         Atom atom = createAtom(name, description);
-        effect.setAtom(atom);
+        effect.setRepresentation(atom);
 
         // Set specific attributes
         boolean satisfying = DeserializerUtils.getBooleanAttribute(effectNode, "satisfying", true);

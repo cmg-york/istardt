@@ -25,7 +25,7 @@ public class Condition extends NonDecompositionElement {
         Atom atom = new Atom();
         atom.setId(id);
         atom.setTitleText(description);
-        this.setAtom(atom);
+        this.setRepresentation(atom);
     }
 
     @Override

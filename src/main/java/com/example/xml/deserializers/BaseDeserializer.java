@@ -12,10 +12,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
@@ -65,7 +62,7 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
 
     /**
      * Extracts common attributes from a node and sets them on an element.
-     * Handles name, description, and ID generation in a consistent way.
+     * Handles name, description, and ID generation.
      *
      * @param element The element to set attributes on
      * @param node The JSON node to extract from
@@ -93,19 +90,19 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
     /**
      * Creates an Atom object from a name and description.
      *
-     * @param name The ID for the atom (should be the element's name attribute from XML)
+     * @param name The ID for the atom
      * @param description The description for the atom
      * @return A new Atom object
      */
     protected Atom createAtom(String name, String description) {
         Atom atom = new Atom();
-        atom.setId(UUID.randomUUID().toString());
+        atom.setId(UUID.randomUUID().toString()); // atom's id != element's id
 
         atom.setTitleText(name);
+        atom.setTitleHTMLText("<h>" + name + "</h>");
 
         if (description != null && !description.isEmpty()) {
             atom.setDescription(description);
-            atom.setTitleHTMLText(description);
         }
         return atom;
     }

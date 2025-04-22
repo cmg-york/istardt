@@ -37,7 +37,6 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
             if (node.has("predicates") && node.get("predicates").has("predicate")) {
                 JsonNode predicatesNode = node.get("predicates").get("predicate");
                 List<Atom> predicates = deserializePredicates(predicatesNode);
-                // In a real implementation, store these atoms somewhere or add to environment
             }
 
             // Process preBoxes (conditions)
