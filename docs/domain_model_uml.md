@@ -170,7 +170,8 @@ class OROperator {
    String formula
 }
 class OperatorDecorator {
-  + toString() String
+  # Formula left
+  # Formula right
 }
 class PlusOperator {
    String formula

@@ -3,7 +3,7 @@
 ### bnf_grammar.md
 Provides a Backus-Naur Form (BNF) grammar specification for the iStar-T XML format. This formal notation describes the syntax rules of the XML language used in the project, detailing the structure of elements such as actors, goals, tasks, and formulas.
 
-### domain_model_uml.md
+### domain_model_uml (.png, .md, .uml)
 Contains a UML class diagram of the Java domain model implemented in the system. 
 
 ### ocl.md
@@ -22,6 +22,6 @@ Contains a UML class diagram representing the XML schema structure of the iStar-
 
 - For understanding the overall system design and architecture, start with `xml_deserialization_system.md`.
 - To understand the XML format, refer to `bnf_grammar.md` and `xml_uml.md`.
-- For details on the domain model implementation, review `domain_model_uml.md`.
+- For details on the domain model implementation, review `domain_model_uml`.
 - To understand the validation/Schematron rules, read `ocl.md`.
 - For a visual representation of the deserialization process, see `sequence_diagram_deserialization_system.md`.
