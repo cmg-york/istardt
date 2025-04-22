@@ -162,11 +162,9 @@ class NegateOperator {
 class NonDecompositionElement {
   - Boolean previous
   - Formula valueFormula
-  - Atom atom
-   Formula formula
-   Atom atom
    Formula valueFormula
    Boolean previous
+   Formula formula
 }
 class OROperator {
    String formula
@@ -226,13 +224,12 @@ LTEOperator  -->  OperatorDecorator
 LTOperator  -->  OperatorDecorator 
 MinusOperator  -->  OperatorDecorator 
 Model "1" *--> "actors *" Actor 
-Model  ..>  Environment : «create»
 Model "1" *--> "environment 1" Environment 
+Model  ..>  Environment : «create»
 MultiplyOperator  -->  OperatorDecorator 
 NEQOperator  -->  OperatorDecorator 
 NOTOperator  -->  OperatorDecorator 
 NegateOperator  -->  OperatorDecorator 
-NonDecompositionElement "1" *--> "atom 1" Atom 
 NonDecompositionElement  -->  Element 
 NonDecompositionElement "1" *--> "valueFormula 1" Formula 
 OROperator  -->  OperatorDecorator 
