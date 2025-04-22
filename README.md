@@ -2,6 +2,18 @@
 
 A Java-based system for deserializing iStar-T XML models into a structured object model. This project provides a robust implementation for processing XML goal models with sophisticated handling of formulas, references, and hierarchical structures.
 
+## Table of Contents
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Running the Application](#running-the-application)
+- [Project Structure](#project-structure)
+- [Architecture](#architecture)
+- [Configuration](#configuration)
+- [Testing](#testing)
+- [Limitations/Future notes](#limitationsfuture-notes)
+
 ## Features
 
 - XML validation against XSD and Schematron schemas
@@ -51,19 +63,20 @@ mvn exec:java
 The main application reads an XML file, validates it against both XSD and Schematron schemas, and prints model information:
 
 ```bash
-mvn exec:java -Dexec.mainClass="com.example.IStarTApplication"
+mvn exec:java
 ```
 
 This will use the default XML file specified in `IStarTApplication.java` (figure1a_fixed2.xml).
 
-To specify custom file paths:
-
+To use different input files, you'll need to modify the file path constants in `IStarTApplication.java`:
 ```java
 public class IStarTApplication {
 
     private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v3.xsd";
     private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron3.sch";
     private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_fixed2.xml";
+    // ...
+}
 ```
 
 ## Project Structure
@@ -139,7 +152,7 @@ Run the tests with:
 mvn test
 ```
 
-## Future notes
+## Limitations/Future notes
 
 - Current XSD defines 1 actor per model. In the future, will consider multiple actors per model. 
 - 
