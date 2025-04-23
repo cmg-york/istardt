@@ -4,8 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://example.org/istar-t ../xsd/istar-rl-schema_v2.xsd"
         name="HeatingController">
+    <!--        Each predicate is wrapped inside an effect, content inside predicate is variable/identifier-->
+
     <predicates>
-        <!--        Each predicate is wrapped inside an effect, content inside predicate is variable/identifier-->
         <predicate primitive="true" init="false" exported="false"
                    description="Signal On Success">
             signalOnS
@@ -35,7 +36,7 @@
     <indirectEffects>
         <indirectEffect name="heaterOn" exported="true" description="Heater is on">
             <formula>
-                ...
+               <boolConst>true</boolConst>
             </formula>
         </indirectEffect>
     </indirectEffects>

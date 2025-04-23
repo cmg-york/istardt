@@ -1,12 +1,21 @@
 package com.example.objects;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Extensions to the Environment class to add functionality needed for XML mapping
+ * Environment class representing the context in which actors operate.
+ * Modified to support Jackson XML unmarshalling.
  */
 public class Environment {
+
+    @JacksonXmlElementWrapper(localName = "elements")
+    @JacksonXmlProperty(localName = "element")
+    @JsonManagedReference("environment-elements")
     private List<NonDecompositionElement> nonDecompElements;
 
     public Environment() {
@@ -22,7 +31,9 @@ public class Environment {
     }
 
     /**
-     * Add a non-decomposition element to the environment
+     * Add a non-decomposition element to the environment.
+     *
+     * @param element The element to add
      */
     public void addNonDecompElement(NonDecompositionElement element) {
         if (nonDecompElements == null) {
@@ -32,7 +43,10 @@ public class Environment {
     }
 
     /**
-     * Get a non-decomposition element by ID
+     * Get a non-decomposition element by ID.
+     *
+     * @param id The ID of the element to find
+     * @return The element with the given ID, or null if not found
      */
     public NonDecompositionElement getElementById(String id) {
         if (nonDecompElements != null) {
@@ -43,5 +57,18 @@ public class Environment {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a string representation of this environment.
+     * Includes count of non-decomposition elements.
+     *
+     * @return A string representation of this environment
+     */
+    @Override
+    public String toString() {
+        int elementCount = nonDecompElements != null ? nonDecompElements.size() : 0;
+
+        return "Environment{nonDecompElements=" + elementCount + "}";
     }
 }

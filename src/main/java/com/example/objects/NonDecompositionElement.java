@@ -1,16 +1,16 @@
 package com.example.objects;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 /**
- * Extensions to the NonDecompositionElement class to add functionality needed for XML mapping
+ * NonDecompositionElement class representing an element that cannot be further decomposed.
+ * Modified to support Jackson XML unmarshalling.
  */
 public abstract class NonDecompositionElement extends Element {
+    @JacksonXmlProperty(localName = "formula")
     private Formula valueFormula;
-    private Atom atom;
-    private Boolean previous;
 
-    public Formula getValueFormula() {
-        return valueFormula;
-    }
+    private Boolean previous;
 
     public void setValueFormula(Formula valueFormula) {
         this.valueFormula = valueFormula;
@@ -18,14 +18,6 @@ public abstract class NonDecompositionElement extends Element {
 
     public Formula getFormula() {
         return valueFormula;
-    }
-
-    public void setAtom(Atom atom) {
-        this.atom = atom;
-    }
-
-    public Atom getAtom() {
-        return atom != null ? atom : super.getAtom();
     }
 
     public Boolean getPrevious() {

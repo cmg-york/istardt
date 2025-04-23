@@ -1,23 +1,47 @@
 package com.example.objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.example.xml.deserializers.ActorDeserializer;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Extensions to the Actor class to add functionality needed for XML mapping
+ * Actor class representing an agent in the iStar-T model.
+ * Modified to support Jackson XML unmarshalling.
  */
+@JsonRootName("actor")
+@JsonDeserialize(using = ActorDeserializer.class)
 public class Actor extends Element {
-    private String name;
-    private List<Goal> goals;
-    private List<Task> tasks;
-    private List<Effect> directEffects;
-    private List<Quality> qualities;
-    
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getName() {
-        return name;
+    @JacksonXmlElementWrapper(localName = "goals")
+    @JacksonXmlProperty(localName = "goal")
+    @JsonManagedReference("actor-goals")
+    private List<Goal> goals;
+
+    @JacksonXmlElementWrapper(localName = "tasks")
+    @JacksonXmlProperty(localName = "task")
+    @JsonManagedReference("actor-tasks")
+    private List<Task> tasks;
+
+    @JsonIgnore
+    private List<Effect> directEffects;
+
+    @JacksonXmlElementWrapper(localName = "qualities")
+    @JacksonXmlProperty(localName = "quality")
+    @JsonManagedReference("actor-qualities")
+    private List<Quality> qualities;
+
+    public Actor() {
+        this.goals = new ArrayList<>();
+        this.tasks = new ArrayList<>();
+        this.qualities = new ArrayList<>();
+        this.directEffects = new ArrayList<>();
     }
 
     public void setGoals(List<Goal> goals) {
@@ -52,6 +76,12 @@ public class Actor extends Element {
         return qualities;
     }
 
+    /**
+     * Gets the root element among the goals.
+     *
+     * @return The root element, or null if not found
+     */
+    @JsonIgnore
     public Element getRoot() {
         // Find the root element among the goals
         if (goals != null) {
@@ -62,5 +92,22 @@ public class Actor extends Element {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a string representation of this actor.
+     * Includes the ID, name, and counts of contained elements.
+     *
+     * @return A string representation of this actor
+     */
+    @Override
+    public String toString() {
+        String name = getAtom() != null ? getAtom().getTitleText() : null;
+
+        return "Actor{id=" + getId() +
+                ", name='" + name + '\'' +
+                ", goals=" + (goals != null ? goals.size() : 0) +
+                ", tasks=" + (tasks != null ? tasks.size() : 0) +
+                ", qualities=" + (qualities != null ? qualities.size() : 0) + "}";
     }
 }

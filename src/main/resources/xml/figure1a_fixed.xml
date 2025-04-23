@@ -62,14 +62,18 @@
     -->
     <preBoxes>
         <preBox name="materialAvailable" description="Material availability in stock">
-            <gt>
-                <left><const>4</const></left>
-                <right><const>5</const></right>
-            </gt>
+           <formula>
+               <gt>
+                   <left><const>4</const></left>
+                   <right><const>5</const></right>
+               </gt>
+           </formula>
         </preBox>
 
         <preBox name="hasManufacturingCapacity" description="Manufacturer has capacity to build in-house">
-            <boolConst>false</boolConst>
+            <formula>
+                <boolConst>false</boolConst>
+            </formula>
         </preBox>
     </preBoxes>
 
@@ -82,6 +86,7 @@
                 <add>
                     <const>5</const>
                     <const>1</const>
+
                     <subtract>
                         <left>
                             <const>5</const>
@@ -92,12 +97,15 @@
                     </subtract>
                 </add>
             </formula>
-
         </quality>
 
         <quality name="FinancialGain" description="Financial Gain" exported="false">
             <formula>
-                <const>1</const>
+                <add>
+                    <const>2</const>
+                    <const>5</const>
+                    <const>10</const>
+                </add>
             </formula>
         </quality>
 
@@ -125,8 +133,11 @@
             3. Change precondition to pre
 
     -->
+
+<!--    TODO: fix pre/npr for goals and tasks (should be more formula based) -->
     <goals>
         <goal name="ProductManufactured" root="true" description="Product Manufactured" episodeLength="1">
+            <pre>hasManufacturingCapacity</pre>
             <refinement type="AND">
                 <childGoal ref="MaterialOrdered"/>
                 <childGoal ref="ManufacturingCompleted"/>

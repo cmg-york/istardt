@@ -8,9 +8,6 @@ package com.example.objects;
 public class IndirectEffect extends NonDecompositionElement {
     private boolean exported = false;
 
-    /**
-     * Default constructor
-     */
     public IndirectEffect() {
         super();
     }
@@ -27,7 +24,7 @@ public class IndirectEffect extends NonDecompositionElement {
         Atom atom = new Atom();
         atom.setId(id);
         atom.setTitleText(description);
-        this.setAtom(atom);
+        this.setRepresentation(atom);
     }
 
     /**
