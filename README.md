@@ -30,7 +30,8 @@ A Java-based system for deserializing iStar-T XML models into a structured objec
 
 1. Clone the repository
 2. Enter the project folder
-3. Go to `settingsExample.xml` and add in your GitHub username and personal access token (classic) with `read:packages` scope
+3. Make a copy of `settingsExample.xml` and rename the copy to `settings.xml`
+4. In `settings.xml`, add in your GitHub username and personal access token (classic) with `read:packages` scope
 ```xml
 <servers>
     <server>
@@ -48,7 +49,6 @@ https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-
 > In most registries, to pull a package, you must authenticate with a personal access token or GITHUB_TOKEN, regardless of whether the package is public or private.
 
 > To download and install packages from a repository, your personal access token (classic) must have the read:packages scope, and your user account must have read permission.
-4. Rename `settingsExample.xml` to `settings.xml`
 5. Install the project’s artifacts into your local Maven repository using your custom authentication settings:
 
 ```bash
