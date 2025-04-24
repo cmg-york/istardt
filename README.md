@@ -143,7 +143,7 @@ Configuration is handled through the Maven POM file. The main configurable eleme
 
 - Java version (currently set to Java 17)
 - Jackson dependencies
-- XML validation library
+- [XML validation library](https://github.com/nina2dv/xml-istar-rl)
 
 ## Testing
 
