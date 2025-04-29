@@ -235,6 +235,8 @@ public class IStarTApplication {
         System.out.println(indent + "- " + goal.getId() + titleText +
                 " [Type: " + goal.getDecompType() + "]" + (goal.isRoot() ? "[ROOT]" : "") + description);
 
+        System.out.println(indent + "  runs: " + goal.getRuns());
+
         // Print pre formula if available
         Formula preFormula = goal.getPreFormula();
         if (preFormula != null) {
