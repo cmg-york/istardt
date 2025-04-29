@@ -28,6 +28,7 @@ public class Task extends DecompositionElement {
 
     public Task() {
         this.effects = new ArrayList<>();
+        this.setDecompType(DecompType.TERM); // Set default DecompType to TERM
     }
 
     public void setEffects(List<Effect> effects) {
