@@ -161,8 +161,7 @@ These annotations bridge the gap between XML structure and Java object structure
 
 ### Step 1: Initialization and Validation
 1. IStarTApplication loads the XML file
-2. It validates the XML against the XSD schema using XmlValidation
-3. It validates the XML against the Schematron schema for business rules
+2. With XmlValidation (which uses this [validation package](https://github.com/nina2dv/xml-istar-rl)), it validates the XML against the XSD schema. It also validates the XML against the Schematron schema for business rules
 4. It creates an instance of IStarUnmarshaller
 
 ### Step 2: Unmarshaller Setup

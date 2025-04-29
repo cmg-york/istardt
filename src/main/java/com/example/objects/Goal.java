@@ -22,9 +22,6 @@ public class Goal extends DecompositionElement {
     @JacksonXmlProperty(isAttribute = true)
     private boolean root;
 
-    @JacksonXmlProperty(isAttribute = true)
-    private String episodeLength;
-
     @JsonIgnore
     private List<String> childGoalRefs;
 
@@ -54,14 +51,6 @@ public class Goal extends DecompositionElement {
 
     public void setRoot(boolean root) {
         this.root = root;
-    }
-
-    public String getEpisodeLength() {
-        return episodeLength;
-    }
-
-    public void setEpisodeLength(String episodeLength) {
-        this.episodeLength = episodeLength;
     }
 
     public List<String> getChildGoalRefs() {

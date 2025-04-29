@@ -31,19 +31,9 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
         goal.setRoot(root);
 
-        // Set episode length if specified
-        String episodeLength = DeserializerUtils.getStringAttribute(node, "episodeLength", null);
-        if (episodeLength != null) {
-            goal.setEpisodeLength(episodeLength);
-
-            // Convert to runs if possible
-            try {
-                int runs = Integer.parseInt(episodeLength);
-                goal.setRuns(runs);
-            } catch (NumberFormatException e) {
-                goal.setRuns(1); // Default to 1 if not a valid number
-            }
-        }
+        // Set episode length (runs)
+        int episodeLength = DeserializerUtils.getIntAttribute(node, "episodeLength", 1);
+        goal.setRuns(episodeLength);
 
         // Process pre formula with detailed logging
         DeserializerUtils.logInfo(LOGGER, "Processing goal: " + goal.getId());
