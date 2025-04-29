@@ -1,8 +1,8 @@
-import com.example.objects.Actor;
-import com.example.objects.Goal;
-import com.example.objects.Model;
-import com.example.objects.Task;
-import com.example.xml.IStarUnmarshaller;
+import ca.yorku.cmg.istardt.xmlparser.objects.Actor;
+import ca.yorku.cmg.istardt.xmlparser.objects.Goal;
+import ca.yorku.cmg.istardt.xmlparser.objects.Model;
+import ca.yorku.cmg.istardt.xmlparser.objects.Task;
+import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
