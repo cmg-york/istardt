@@ -1,3 +1,5 @@
+package ca.yorku.cmg.istardt.xmlparser;
+
 import ca.yorku.cmg.istardt.xmlparser.objects.Actor;
 import ca.yorku.cmg.istardt.xmlparser.objects.Goal;
 import ca.yorku.cmg.istardt.xmlparser.objects.Model;
