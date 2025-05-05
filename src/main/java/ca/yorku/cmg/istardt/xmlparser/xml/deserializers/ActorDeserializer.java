@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 
 /**
  * Deserializer for Actor objects.
- * This deserializer handles the conversion of XML actor elements to Actor domain objects.
- * Simplified to rely on base deserializer for handling name via atom.
  */
 public class ActorDeserializer extends BaseDeserializer<Actor> {
     private static final Logger LOGGER = Logger.getLogger(ActorDeserializer.class.getName());

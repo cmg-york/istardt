@@ -2,13 +2,9 @@ package ca.yorku.cmg.istardt.xmlparser.objects;
 
 /**
  * Implementation of the Condition class
- * A Condition represents a non-decomposition element that describes a state or constraint
  * In the XML schema, Conditions correspond to PreBox elements
  */
 public class Condition extends NonDecompositionElement {
-    /**
-     * Default constructor
-     */
     public Condition() {
         super();
     }

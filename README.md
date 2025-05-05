@@ -1,6 +1,6 @@
 # istar-unmarshal
 
-A Java-based system for deserializing iStar-T XML models into a structured object model. 
+A Java-based system for deserializing iStar-DT-X XML models into a structured object model. 
 
 ## Table of Contents
 - [Features](#features)
@@ -19,7 +19,7 @@ A Java-based system for deserializing iStar-T XML models into a structured objec
 - XML validation against XSD and Schematron schemas
 - Two-phase deserialization for resolving complex references
 - Formula processing using the Visitor pattern
-- Comprehensive domain model for iStar-T elements
+- Comprehensive domain model
 
 ## Requirements
 

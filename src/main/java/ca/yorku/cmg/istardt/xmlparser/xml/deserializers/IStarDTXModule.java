@@ -4,16 +4,12 @@ import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
- * Enhanced Jackson module for registering all custom deserializers for the iStar-T model.
- * Organizes deserializers by their functional category.
+ * Jackson module for registering all custom deserializers for the iStar-DT-X model.
  */
-public class IStarTModule extends SimpleModule {
+public class IStarDTXModule extends SimpleModule {
 
-    /**
-     * Constructor that registers all deserializers.
-     */
-    public IStarTModule() {
-        super("IStarTModule");
+    public IStarDTXModule() {
+        super("IStarDTXModule");
 
         addDeserializer(Model.class, new ModelDeserializer());
         addDeserializer(Actor.class, new ActorDeserializer());

@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 /**
  * Deserializer for Formula objects using the Visitor pattern.
- * Enhanced with detailed debug logging.
  */
 public class FormulaDeserializer extends StdDeserializer<Formula> {
     private static final Logger LOGGER = Logger.getLogger(FormulaDeserializer.class.getName());

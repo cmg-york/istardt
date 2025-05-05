@@ -17,14 +17,10 @@ import java.util.logging.Logger;
 /**
  * Deserializer for Model objects.
  * Handles the conversion of XML root element to Model domain object.
- * Note that this doesn't extend BaseDeserializer since Model doesn't extend Element.
  */
 public class ModelDeserializer extends StdDeserializer<Model> {
     private static final Logger LOGGER = Logger.getLogger(ModelDeserializer.class.getName());
 
-    /**
-     * Constructor.
-     */
     public ModelDeserializer() {
         super(Model.class);
     }

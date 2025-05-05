@@ -82,7 +82,7 @@ public class IStarTApplication {
      * @param model The model to print information about
      */
     private static void printModelInformation(Model model) {
-        System.out.println("\n=== iStar-T Model Information ===");
+        System.out.println("\n=== iStar-DT-X Model Information ===");
         System.out.println("Number of actors: " + model.getActors().size());
 
         // Process each actor

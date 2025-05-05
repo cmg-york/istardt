@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Enhanced deserializer for Task objects with improved formula handling
+ * Deserializer for Task objects with formula handling
  */
 public class TaskDeserializer extends BaseDeserializer<Task> {
     private static final Logger LOGGER = Logger.getLogger(TaskDeserializer.class.getName());

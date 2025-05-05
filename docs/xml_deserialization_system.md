@@ -44,16 +44,16 @@ This component ensures that the input XML conforms to both structural requiremen
 
 IStarUnmarshaller coordinates the unmarshalling process:
 - Creates and configures a Jackson XmlMapper with custom settings
-- Registers the IStarTModule containing all custom deserializers
+- Registers the IStarDTXModule containing all custom deserializers
 - Clears the ReferenceResolver before processing a new file
 - Converts XML to domain objects using Jackson
 - Processes references after deserialization
 
 The key method `unmarshalToModel` demonstrates the two-phase approach: first parsing XML to create objects, then processing references to establish relationships between them.
 
-### 3.4 IStarTModule
+### 3.4 IStarDTXModule
 
-IStarTModule is a Jackson module that registers all custom deserializers:
+IStarDTXModule is a Jackson module that registers all custom deserializers:
 - Extends Jackson's SimpleModule
 - Registers deserializers for all domain model classes
 - Maps XML elements to their corresponding deserializers
@@ -78,7 +78,7 @@ Following the Template Method pattern, it defines the overall deserialization pr
 
 ### 4.2 Specific Deserializers
 
-Various deserializers handle specific elements of the iStar-T model:
+Various deserializers handle specific elements of the iStar-DT-X model:
 
 - **ModelDeserializer**: Handles the root element, creating the Model container and processing Actor elements
 - **ActorDeserializer**: Processes actor properties and children (goals, tasks, qualities)
@@ -166,7 +166,7 @@ These annotations bridge the gap between XML structure and Java object structure
 
 ### Step 2: Unmarshaller Setup
 1. IStarUnmarshaller creates and configures a Jackson XmlMapper
-2. It registers the IStarTModule with the mapper
+2. It registers the IStarDTXModule with the mapper
 3. The module registers all custom deserializers for domain classes
 
 ### Step 3: Parse XML to Raw Domain Objects

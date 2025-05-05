@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 /**
  * Refactored implementation of FormulaNodeVisitor for deserializing formulas.
- * Consolidates duplicate code into helper methods.
  */
 public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private static final Logger LOGGER = Logger.getLogger(FormulaNodeVisitorImpl.class.getName());

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actor
-        xmlns="https://example.org/istar-t"
+        xmlns="https://example.org/istar-dt-x"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="https://example.org/istar-t ../xsd/istar-rl-schema.xsd"
+        xsi:schemaLocation="https://example.org/istar-dt-x ../xsd/istar-rl-schema.xsd"
         name="Manufacturer">
     <predicates>
         <!--  Each predicate is wrapped inside an effect, content inside predicate is variable/identifier-->

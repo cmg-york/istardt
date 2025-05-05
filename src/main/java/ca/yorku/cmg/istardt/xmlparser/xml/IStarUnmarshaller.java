@@ -1,7 +1,7 @@
 package ca.yorku.cmg.istardt.xmlparser.xml;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Model;
-import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.IStarTModule;
+import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.IStarDTXModule;
 import ca.yorku.cmg.istardt.xmlparser.xml.processing.ReferenceProcessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Main entry point for unmarshalling iStar-T XML to the domain model using Jackson XML.
- * This class replaces the JAXB-based unmarshaller with a simpler, more maintainable implementation.
+ * Main entry point for unmarshalling iStar-DT-X XML to the domain model using Jackson XML.
  */
 public class IStarUnmarshaller {
     private final XmlMapper xmlMapper;
@@ -27,7 +26,7 @@ public class IStarUnmarshaller {
     }
 
     /**
-     * Creates and configures the XmlMapper with necessary settings for handling iStar-T XML.
+     * Creates and configures the XmlMapper with necessary settings for handling iStar-DT-X XML.
      *
      * @return Configured XmlMapper instance
      */
@@ -37,8 +36,8 @@ public class IStarUnmarshaller {
         // Configure mapper to be tolerant of schema changes
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // Register custom module with deserializers for iStar-T specific types
-        mapper.registerModule(new IStarTModule());
+        // Register custom module with deserializers for iStar-DT-X specific types
+        mapper.registerModule(new IStarDTXModule());
 
         return mapper;
     }

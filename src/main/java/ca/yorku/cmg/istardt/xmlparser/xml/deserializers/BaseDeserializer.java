@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
- * Enhanced base deserializer with expanded common functionality for all iStar-T elements.
+ * Enhanced base deserializer with expanded common functionality for all iStar-DT-X elements.
  * Provides standardized helpers for extracting attributes, processing nodes, and handling lists.
  *
  * @param <T> The type of element being deserialized, must extend Element

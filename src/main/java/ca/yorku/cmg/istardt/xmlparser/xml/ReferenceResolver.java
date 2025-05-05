@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 /**
  * Enhanced central reference resolver for managing object references during deserialization.
  * Implemented as a singleton to provide global access during the unmarshalling process.
- * Adds name-based lookup capabilities to support content-based references.
  */
 public class ReferenceResolver {
     private static final Logger LOGGER = Logger.getLogger(ReferenceResolver.class.getName());
