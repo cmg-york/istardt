@@ -29,7 +29,7 @@ Patterns group related validation rules together. Each pattern can have a name a
 Rules define the context nodes to which assertions and reports apply. The context is defined using an XPath expression:
 
 ```xml
-<sch:rule context="istar-t:actor | istar-t:goal | istar-t:task">
+<sch:rule context="istar-dt-x:actor | istar-dt-x:goal | istar-dt-x:task">
   <!-- Assertions and reports for actors, goals, and tasks -->
 </sch:rule>
 ```
@@ -43,7 +43,7 @@ Both use test attributes containing XPath expressions:
 
 ```xml
 <!-- Error if an AND-refinement doesn't have at least 2 children -->
-<sch:assert test="count(istar-t:childGoal | istar-t:childTask) >= 2" role="ERROR">
+<sch:assert test="count(istar-dt-x:childGoal | istar-dt-x:childTask) >= 2" role="ERROR">
   AND-refinement must have at least 2 children.
 </sch:assert>
 
@@ -91,7 +91,7 @@ Variables store XPath expressions for reuse:
 
 ```xml
 <sch:let name="name" value="@name"/>
-<sch:let name="allNamed" value="//istar-t:actor[@name=$name]"/>
+<sch:let name="allNamed" value="//istar-dt-x:actor[@name=$name]"/>
 ```
 
 ## Common Validation Patterns
@@ -127,7 +127,7 @@ Variables store XPath expressions for reuse:
 
 ```xml
 <!-- Error if childGoal references non-existent goal -->
-<sch:assert test="@ref = ancestor::istar-t:actor//istar-t:goal/@name" role="ERROR">
+<sch:assert test="@ref = ancestor::istar-dt-x:actor//istar-dt-x:goal/@name" role="ERROR">
   childGoal ref="<sch:value-of select="@ref"/>" does not match any &lt;goal name="..."&gt;.
 </sch:assert>
 ```
@@ -136,8 +136,8 @@ Variables store XPath expressions for reuse:
 
 ```xml
 <!-- Error if effect probabilities don't sum to 1.0 -->
-<sch:assert test="abs(xs:decimal(sum(istar-t:effect/@probability)) - 1.0) le 0.001" role="ERROR">
-  The sum of @probability in &lt;effectGroup&gt; should be 1.0, but it is <sch:value-of select="format-number(sum(istar-t:effect/@probability), '0.000')"/>.
+<sch:assert test="abs(xs:decimal(sum(istar-dt-x:effect/@probability)) - 1.0) le 0.001" role="ERROR">
+  The sum of @probability in &lt;effectGroup&gt; should be 1.0, but it is <sch:value-of select="format-number(sum(istar-dt-x:effect/@probability), '0.000')"/>.
 </sch:assert>
 ```
 
@@ -175,7 +175,7 @@ Example of adding a new rule:
 
 ```xml
 <sch:pattern id="CheckNewRequirement">
-  <sch:rule context="istar-t:element">
+  <sch:rule context="istar-dt-x:element">
     <sch:assert test="condition-that-must-be-true" role="ERROR">
       Clear error message explaining the problem and how to fix it.
     </sch:assert>
