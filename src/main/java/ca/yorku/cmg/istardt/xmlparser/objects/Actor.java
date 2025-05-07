@@ -106,4 +106,14 @@ public class Actor extends Element {
         }
         nonDecompElements.add(element);
     }
+
+    @Override
+    public String toString() {
+        return "Actor{id=" + getId() +
+                ", effectCount=" + (effects != null ? effects.size() : 0) +
+                ", taskCount=" + (tasks != null ? tasks.size() : 0) +
+                ", qualityCount=" + (qualities != null ? qualities.size() : 0) +
+                ", goalCount=" + (goals != null ? goals.size() : 0) +
+                ", nonDecompElementsCount=" + (nonDecompElements != null ? nonDecompElements.size() : 0)  + "}";
+    }
 }

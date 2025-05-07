@@ -13,4 +13,6 @@ public abstract class NonDecompositionElement extends Element {
     public Formula getFormula() {
         return valueFormula;
     }
+
+
 }

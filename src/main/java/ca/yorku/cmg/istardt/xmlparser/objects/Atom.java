@@ -99,11 +99,9 @@ public class Atom extends Formula {
 
     @Override
     public String toString() {
-        return "Atom{" +
-                "id='" + id + '\'' +
-                ", titleText='" + titleText + '\'' +
-                ", titleHTMLText='" + titleHTMLText + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "Atom{id=" + id +
+                ", titleText=" + titleText +
+                ", titleHTMLText=" + titleHTMLText +
+                ", description=" + description + "}";
     }
 }

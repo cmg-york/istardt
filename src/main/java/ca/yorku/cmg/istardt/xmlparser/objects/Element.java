@@ -51,12 +51,6 @@ public abstract class Element {
         return representation != null ? representation.getTitleText() : null;
     }
 
-    /**
-     * Returns a string representation of this element.
-     * Includes the ID and class name to identify the element.
-     *
-     * @return A string representation of this element
-     */
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{id='" + id + "'}";
