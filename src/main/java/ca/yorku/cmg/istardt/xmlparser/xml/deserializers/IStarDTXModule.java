@@ -18,7 +18,6 @@ public class IStarDTXModule extends SimpleModule {
         addDeserializer(Task.class, new TaskDeserializer());
         addDeserializer(Quality.class, new QualityDeserializer());
         addDeserializer(Condition.class, new ConditionDeserializer());
-        addDeserializer(IndirectEffect.class, new IndirectEffectDeserializer());
         addDeserializer(Effect.class, new EffectDeserializer());
 
         addDeserializer(Formula.class, new FormulaDeserializer());

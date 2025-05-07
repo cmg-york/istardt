@@ -46,15 +46,6 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 }
             }
 
-            // Process indirect effects
-            if (node.has("indirectEffects") && node.get("indirectEffects").has("indirectEffect")) {
-                JsonNode effectsNode = node.get("indirectEffects").get("indirectEffect");
-                List<IndirectEffect> indirectEffects = DeserializerUtils.deserializeList(effectsNode, p, ctxt, IndirectEffect.class);
-                for (IndirectEffect indirectEffect : indirectEffects) {
-                    actor.addNonDecompElement(indirectEffect);
-                }
-            }
-
             // Process qualities
             if (node.has("qualities") && node.get("qualities").has("quality")) {
                 JsonNode qualitiesNode = node.get("qualities").get("quality");
