@@ -1,8 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * Equals operator implementation
- */
 public class EQOperator extends OperatorDecorator {
     public EQOperator(Formula left, Formula right) {
         this.left = left;

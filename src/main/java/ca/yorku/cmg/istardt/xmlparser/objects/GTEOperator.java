@@ -1,8 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * Greater Than or Equal To operator implementation
- */
 public class GTEOperator extends OperatorDecorator {
 
     public GTEOperator(Formula left, Formula right) {

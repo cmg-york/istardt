@@ -1,8 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * Minus operator implementation
- */
 public class MinusOperator extends OperatorDecorator {
     public MinusOperator(Formula left, Formula right) {
         this.left = left;

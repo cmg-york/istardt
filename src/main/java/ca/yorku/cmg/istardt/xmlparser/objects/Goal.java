@@ -9,10 +9,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Goal class representing a strategic objective.
- * Modified to support Jackson XML unmarshalling.
- */
 @JsonDeserialize(using = GoalDeserializer.class)
 public class Goal extends DecompositionElement {
 

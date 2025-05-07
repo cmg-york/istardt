@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * DecompositionElement class representing an element that can be decomposed into child elements.
- * Modified to support Jackson XML unmarshalling and prevent circular reference issues.
  */
 public class DecompositionElement extends Element {
 

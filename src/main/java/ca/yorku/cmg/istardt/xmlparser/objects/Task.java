@@ -11,10 +11,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Task class representing an executable action.
- * Modified to support Jackson XML unmarshalling.
- */
 @JsonDeserialize(using = TaskDeserializer.class)
 public class Task extends DecompositionElement {
 

@@ -5,10 +5,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-/**
- * Quality class representing a measurable attribute.
- * Modified to support Jackson XML unmarshalling.
- */
 @JsonDeserialize(using = QualityDeserializer.class)
 public class Quality extends NonDecompositionElement {
 

@@ -1,9 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-
-/**
- * OR operator implementation
- */
 public class OROperator extends OperatorDecorator {
     public OROperator(Formula left, Formula right) {
         this.left = left;

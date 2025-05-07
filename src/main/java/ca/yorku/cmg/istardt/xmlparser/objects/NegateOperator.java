@@ -2,7 +2,6 @@ package ca.yorku.cmg.istardt.xmlparser.objects;
 
 /**
  * Negate operator implementation
- * Represents numeric negation of a formula
  */
 public class NegateOperator extends OperatorDecorator {
     public NegateOperator(Formula formula) {

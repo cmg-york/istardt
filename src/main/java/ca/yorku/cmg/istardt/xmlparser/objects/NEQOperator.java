@@ -1,8 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * Not Equals operator implementation
- */
 public class NEQOperator extends OperatorDecorator {
     public NEQOperator(Formula left, Formula right) {
         this.left = left;

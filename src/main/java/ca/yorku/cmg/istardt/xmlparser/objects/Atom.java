@@ -1,8 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * Implementation of the Atom class
- */
 public class Atom extends Formula {
     private String id;
     private String titleText;

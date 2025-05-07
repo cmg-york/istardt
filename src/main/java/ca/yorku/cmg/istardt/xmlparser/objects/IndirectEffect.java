@@ -1,10 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * Implementation of the IndirectEffect class
- * An IndirectEffect represents a non-decomposition element that describes
- * an outcome that is not directly caused by a task
- */
 public class IndirectEffect extends NonDecompositionElement {
     private boolean exported = false;
 

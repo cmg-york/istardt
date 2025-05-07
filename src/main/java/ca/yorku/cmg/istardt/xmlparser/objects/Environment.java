@@ -7,10 +7,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Environment class representing the context in which actors operate.
- * Modified to support Jackson XML unmarshalling.
- */
 public class Environment {
 
     @JacksonXmlElementWrapper(localName = "elements")

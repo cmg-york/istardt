@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * Effect class representing the outcome of a task.
- * Modified to support Jackson XML unmarshalling.
  */
 @JsonDeserialize(using = EffectDeserializer.class)
 public class Effect extends NonDecompositionElement {

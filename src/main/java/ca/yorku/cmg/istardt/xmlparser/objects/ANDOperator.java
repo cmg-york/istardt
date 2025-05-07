@@ -1,8 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * AND operator implementation
- */
 public class ANDOperator extends OperatorDecorator {
     public ANDOperator(Formula left, Formula right) {
         this.left = left;

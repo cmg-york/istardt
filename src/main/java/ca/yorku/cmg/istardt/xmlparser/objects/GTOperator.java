@@ -1,7 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
-/**
- * Greater Than operator implementation
- */
+
 public class GTOperator extends OperatorDecorator {
 
     public GTOperator(Formula left, Formula right) {

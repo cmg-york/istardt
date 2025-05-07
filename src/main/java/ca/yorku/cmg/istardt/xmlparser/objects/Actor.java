@@ -11,10 +11,6 @@ import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.ActorDeserializer;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Actor class representing an agent in the iStar-T model.
- * Modified to support Jackson XML unmarshalling.
- */
 @JsonRootName("actor")
 @JsonDeserialize(using = ActorDeserializer.class)
 public class Actor extends Element {

@@ -12,7 +12,6 @@ import java.util.List;
 
 /**
  * Root model class containing actors and environment.
- * Modified to support Jackson XML unmarshalling.
  */
 @JacksonXmlRootElement(localName = "istar-model")
 @JsonDeserialize(using = ModelDeserializer.class)

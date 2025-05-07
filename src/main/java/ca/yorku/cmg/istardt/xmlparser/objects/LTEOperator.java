@@ -1,8 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-/**
- * Less Than or Equal To operator implementation
- */
 public class LTEOperator extends OperatorDecorator {
 
     public LTEOperator(Formula left, Formula right) {
