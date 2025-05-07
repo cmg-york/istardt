@@ -19,6 +19,8 @@ public class Model {
     @JsonManagedReference("model-actors")
     private List<Actor> actors;
 
+    private ModelHeader modelHeader;
+
     public Model() {
         this.actors = new ArrayList<>();
     }
@@ -29,4 +31,11 @@ public class Model {
         this.actors = actors;
     }
 
+    public ModelHeader getModelHeader() {
+        return modelHeader;
+    }
+
+    public void setModelHeader(ModelHeader modelHeader) {
+        this.modelHeader = modelHeader;
+    }
 }
