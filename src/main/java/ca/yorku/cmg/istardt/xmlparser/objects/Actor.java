@@ -26,7 +26,7 @@ public class Actor extends Element {
     private List<Task> tasks;
 
     @JsonIgnore
-    private List<Effect> directEffects;
+    private List<Effect> effects;
 
     @JacksonXmlElementWrapper(localName = "qualities")
     @JacksonXmlProperty(localName = "quality")
@@ -37,7 +37,7 @@ public class Actor extends Element {
         this.goals = new ArrayList<>();
         this.tasks = new ArrayList<>();
         this.qualities = new ArrayList<>();
-        this.directEffects = new ArrayList<>();
+        this.effects = new ArrayList<>();
     }
 
     public void setGoals(List<Goal> goals) {
@@ -56,12 +56,12 @@ public class Actor extends Element {
         return tasks;
     }
 
-    public void setDirectEffects(List<Effect> directEffects) {
-        this.directEffects = directEffects;
+    public void setEffects(List<Effect> effects) {
+        this.effects = effects;
     }
 
-    public List<Effect> getDirectEffects() {
-        return directEffects;
+    public List<Effect> getEffects() {
+        return effects;
     }
 
     public void setQualities(List<Quality> qualities) {

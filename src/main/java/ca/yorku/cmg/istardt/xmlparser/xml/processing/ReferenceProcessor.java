@@ -58,7 +58,7 @@ public class ReferenceProcessor {
                     allEffects.addAll(task.getEffects());
                 }
             }
-            actor.setDirectEffects(allEffects);
+            actor.setEffects(allEffects);
 
             // Process parent-child relationships in decomposition elements
             processDecompositionHierarchy(actor.getGoals());
