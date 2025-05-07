@@ -145,6 +145,7 @@ public class IStarTApplication {
                └── xmlparser
                  └── IStarUnmarshallerTest.java
      └── resources
+       ├── schematron
        ├── xml
        └── xsd
 ```
