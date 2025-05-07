@@ -28,10 +28,10 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
     @Override
     protected void handleSpecificAttributes(Actor actor, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
         // The name is already handled by the base deserializer in extractCommonAttributes
-        // which sets up the atom with the name from the XML
+        // which sets up the atom from the XML
 
         try {
-            // Process predicates (create Atoms)
+            // Process predicates
             if (node.has("predicates") && node.get("predicates").has("predicate")) {
                 JsonNode predicatesNode = node.get("predicates").get("predicate");
                 List<Atom> predicates = deserializePredicates(predicatesNode);
@@ -41,14 +41,18 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
             if (node.has("preBoxes") && node.get("preBoxes").has("preBox")) {
                 JsonNode preBoxesNode = node.get("preBoxes").get("preBox");
                 List<Condition> conditions = DeserializerUtils.deserializeList(preBoxesNode, p, ctxt, Condition.class);
-                // Add conditions to the environment in post-processing
+                for (Condition condition : conditions) {
+                    actor.addNonDecompElement(condition);
+                }
             }
 
             // Process indirect effects
             if (node.has("indirectEffects") && node.get("indirectEffects").has("indirectEffect")) {
                 JsonNode effectsNode = node.get("indirectEffects").get("indirectEffect");
                 List<IndirectEffect> indirectEffects = DeserializerUtils.deserializeList(effectsNode, p, ctxt, IndirectEffect.class);
-                // Add indirect effects to the environment in post-processing
+                for (IndirectEffect indirectEffect : indirectEffects) {
+                    actor.addNonDecompElement(indirectEffect);
+                }
             }
 
             // Process qualities
@@ -56,6 +60,9 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode qualitiesNode = node.get("qualities").get("quality");
                 List<Quality> qualities = DeserializerUtils.deserializeList(qualitiesNode, p, ctxt, Quality.class);
                 actor.setQualities(qualities);
+                for (Quality quality : qualities) {
+                    actor.addNonDecompElement(quality);
+                }
             }
 
             // Process goals

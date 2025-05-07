@@ -122,30 +122,22 @@ public class IStarTApplication {
                 System.out.println("    - " + quality.getId() + qualityTitleText +
                         (quality.isRoot() ? " [ROOT]" : "") + formulaText + qualityDescription);
             }
-            actorCount++;
-        }
 
-        // Print environment information
-        System.out.println("\nEnvironment Information:");
-        if (model.getEnvironment() != null) {
-            List<NonDecompositionElement> nonDecompElements = model.getEnvironment().getNonDecompElements();
-            int elementsCount = nonDecompElements != null ? nonDecompElements.size() : 0;
-            System.out.println("  Non-decomposition elements: " + elementsCount);
 
+            // Print non-decomposition
+            System.out.println("\nNon-Decomposition Information:");
+            List<NonDecompositionElement> nonDecompElements = actor.getNonDecompElements();
             if (nonDecompElements != null && !nonDecompElements.isEmpty()) {
-                // Group elements by type
+
                 List<Condition> conditions = new ArrayList<>();
-                List<IndirectEffect> indirectEffects = new ArrayList<>();
-                List<Quality> qualities = new ArrayList<>();
+                List<Quality> qualitiesNonDecomp = new ArrayList<>();
                 List<Effect> effects = new ArrayList<>();
 
                 for (NonDecompositionElement element : nonDecompElements) {
                     if (element instanceof Condition) {
                         conditions.add((Condition) element);
-                    } else if (element instanceof IndirectEffect) {
-                        indirectEffects.add((IndirectEffect) element);
                     } else if (element instanceof Quality) {
-                        qualities.add((Quality) element);
+                        qualitiesNonDecomp.add((Quality) element);
                     } else if (element instanceof Effect) {
                         effects.add((Effect) element);
                     }
@@ -155,46 +147,30 @@ public class IStarTApplication {
                 if (!conditions.isEmpty()) {
                     System.out.println("\n  Conditions (PreBoxes): " + conditions.size());
                     for (Condition condition : conditions) {
-                        String titleText = condition.getAtom() != null && condition.getAtom().getTitleText() != null ?
+                        String conditionTitleText = condition.getAtom() != null && condition.getAtom().getTitleText() != null ?
                                 " (" + condition.getAtom().getTitleText() + ")" : "";
-                        String description = condition.getAtom() != null && condition.getAtom().getDescription() != null ?
+                        String conditionDescription = condition.getAtom() != null && condition.getAtom().getDescription() != null ?
                                 "\n      Description: " + condition.getAtom().getDescription() : "";
                         String formulaText = condition.getFormula() != null ?
                                 " [Formula: " + condition.getFormula().getFormula() + "]" : "";
 
-                        System.out.println("    - " + condition.getId() + titleText + formulaText + description);
-                    }
-                }
-
-                // Print Indirect Effects
-                if (!indirectEffects.isEmpty()) {
-                    System.out.println("\n  Indirect Effects: " + indirectEffects.size());
-                    for (IndirectEffect indirectEffect : indirectEffects) {
-                        String titleText = indirectEffect.getAtom() != null && indirectEffect.getAtom().getTitleText() != null ?
-                                " (" + indirectEffect.getAtom().getTitleText() + ")" : "";
-                        String description = indirectEffect.getAtom() != null && indirectEffect.getAtom().getDescription() != null ?
-                                "\n      Description: " + indirectEffect.getAtom().getDescription() : "";
-                        String formulaText = indirectEffect.getFormula() != null ?
-                                " [Formula: " + indirectEffect.getFormula().getFormula() + "]" : "";
-                        String exportedText = indirectEffect.isExported() ? " [Exported]" : "";
-
-                        System.out.println("    - " + indirectEffect.getId() + titleText + exportedText + formulaText + description);
+                        System.out.println("    - " + condition.getId() + conditionTitleText + formulaText + conditionDescription);
                     }
                 }
 
                 // Print Qualities
-                if (!qualities.isEmpty()) {
-                    System.out.println("\n  Qualities: " + qualities.size());
-                    for (Quality quality : qualities) {
-                        String titleText = quality.getAtom() != null && quality.getAtom().getTitleText() != null ?
+                if (!qualitiesNonDecomp.isEmpty()) {
+                    System.out.println("\n  Qualities: " + qualitiesNonDecomp.size());
+                    for (Quality quality : qualitiesNonDecomp) {
+                        String qualityTitleText = quality.getAtom() != null && quality.getAtom().getTitleText() != null ?
                                 " (" + quality.getAtom().getTitleText() + ")" : "";
-                        String description = quality.getAtom() != null && quality.getAtom().getDescription() != null ?
+                        String qualityDescription = quality.getAtom() != null && quality.getAtom().getDescription() != null ?
                                 "\n      Description: " + quality.getAtom().getDescription() : "";
                         String formulaText = quality.getFormula() != null ?
                                 " [Formula: " + quality.getFormula().getFormula() + "]" : "";
                         String rootText = quality.isRoot() ? " [ROOT]" : "";
 
-                        System.out.println("    - " + quality.getId() + titleText + rootText + formulaText + description);
+                        System.out.println("    - " + quality.getId() + qualityTitleText + rootText + formulaText + qualityDescription);
                     }
                 }
 
@@ -202,24 +178,24 @@ public class IStarTApplication {
                 if (!effects.isEmpty()) {
                     System.out.println("\n  Effects: " + effects.size());
                     for (Effect effect : effects) {
-                        String titleText = effect.getAtom() != null && effect.getAtom().getTitleText() != null ?
+                        String effectTitleText = effect.getAtom() != null && effect.getAtom().getTitleText() != null ?
                                 " (" + effect.getAtom().getTitleText() + ")" : "";
-                        String description = effect.getAtom() != null && effect.getAtom().getDescription() != null ?
+                        String effectDescription = effect.getAtom() != null && effect.getAtom().getDescription() != null ?
                                 "\n      Description: " + effect.getAtom().getDescription() : "";
 
-                        System.out.println("    - " + effect.getId() + titleText +
+                        System.out.println("    - " + effect.getId() + effectTitleText +
                                 " (Probability: " + effect.getProbability() +
-                                ", Satisfying: " + effect.isSatisfying() + ")" + description);
+                                ", Satisfying: " + effect.isSatisfying() + ")" + effectDescription);
                     }
                 }
             }
-        } else {
-            System.out.println("  No environment information available");
+
+            actorCount++;
         }
     }
 
     /**
-     * Print information about a goal, with proper indentation.
+     * Print information about a goal.
      */
     private static void printGoalInfo(Goal goal, int indentLevel) {
         StringBuilder indent = new StringBuilder();
@@ -310,7 +286,7 @@ public class IStarTApplication {
     }
 
     /**
-     * Print information about a task, with proper indentation.
+     * Print information about a task.
      */
     private static void printTaskInfo(Task task, int indentLevel) {
         StringBuilder indent = new StringBuilder();

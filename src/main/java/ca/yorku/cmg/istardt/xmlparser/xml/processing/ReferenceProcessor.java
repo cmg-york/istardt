@@ -30,15 +30,6 @@ public class ReferenceProcessor {
             return;
         }
 
-        Environment environment = model.getEnvironment();
-        if (environment == null) {
-            environment = new Environment();
-            model.setEnvironment(environment);
-        }
-
-        // List to collect all non-decomposition elements
-        List<NonDecompositionElement> nonDecompElements = new ArrayList<>();
-
         // Create a name-based lookup map for referencing by name instead of ID
         Map<String, Element> elementsByName = buildNameLookupMap(model);
 
@@ -54,7 +45,9 @@ public class ReferenceProcessor {
 
                 // Collect effects
                 if (task.getEffects() != null) {
-                    nonDecompElements.addAll(task.getEffects());
+                    for (Effect effect : task.getEffects()) {
+                        actor.addNonDecompElement(effect);
+                    }
                     allEffects.addAll(task.getEffects());
                 }
             }
@@ -63,25 +56,8 @@ public class ReferenceProcessor {
             // Process parent-child relationships in decomposition elements
             processDecompositionHierarchy(actor.getGoals());
 
-            // Collect qualities
-            if (actor.getQualities() != null) {
-                nonDecompElements.addAll(actor.getQualities());
-            }
         }
 
-        // Collect all Condition objects (preBoxes) from ReferenceResolver
-        collectNonDecompositionElements(nonDecompElements, Condition.class);
-
-        // Collect all IndirectEffect objects from ReferenceResolver
-        collectNonDecompositionElements(nonDecompElements, IndirectEffect.class);
-
-        // Add all collected non-decomposition elements to the environment
-        for (NonDecompositionElement element : nonDecompElements) {
-            environment.addNonDecompElement(element);
-        }
-
-        // Log the number of non-decomposition elements
-        LOGGER.info("Added " + nonDecompElements.size() + " non-decomposition elements to environment");
 
         LOGGER.info("Reference processing completed successfully");
     }
@@ -140,27 +116,6 @@ public class ReferenceProcessor {
     private void addElementByNameToMap(Element element, Map<String, Element> map) {
         if (element != null && element.getAtom() != null && element.getAtom().getTitleText() != null) {
             map.put(element.getAtom().getTitleText(), element);
-        }
-    }
-
-    /**
-     * Collects elements of the specified type from the ReferenceResolver and adds them to the list.
-     *
-     * @param nonDecompElements The list to add the elements to
-     * @param elementClass The class of elements to collect
-     */
-    private <T extends NonDecompositionElement> void collectNonDecompositionElements(
-            List<NonDecompositionElement> nonDecompElements, Class<T> elementClass) {
-        ReferenceResolver resolver = ReferenceResolver.getInstance();
-
-        // Get all elements registered in the resolver
-        for (String id : resolver.getAllElementIds()) {
-            Element element = resolver.getElementById(id);
-            if (elementClass.isInstance(element)) {
-                nonDecompElements.add((NonDecompositionElement) element);
-                LOGGER.fine("Added " + elementClass.getSimpleName() + ": " +
-                        (element.getAtom() != null ? element.getAtom().getTitleText() : id));
-            }
         }
     }
 

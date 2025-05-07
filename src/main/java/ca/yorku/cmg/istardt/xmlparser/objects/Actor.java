@@ -32,12 +32,16 @@ public class Actor extends Element {
     @JacksonXmlProperty(localName = "quality")
     @JsonManagedReference("actor-qualities")
     private List<Quality> qualities;
+    private List<NonDecompositionElement> nonDecompElements;
+
 
     public Actor() {
         this.goals = new ArrayList<>();
         this.tasks = new ArrayList<>();
         this.qualities = new ArrayList<>();
         this.effects = new ArrayList<>();
+        this.nonDecompElements = new ArrayList<>();
+
     }
 
     public void setGoals(List<Goal> goals) {
@@ -77,9 +81,7 @@ public class Actor extends Element {
      *
      * @return The root element, or null if not found
      */
-    @JsonIgnore
     public Element getRoot() {
-        // Find the root element among the goals
         if (goals != null) {
             for (Goal goal : goals) {
                 if (goal instanceof DecompositionElement && ((DecompositionElement) goal).isRoot()) {
@@ -90,20 +92,18 @@ public class Actor extends Element {
         return null;
     }
 
-    /**
-     * Returns a string representation of this actor.
-     * Includes the ID, name, and counts of contained elements.
-     *
-     * @return A string representation of this actor
-     */
-    @Override
-    public String toString() {
-        String name = getAtom() != null ? getAtom().getTitleText() : null;
+    public List<NonDecompositionElement> getNonDecompElements() {
+        return nonDecompElements;
+    }
 
-        return "Actor{id=" + getId() +
-                ", name='" + name + '\'' +
-                ", goals=" + (goals != null ? goals.size() : 0) +
-                ", tasks=" + (tasks != null ? tasks.size() : 0) +
-                ", qualities=" + (qualities != null ? qualities.size() : 0) + "}";
+    public void setNonDecompElements(List<NonDecompositionElement> nonDecompElements) {
+        this.nonDecompElements = nonDecompElements;
+    }
+
+    public void addNonDecompElement(NonDecompositionElement element) {
+        if (nonDecompElements == null) {
+            nonDecompElements = new ArrayList<>();
+        }
+        nonDecompElements.add(element);
     }
 }

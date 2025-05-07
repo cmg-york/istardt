@@ -1,7 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Actor;
-import ca.yorku.cmg.istardt.xmlparser.objects.Environment;
 import ca.yorku.cmg.istardt.xmlparser.objects.Model;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
 
 /**
  * Deserializer for Model objects.
- * Handles the conversion of XML root element to Model domain object.
+ * Handles the conversion of XML root element to Model.
  */
 public class ModelDeserializer extends StdDeserializer<Model> {
     private static final Logger LOGGER = Logger.getLogger(ModelDeserializer.class.getName());
@@ -29,14 +28,7 @@ public class ModelDeserializer extends StdDeserializer<Model> {
     public Model deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
 
-        // Create new Model
         Model model = new Model();
-
-        // Create Environment
-        Environment environment = new Environment();
-        model.setEnvironment(environment);
-
-        // Determine if this is a single actor or multiple actors
         List<Actor> actors = new ArrayList<>();
 
         try {
@@ -46,7 +38,7 @@ public class ModelDeserializer extends StdDeserializer<Model> {
                 actors.add(actor);
                 LOGGER.info("Deserialized single actor model");
             }
-            // If root has multiple actor elements, deserialize each one
+            // Multiple actors (future implementation)
             else if (node.has("actor")) {
                 JsonNode actorNodes = node.get("actor");
                 actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
