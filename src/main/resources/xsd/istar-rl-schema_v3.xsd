@@ -10,7 +10,7 @@
     <xsd:element name="actor" type="ActorType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
-                Root element representing an actor in the iStar-RL framework.
+                Root element representing an actor in iStar-DT-X.
             ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
