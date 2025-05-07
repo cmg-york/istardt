@@ -1,355 +1,361 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Diagram>
   <ID>JAVA</ID>
-  <OriginalElement>com.example.objects.GTEOperator</OriginalElement>
+  <OriginalElement>ca.yorku.cmg.istardt.xmlparser.objects.GTOperator</OriginalElement>
   <nodes>
-    <node x="1490.7535008000552" y="3632.970106324276">com.example.objects.NOTOperator</node>
-    <node x="836.0063837442585" y="2457.000308927926">com.example.objects.NonDecompositionElement</node>
-    <node x="1279.7535008000552" y="3353.970106324276">com.example.objects.OperatorDecorator</node>
-    <node x="1319.7535008000552" y="3539.970106324276">com.example.objects.DivideOperator</node>
-    <node x="1317.1979222109871" y="2571.92931427195">com.example.objects.Effect</node>
-    <node x="313.5158567677772" y="3142.8214580478657">com.example.objects.DecompositionElement</node>
-    <node x="1802.7535008000552" y="3725.970106324276">com.example.objects.GTOperator</node>
-    <node x="1857.7535008000552" y="3539.970106324276">com.example.objects.PlusOperator</node>
-    <node x="1049.000146432444" y="2314.0411346879787">com.example.objects.IndirectEffect</node>
-    <node x="611.5545789613459" y="3706.3319604480307">com.example.objects.Task</node>
-    <node x="1319.7535008000552" y="3632.970106324276">com.example.objects.NEQOperator</node>
-    <node x="-85.5889620481413" y="2432.8163789004534">com.example.objects.Model</node>
-    <node x="1483.7535008000552" y="3725.970106324276">com.example.objects.OROperator</node>
-    <node x="1716.7535008000552" y="3446.970106324276">com.example.objects.NegateOperator</node>
-    <node x="-86.0889620481413" y="2722.0577989529866">com.example.objects.Actor</node>
-    <node x="1660.7535008000552" y="3632.970106324276">com.example.objects.GTEOperator</node>
-    <node x="866.1346787839162" y="3311.970106324276">com.example.objects.Atom</node>
-    <node x="863.320010615679" y="2270.0411346879787">com.example.objects.Quality</node>
-    <node x="1319.7535008000552" y="3818.970106324276">com.example.objects.LTOperator</node>
-    <node x="411.27347622373964" y="2755.0577989529866">com.example.objects.Element</node>
-    <node x="1520.7535008000552" y="3446.970106324276">com.example.objects.MultiplyOperator</node>
-    <node x="276.7087108480586" y="2455.000308927926">com.example.objects.Environment</node>
-    <node x="1319.7535008000552" y="3725.970106324276">com.example.objects.LTEOperator</node>
-    <node x="400.4936162557418" y="3953.1270593279537">com.example.objects.DecompType</node>
-    <node x="1685.7535008000552" y="3539.970106324276">com.example.objects.ANDOperator</node>
-    <node x="1503.7535008000552" y="3539.970106324276">com.example.objects.MinusOperator</node>
-    <node x="1227.2535008000552" y="3101.470106324276">com.example.objects.Formula</node>
-    <node x="1319.7535008000552" y="3446.970106324276">com.example.objects.PreviousOperator</node>
-    <node x="648.4106145108942" y="2362.0411346879787">com.example.objects.Condition</node>
-    <node x="144.12005772784346" y="3584.1270593279537">com.example.objects.Goal</node>
-    <node x="1643.7535008000552" y="3725.970106324276">com.example.objects.EQOperator</node>
+    <node x="2076.9229475966604" y="1706.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.GTEOperator</node>
+    <node x="2076.9229475966604" y="1613.936775301341">ca.yorku.cmg.istardt.xmlparser.objects.DivideOperator</node>
+    <node x="533.1444745092854" y="204.91428677278714">ca.yorku.cmg.istardt.xmlparser.objects.ModelHeader</node>
+    <node x="610.9445931482412" y="1624.47049922829">ca.yorku.cmg.istardt.xmlparser.objects.DecompType</node>
+    <node x="78.1175827759871" y="238.01571044025854">ca.yorku.cmg.istardt.xmlparser.objects.Model</node>
+    <node x="1887.9229475966604" y="1613.936775301341">ca.yorku.cmg.istardt.xmlparser.objects.OROperator</node>
+    <node x="1698.9229475966604" y="1799.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.NEQOperator</node>
+    <node x="1899.9229475966604" y="1520.936775301341">ca.yorku.cmg.istardt.xmlparser.objects.MultiplyOperator</node>
+    <node x="2095.9229475966604" y="1520.936775301341">ca.yorku.cmg.istardt.xmlparser.objects.NegateOperator</node>
+    <node x="1798.005430738298" y="1296.547673067029">ca.yorku.cmg.istardt.xmlparser.objects.Formula</node>
+    <node x="1650.8076211781636" y="561.1585708327173">ca.yorku.cmg.istardt.xmlparser.objects.Effect</node>
+    <node x="1090.1605376304658" y="822.208089262095">ca.yorku.cmg.istardt.xmlparser.objects.Atom</node>
+    <node x="1524.3605410290722" y="1360.936775301341">ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator</node>
+    <node x="896.9445931482412" y="1624.47049922829">ca.yorku.cmg.istardt.xmlparser.objects.Task</node>
+    <node x="1887.9229475966604" y="1706.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.MinusOperator</node>
+    <node x="2076.9229475966604" y="1799.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.EQOperator</node>
+    <node x="2076.9229475966604" y="1892.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.LTOperator</node>
+    <node x="1698.9229475966604" y="1706.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.LTEOperator</node>
+    <node x="1469.2046626947747" y="-13.341634664853132">ca.yorku.cmg.istardt.xmlparser.objects.Quality</node>
+    <node x="1363.1605376304658" y="1233.0001214353997">ca.yorku.cmg.istardt.xmlparser.objects.GoalId</node>
+    <node x="1195.6017042113867" y="107.1787566147267">ca.yorku.cmg.istardt.xmlparser.objects.Condition</node>
+    <node x="1388.6729931408572" y="960.196723412475">ca.yorku.cmg.istardt.xmlparser.objects.QualId</node>
+    <node x="1277.1605376304658" y="744.9727555857794">ca.yorku.cmg.istardt.xmlparser.objects.DomainPredicate</node>
+    <node x="267.89361494929165" y="1544.205809560135">ca.yorku.cmg.istardt.xmlparser.objects.Goal</node>
+    <node x="1887.9229475966604" y="1799.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.PlusOperator</node>
+    <node x="1698.9229475966604" y="1892.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.ANDOperator</node>
+    <node x="1698.9229475966604" y="1613.936775301341">ca.yorku.cmg.istardt.xmlparser.objects.GTOperator</node>
+    <node x="1887.9229475966604" y="1892.9367753013412">ca.yorku.cmg.istardt.xmlparser.objects.NOTOperator</node>
+    <node x="1427.204662694775" y="304.5">ca.yorku.cmg.istardt.xmlparser.objects.NonDecompositionElement</node>
+    <node x="1698.9229475966604" y="1520.936775301341">ca.yorku.cmg.istardt.xmlparser.objects.PreviousOperator</node>
+    <node x="558.9445931482412" y="1000.0001214353997">ca.yorku.cmg.istardt.xmlparser.objects.DecompositionElement</node>
+    <node x="1355.6729931408572" y="1118.208089262095">ca.yorku.cmg.istardt.xmlparser.objects.DomainVariable</node>
+    <node x="559.4445931482412" y="654.9727555857794">ca.yorku.cmg.istardt.xmlparser.objects.Element</node>
+    <node x="1381.1729931408572" y="822.208089262095">ca.yorku.cmg.istardt.xmlparser.objects.Invariant</node>
+    <node x="-87.82809651991397" y="760.196723412475">ca.yorku.cmg.istardt.xmlparser.objects.Actor</node>
+    <node x="1389.1729931408572" y="1055.208089262095">ca.yorku.cmg.istardt.xmlparser.objects.TaskId</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="com.example.objects.Quality" target="com.example.objects.Actor" relationship="TO_ONE">
-      <point x="-78.000010615679" y="-1.3468797851601266E-4" />
-      <point x="163.0" y="2342.541" />
-      <point x="163.0" y="2851.558" />
-      <point x="102.4999620481413" y="2.0104701343370834E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Effect" target="ca.yorku.cmg.istardt.xmlparser.objects.Task" relationship="TO_ONE">
+      <point x="-123.99962117816358" y="4.291672828458104E-4" />
+      <point x="1568.705" y="863.1590000000001" />
+      <point x="1568.705" y="625.0" />
+      <point x="1024.445" y="625.0" />
+      <point x="15.000406851758726" y="-115.00049922828998" />
     </edge>
-    <edge source="com.example.objects.EQOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1713.254" y="3706.0" />
-      <point x="1287.254" y="3706.0" />
-      <point x="1287.254" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Actor" target="ca.yorku.cmg.istardt.xmlparser.objects.Element" relationship="GENERALIZATION">
+      <point x="9.651991399550752E-5" y="-213.99972341247508" />
+      <point x="133.67200000000003" y="594.0" />
+      <point x="675.4449999999999" y="594.0" />
+      <point x="4.0685175872567925E-4" y="-103.99975558577944" />
     </edge>
-    <edge source="com.example.objects.NOTOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1565.754" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.PreviousOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="26.50022469865894" />
+      <point x="1789.4229999999998" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.Effect" target="com.example.objects.Task" relationship="TO_ONE">
-      <point x="-106.49992221098705" y="14.99968572805028" />
-      <point x="1237.5" y="2815.429" />
-      <point x="1237.5" y="3001.0" />
-      <point x="718.055" y="3001.0" />
-      <point x="15.000421038654054" y="-96.49996044803083" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.DomainVariable" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="GENERALIZATION">
+      <point x="74.00000685914279" y="-14.000089262094889" />
+      <point x="1511.673" y="798.0" />
+      <point x="1197.161" y="798.0" />
+      <point x="-14.999537630465738" y="-247.000089262095" />
     </edge>
-    <edge source="com.example.objects.NegateOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="26.499893675723797" />
-      <point x="1802.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.OROperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.49977530134106" />
+      <point x="1972.4229999999998" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.Goal" target="com.example.objects.DecompositionElement" relationship="GENERALIZATION">
-      <point x="14.999942272156545" y="-184.50005932795375" />
-      <point x="273.12" y="3559.0" />
-      <point x="469.016" y="3559.0" />
-      <point x="1.432322227969962E-4" y="195.49954195213422" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Quality" target="ca.yorku.cmg.istardt.xmlparser.objects.Actor" relationship="TO_ONE">
+      <point x="-105.49966269477477" y="-0.9793653351468947" />
+      <point x="914.4449999999999" y="89.67899999999997" />
+      <point x="914.4449999999999" y="1520.0" />
+      <point x="133.67200000000003" y="1520.0" />
+      <point x="9.651991399550752E-5" y="214.00027658752492" />
     </edge>
-    <edge source="com.example.objects.DecompositionElement" target="com.example.objects.Element" relationship="GENERALIZATION">
-      <point x="-155.4998567677772" y="-4.5804786577718914E-4" />
-      <point x="282.0" y="3338.321" />
-      <point x="282.0" y="2851.558" />
-      <point x="-86.00037734381687" y="2.0104701343370834E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.NonDecompositionElement" target="ca.yorku.cmg.istardt.xmlparser.objects.Formula" relationship="TO_ONE">
+      <point x="3.373052250026376E-4" y="49.0" />
+      <point x="1553.705" y="1231.0" />
+      <point x="1946.005" y="1231.0" />
+      <point x="-4.3073829783679685E-4" y="-48.49967306702911" />
     </edge>
-    <edge source="com.example.objects.Atom" target="com.example.objects.Formula" relationship="GENERALIZATION">
-      <point x="-1.817587440200441E-5" y="-140.5001063242762" />
-      <point x="972.1346606080418" y="3258.0" />
-      <point x="1375.254" y="3258.0" />
-      <point x="4.991999446701811E-4" y="50.4998936757238" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.EQOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.499775301341288" />
+      <point x="2161.423" y="1780.0" />
+      <point x="2272.0" y="1780.0" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.LTOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="-67.49950080005533" y="-1.0632427620294038E-4" />
-      <point x="1287.254" y="3845.47" />
-      <point x="1287.254" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.DecompositionElement" target="ca.yorku.cmg.istardt.xmlparser.objects.DecompType" relationship="TO_ONE">
+      <point x="-14.999593148241274" y="247.0" />
+      <point x="-14.999593148241274" y="-71.0" />
     </edge>
-    <edge source="com.example.objects.Task" target="com.example.objects.Effect" relationship="TO_MANY">
-      <point x="-14.999578961345946" y="-96.49996044803083" />
-      <point x="688.055" y="3020.0" />
-      <point x="1222.5" y="3020.0" />
-      <point x="1222.5" y="2800.429" />
-      <point x="-106.49992221098705" y="-3.1427194971911376E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" target="ca.yorku.cmg.istardt.xmlparser.objects.Formula" relationship="GENERALIZATION">
+      <point x="-14.999541029072134" y="-59.99977530134106" />
+      <point x="1604.861" y="1339.0" />
+      <point x="1732.8609999999999" y="1339.0" />
+      <point x="1732.8609999999999" y="1368.437" />
+      <point x="-148.00043073829784" y="23.38932693297079" />
     </edge>
-    <edge source="com.example.objects.Task" target="com.example.objects.DecompositionElement" relationship="GENERALIZATION">
-      <point x="-29.999578961345946" y="-96.49996044803083" />
-      <point x="673.055" y="3559.0" />
-      <point x="469.016" y="3559.0" />
-      <point x="1.432322227969962E-4" y="195.49954195213422" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.NegateOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="26.50022469865894" />
+      <point x="2181.423" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.Model" target="com.example.objects.Environment" relationship="TO_ONE">
-      <point x="102.0" y="-15.000378900453597" />
-      <point x="-200.5" y="-37.184308927926395" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Goal" target="ca.yorku.cmg.istardt.xmlparser.objects.Actor" relationship="TO_ONE">
+      <point x="3.8505070835981314E-4" y="-213.9998095601352" />
+      <point x="402.394" y="1520.0" />
+      <point x="133.67200000000003" y="1520.0" />
+      <point x="9.651991399550752E-5" y="214.00027658752492" />
     </edge>
-    <edge source="com.example.objects.OperatorDecorator" target="com.example.objects.Formula" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="4.991999446701811E-4" y="50.4998936757238" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.GTEOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.499775301341288" />
+      <point x="2161.423" y="1687.0" />
+      <point x="2272.0" y="1687.0" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.IndirectEffect" target="com.example.objects.NonDecompositionElement" relationship="GENERALIZATION">
-      <point x="-1.4643244389844767E-4" y="50.499865312021484" />
-      <point x="1127.0" y="2436.0" />
-      <point x="962.506" y="2436.0" />
-      <point x="-3.837442585563622E-4" y="-72.5003089279262" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.TaskId" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="1437.6729931408572" y="1037.708089262095" />
+      <point x="122.0" y="-31.5" />
     </edge>
-    <edge source="com.example.objects.Actor" target="com.example.objects.Goal" relationship="TO_MANY">
-      <point x="-15.000037951858701" y="129.5" />
-      <point x="1.4110000000000014" y="3768.6270593279537" />
-      <point x="-114.0" y="0.0" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.MultiplyOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="26.50022469865894" />
+      <point x="1987.9229999999998" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.PlusOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1932.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Quality" target="ca.yorku.cmg.istardt.xmlparser.objects.NonDecompositionElement" relationship="GENERALIZATION">
+      <point x="-105.49966269477477" y="14.020634664853105" />
+      <point x="1402.0" y="104.67899999999997" />
+      <point x="1402.0" y="353.5" />
+      <point x="-126.499662694775" y="0.0" />
     </edge>
-    <edge source="com.example.objects.Effect" target="com.example.objects.Formula" relationship="TO_ONE">
-      <point x="7.778901294841489E-5" y="228.49968572805028" />
-      <point x="1423.698" y="3066.0" />
-      <point x="1375.254" y="3066.0" />
-      <point x="4.991999446701811E-4" y="-50.5001063242762" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.NEQOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.499775301341288" />
+      <point x="1783.4229999999998" y="1780.0" />
+      <point x="2272.0" y="1780.0" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.OperatorDecorator" target="com.example.objects.Formula" relationship="TO_ONE">
-      <point x="-95.49950080005533" y="-1.0632427620294038E-4" />
-      <point x="1133.202" y="3380.47" />
-      <point x="1133.202" y="3066.0" />
-      <point x="1375.254" y="3066.0" />
-      <point x="4.991999446701811E-4" y="-50.5001063242762" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Model" target="ca.yorku.cmg.istardt.xmlparser.objects.ModelHeader" relationship="TO_ONE">
+      <point x="135.5" y="-14.999710440258582" />
+      <point x="-111.0" y="-48.39828677278717" />
     </edge>
-    <edge source="com.example.objects.Task" target="com.example.objects.Actor" relationship="TO_ONE">
-      <point x="4.2103865405351826E-4" y="-96.49996044803083" />
-      <point x="703.055" y="2737.558" />
-      <point x="163.0" y="2737.558" />
-      <point x="163.0" y="2851.558" />
-      <point x="102.4999620481413" y="2.0104701343370834E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Condition" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="CREATE">
+      <point x="-73.94116658092094" y="26.5" />
+      <point x="0.0" y="-247.0" />
     </edge>
-    <edge source="com.example.objects.Condition" target="com.example.objects.Atom" relationship="CREATE">
-      <point x="-18.85561451089427" y="26.499865312021484" />
-      <point x="703.055" y="2704.558" />
-      <point x="1181.0" y="2704.558" />
-      <point x="1181.0" y="3452.47" />
-      <point x="105.9999818241256" y="-1.0632427620294038E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Condition" target="ca.yorku.cmg.istardt.xmlparser.objects.NonDecompositionElement" relationship="GENERALIZATION">
+      <point x="90.50029578861336" y="2.4338527327927295E-4" />
+      <point x="1402.0" y="133.67899999999997" />
+      <point x="1402.0" y="353.5" />
+      <point x="-126.499662694775" y="0.0" />
     </edge>
-    <edge source="com.example.objects.DecompositionElement" target="com.example.objects.DecompType" relationship="TO_ONE">
-      <point x="48.47775948796459" y="195.5" />
-      <point x="0.0" y="-37.5" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Atom" target="ca.yorku.cmg.istardt.xmlparser.objects.Formula" relationship="GENERALIZATION">
+      <point x="4.6236953426159744E-4" y="246.9999107379051" />
+      <point x="1212.161" y="1339.0" />
+      <point x="1732.8609999999999" y="1339.0" />
+      <point x="1732.8609999999999" y="1368.437" />
+      <point x="-148.00043073829784" y="23.38932693297079" />
     </edge>
-    <edge source="com.example.objects.OROperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1553.754" y="3706.0" />
-      <point x="1287.254" y="3706.0" />
-      <point x="1287.254" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Element" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="TO_ONE">
+      <point x="116.0" y="70.73533367631558" />
+      <point x="-122.0" y="-239.5" />
     </edge>
-    <edge source="com.example.objects.Element" target="com.example.objects.Atom" relationship="TO_ONE">
-      <point x="86.0" y="0.0" />
-      <point x="909.9386606080418" y="2851.5577989529866" />
-      <point x="-62.19601817587443" y="-140.5" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.NOTOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.499775301341288" />
+      <point x="1972.4229999999998" y="1871.9699999999998" />
+      <point x="2272.0" y="1871.9699999999998" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.Actor" target="com.example.objects.Task" relationship="TO_MANY">
-      <point x="14.999962048141299" y="129.50020104701343" />
-      <point x="31.411" y="3001.0" />
-      <point x="718.055" y="3001.0" />
-      <point x="15.000421038654054" y="-96.49996044803083" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Actor" target="ca.yorku.cmg.istardt.xmlparser.objects.Effect" relationship="TO_MANY">
+      <point x="15.000096519913996" y="-213.99972341247508" />
+      <point x="148.67200000000003" y="610.0" />
+      <point x="1583.705" y="610.0" />
+      <point x="1583.705" y="848.1590000000001" />
+      <point x="-123.99962117816358" y="-14.999570832717154" />
     </edge>
-    <edge source="com.example.objects.Condition" target="com.example.objects.NonDecompositionElement" relationship="GENERALIZATION">
-      <point x="3.8548910572444584E-4" y="26.499865312021484" />
-      <point x="721.911" y="2436.0" />
-      <point x="962.506" y="2436.0" />
-      <point x="-3.837442585563622E-4" y="-72.5003089279262" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.GoalId" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="GENERALIZATION">
+      <point x="-49.0" y="0.0" />
+      <point x="122.0" y="177.79203217330473" />
     </edge>
-    <edge source="com.example.objects.Quality" target="com.example.objects.NonDecompositionElement" relationship="GENERALIZATION">
-      <point x="-1.061567900251248E-5" y="72.49986531202148" />
-      <point x="941.32" y="2436.0" />
-      <point x="962.506" y="2436.0" />
-      <point x="-3.837442585563622E-4" y="-72.5003089279262" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.GTOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.49977530134106" />
+      <point x="1783.4229999999998" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.IndirectEffect" target="com.example.objects.Atom" relationship="CREATE">
-      <point x="-18.7981464324439" y="50.499865312021484" />
-      <point x="1108.202" y="2704.558" />
-      <point x="1181.0" y="2704.558" />
-      <point x="1181.0" y="3452.47" />
-      <point x="105.9999818241256" y="-1.0632427620294038E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.DivideOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.49977530134106" />
+      <point x="2161.423" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.GTEOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1735.254" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Goal" target="ca.yorku.cmg.istardt.xmlparser.objects.DecompositionElement" relationship="GENERALIZATION">
+      <point x="134.50038505070836" y="1.9043986503675114E-4" />
+      <point x="593.445" y="1758.2060000000001" />
+      <point x="593.445" y="1573.0" />
+      <point x="727.9449999999999" y="1573.0" />
+      <point x="4.0685175872567925E-4" y="246.9998785646003" />
     </edge>
-    <edge source="com.example.objects.GTOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1872.254" y="3706.0" />
-      <point x="1287.254" y="3706.0" />
-      <point x="1287.254" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Task" target="ca.yorku.cmg.istardt.xmlparser.objects.DecompositionElement" relationship="GENERALIZATION">
+      <point x="-14.999593148241274" y="-115.00049922828998" />
+      <point x="994.4449999999999" y="1573.0" />
+      <point x="727.9449999999999" y="1573.0" />
+      <point x="4.0685175872567925E-4" y="246.9998785646003" />
     </edge>
-    <edge source="com.example.objects.Model" target="com.example.objects.Actor" relationship="TO_MANY">
-      <point x="101.9999620481413" y="-3.789004535974527E-4" />
-      <point x="163.0" y="2507.316" />
-      <point x="163.0" y="2851.558" />
-      <point x="102.4999620481413" y="2.0104701343370834E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" target="ca.yorku.cmg.istardt.xmlparser.objects.Formula" relationship="TO_ONE">
+      <point x="4.5897092786617577E-4" y="-59.99977530134106" />
+      <point x="1619.861" y="1231.0" />
+      <point x="1946.005" y="1231.0" />
+      <point x="-4.3073829783679685E-4" y="-48.49967306702911" />
     </edge>
-    <edge source="com.example.objects.Effect" target="com.example.objects.NonDecompositionElement" relationship="GENERALIZATION">
-      <point x="7.778901294841489E-5" y="-228.50031427194972" />
-      <point x="1423.698" y="2436.0" />
-      <point x="962.506" y="2436.0" />
-      <point x="-3.837442585563622E-4" y="-72.5003089279262" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.LTOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="84.5000524033394" y="2.246986587124411E-4" />
+      <point x="2272.0" y="1919.437" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.DecompositionElement" target="com.example.objects.Formula" relationship="TO_ONE">
-      <point x="1.432322227969962E-4" y="-195.50045804786578" />
-      <point x="469.016" y="3066.0" />
-      <point x="1375.254" y="3066.0" />
-      <point x="4.991999446701811E-4" y="-50.5001063242762" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Effect" target="ca.yorku.cmg.istardt.xmlparser.objects.Formula" relationship="TO_ONE">
+      <point x="3.788218364206841E-4" y="302.00042916728285" />
+      <point x="1774.808" y="1231.0" />
+      <point x="1946.005" y="1231.0" />
+      <point x="-4.3073829783679685E-4" y="-48.49967306702911" />
     </edge>
-    <edge source="com.example.objects.LTEOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1391.754" y="3706.0" />
-      <point x="1287.254" y="3706.0" />
-      <point x="1287.254" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Task" target="ca.yorku.cmg.istardt.xmlparser.objects.Effect" relationship="TO_MANY">
+      <point x="30.000406851758726" y="-115.00049922828998" />
+      <point x="1039.445" y="610.0" />
+      <point x="1583.705" y="610.0" />
+      <point x="1583.705" y="848.1590000000001" />
+      <point x="-123.99962117816358" y="-14.999570832717154" />
     </edge>
-    <edge source="com.example.objects.Goal" target="com.example.objects.Actor" relationship="TO_ONE">
-      <point x="-5.772784345481341E-5" y="-184.50005932795375" />
-      <point x="258.12" y="2904.5" />
-      <point x="163.0" y="2904.5" />
-      <point x="163.0" y="2851.558" />
-      <point x="102.4999620481413" y="2.0104701343370834E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.NonDecompositionElement" target="ca.yorku.cmg.istardt.xmlparser.objects.Element" relationship="GENERALIZATION">
+      <point x="-14.999662694774997" y="49.0" />
+      <point x="1538.705" y="594.0" />
+      <point x="675.4449999999999" y="594.0" />
+      <point x="4.0685175872567925E-4" y="-103.99975558577944" />
     </edge>
-    <edge source="com.example.objects.Actor" target="com.example.objects.Element" relationship="GENERALIZATION">
-      <point x="102.4999620481413" y="-14.999798952986566" />
-      <point x="282.0" y="2836.558" />
-      <point x="282.0" y="2851.558" />
-      <point x="-86.00037734381687" y="2.0104701343370834E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.DomainPredicate" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="GENERALIZATION">
+      <point x="4.6236953426159744E-4" y="14.00024441422056" />
+      <point x="1365.161" y="798.0" />
+      <point x="1197.161" y="798.0" />
+      <point x="-14.999537630465738" y="-247.000089262095" />
     </edge>
-    <edge source="com.example.objects.Actor" target="com.example.objects.Effect" relationship="TO_MANY">
-      <point x="-3.7951858701035235E-5" y="129.50020104701343" />
-      <point x="16.411" y="3020.0" />
-      <point x="1222.5" y="3020.0" />
-      <point x="1222.5" y="2800.429" />
-      <point x="-106.49992221098705" y="-3.1427194971911376E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.MinusOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.499775301341288" />
+      <point x="1972.4229999999998" y="1687.0" />
+      <point x="2272.0" y="1687.0" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.MinusOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1584.754" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Effect" target="ca.yorku.cmg.istardt.xmlparser.objects.NonDecompositionElement" relationship="GENERALIZATION">
+      <point x="-123.99962117816358" y="-287.15857083271726" />
+      <point x="1402.0" y="576.0" />
+      <point x="1402.0" y="353.5" />
+      <point x="-126.499662694775" y="0.0" />
     </edge>
-    <edge source="com.example.objects.Model" target="com.example.objects.Environment" relationship="CREATE">
-      <point x="102.0" y="22.183930027472798" />
-      <point x="-200.5" y="0.0" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Actor" target="ca.yorku.cmg.istardt.xmlparser.objects.Quality" relationship="TO_MANY">
+      <point x="-73.05432070409898" y="-214.0" />
+      <point x="60.617582775987046" y="74.67899999999997" />
+      <point x="-105.5" y="-15.979365335146895" />
     </edge>
-    <edge source="com.example.objects.NonDecompositionElement" target="com.example.objects.Formula" relationship="TO_ONE">
-      <point x="-3.837442585563622E-4" y="72.4996910720738" />
-      <point x="962.506" y="3066.0" />
-      <point x="1375.254" y="3066.0" />
-      <point x="4.991999446701811E-4" y="-50.5001063242762" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.QualId" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="GENERALIZATION">
+      <point x="-49.0" y="0.0" />
+      <point x="122.0" y="-95.01136584962" />
     </edge>
-    <edge source="com.example.objects.Environment" target="com.example.objects.NonDecompositionElement" relationship="TO_MANY">
-      <point x="200.5" y="0.0" />
-      <point x="-126.5" y="0.0" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Actor" target="ca.yorku.cmg.istardt.xmlparser.objects.Goal" relationship="TO_MANY">
+      <point x="-14.999903480086004" y="214.0" />
+      <point x="118.67200000000003" y="1758.205809560135" />
+      <point x="-134.5" y="0.0" />
     </edge>
-    <edge source="com.example.objects.PreviousOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="26.499893675723797" />
-      <point x="1410.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.DecompositionElement" target="ca.yorku.cmg.istardt.xmlparser.objects.Formula" relationship="TO_ONE">
+      <point x="169.00040685175873" y="121.43687856460019" />
+      <point x="1506.861" y="1368.437" />
+      <point x="1506.861" y="1231.0" />
+      <point x="1946.005" y="1231.0" />
+      <point x="-4.3073829783679685E-4" y="-48.49967306702911" />
     </edge>
-    <edge source="com.example.objects.NonDecompositionElement" target="com.example.objects.Element" relationship="GENERALIZATION">
-      <point x="-15.000383744258556" y="72.4996910720738" />
-      <point x="947.506" y="2722.558" />
-      <point x="282.0" y="2722.558" />
-      <point x="282.0" y="2851.558" />
-      <point x="-86.00037734381687" y="2.0104701343370834E-4" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.DecompositionElement" target="ca.yorku.cmg.istardt.xmlparser.objects.Element" relationship="GENERALIZATION">
+      <point x="81.00040685175873" y="-247.0001214353997" />
+      <point x="808.9449999999999" y="594.0" />
+      <point x="675.4449999999999" y="594.0" />
+      <point x="4.0685175872567925E-4" y="-103.99975558577944" />
     </edge>
-    <edge source="com.example.objects.ANDOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1761.754" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.LTEOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.499775301341288" />
+      <point x="1783.4229999999998" y="1687.0" />
+      <point x="2272.0" y="1687.0" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.MultiplyOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="26.499893675723797" />
-      <point x="1608.754" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.ANDOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="-84.4999475966606" y="2.246986587124411E-4" />
+      <point x="1681.4229999999998" y="1919.437" />
+      <point x="1681.4229999999998" y="1780.0" />
+      <point x="2272.0" y="1780.0" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
     </edge>
-    <edge source="com.example.objects.NEQOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1395.254" y="3613.0" />
-      <point x="1272.254" y="3613.0" />
-      <point x="1272.254" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Invariant" target="ca.yorku.cmg.istardt.xmlparser.objects.Atom" relationship="GENERALIZATION">
+      <point x="-56.5" y="0.0" />
+      <point x="1348.9105376304658" y="836.208089262095" />
+      <point x="1348.9105376304658" y="1069.208089262095" />
+      <point x="122.0" y="0.0" />
     </edge>
-    <edge source="com.example.objects.DivideOperator" target="com.example.objects.OperatorDecorator" relationship="GENERALIZATION">
-      <point x="4.991999446701811E-4" y="-26.500106324276203" />
-      <point x="1401.754" y="3520.0" />
-      <point x="1302.254" y="3520.0" />
-      <point x="-72.99950080005533" y="26.499893675723797" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Task" target="ca.yorku.cmg.istardt.xmlparser.objects.Actor" relationship="TO_ONE">
+      <point x="4.0685175872567925E-4" y="-115.00049922828998" />
+      <point x="1009.4449999999999" y="1520.0" />
+      <point x="133.67200000000003" y="1520.0" />
+      <point x="9.651991399550752E-5" y="214.00027658752492" />
     </edge>
-    <edge source="com.example.objects.Actor" target="com.example.objects.Quality" relationship="TO_MANY">
-      <point x="-102.5" y="0.0" />
-      <point x="-103.5889620481413" y="2851.5577989529866" />
-      <point x="-103.5889620481413" y="2327.541" />
-      <point x="-78.0" y="-15.000134687978516" />
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Actor" target="ca.yorku.cmg.istardt.xmlparser.objects.Task" relationship="TO_MANY">
+      <point x="-14.999903480086004" y="-213.99972341247508" />
+      <point x="118.67200000000003" y="625.0" />
+      <point x="1024.445" y="625.0" />
+      <point x="15.000406851758726" y="-115.00049922828998" />
+    </edge>
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.PlusOperator" target="ca.yorku.cmg.istardt.xmlparser.objects.OperatorDecorator" relationship="GENERALIZATION">
+      <point x="5.240333939582342E-5" y="-26.499775301341288" />
+      <point x="1972.4229999999998" y="1780.0" />
+      <point x="2272.0" y="1780.0" />
+      <point x="2272.0" y="1594.0" />
+      <point x="1619.861" y="1594.0" />
+      <point x="4.5897092786617577E-4" y="60.00022469865894" />
+    </edge>
+    <edge source="ca.yorku.cmg.istardt.xmlparser.objects.Model" target="ca.yorku.cmg.istardt.xmlparser.objects.Actor" relationship="TO_MANY">
+      <point x="135.50041722401295" y="2.895597414180884E-4" />
+      <point x="515.644" y="320.01599999999996" />
+      <point x="515.644" y="1520.0" />
+      <point x="133.67200000000003" y="1520.0" />
+      <point x="9.651991399550752E-5" y="214.00027658752492" />
     </edge>
   </edges>
-  <settings layout="Compact" zoom="0.3300482565406562" showDependencies="true" x="920.6380769911027" y="3310.0024714234087" />
+  <settings layout="Hierarchic" zoom="0.34261329009171376" showDependencies="true" x="1443.2814349783728" y="1071.2013639529976" />
   <SelectedNodes>
-    <node>com.example.objects.DecompType</node>
+    <node>ca.yorku.cmg.istardt.xmlparser.objects.GoalId</node>
   </SelectedNodes>
   <Categories>
     <Category>Fields</Category>
     <Category>Methods</Category>
-    <Category>Properties</Category>
   </Categories>
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>

@@ -2,202 +2,254 @@
 classDiagram
 direction BT
 class ANDOperator {
-   String formula
+  + getFormula() String
 }
 class Actor {
-  - List~Task~ tasks
   - List~Goal~ goals
-  - List~Effect~ directEffects
   - List~Quality~ qualities
+  - List~NonDecompositionElement~ nonDecompElements
+  - List~Task~ tasks
+  - List~Effect~ effects
+  + setNonDecompElements(List~NonDecompositionElement~) void
+  + getRoot() Element
+  + getNonDecompElements() List~NonDecompositionElement~
+  + addNonDecompElement(NonDecompositionElement) void
+  + getEffects() List~Effect~
+  + setTasks(List~Task~) void
+  + setEffects(List~Effect~) void
+  + getGoals() List~Goal~
+  + setQualities(List~Quality~) void
+  + setGoals(List~Goal~) void
+  + getQualities() List~Quality~
   + toString() String
-   List~Quality~ qualities
-   List~Effect~ directEffects
-   List~Task~ tasks
-   Element root
-   List~Goal~ goals
+  + getTasks() List~Task~
 }
 class Atom {
   - String id
-  - String titleText
   - String titleHTMLText
   - String description
+  - boolean exported
+  - String titleText
+  - boolean crossRun
   + toString() String
-   String description
-   String atomRepresentation
-   String titleText
-   String titleHTMLText
-   String id
-   String formula
+  + getTitleHTMLText() String
+  + setDescription(String) void
+  + isExported() boolean
+  + setTitleText(String) void
+  + getAtomRepresentation() String
+  + isCrossRun() boolean
+  + setTitleHTMLText(String) void
+  + getFormula() String
+  + getId() String
+  + setId(String) void
+  + setExported(boolean) void
+  + getDescription() String
+  + getTitleText() String
+  + setCrossRun(boolean) void
 }
 class Condition {
-   Formula formula
+  + getFormula() Formula
 }
 class DecompType {
 <<enumeration>>
-  + valueOf(String) DecompType
+  +  OR
+  +  AND
+  +  TERM
   + values() DecompType[]
+  + valueOf(String) DecompType
 }
 class DecompositionElement {
-  - Formula nprFormula
   - DecompType decompType
-  - DecompositionElement parent
-  - Formula preFormula
+  - Formula nprFormula
   - List~DecompositionElement~ children
-  + addORChild(DecompositionElement) void
+  - Formula preFormula
+  - DecompositionElement parent
+  + setPreFormula(Formula) void
+  + getChildren() List~DecompositionElement~
+  + isSiblings() boolean
   + getSiblings() List~DecompositionElement~
   + addANDChild(DecompositionElement) void
   + toString() String
-   boolean siblings
-   DecompType decompType
-   DecompositionElement parent
-   List~DecompositionElement~ children
-   Formula preFormula
-   Formula nprFormula
-   boolean root
+  + setChildren(List~DecompositionElement~) void
+  + addORChild(DecompositionElement) void
+  + isRoot() boolean
+  + setParent(DecompositionElement) void
+  + getDecompType() DecompType
+  + getParent() DecompositionElement
+  + setDecompType(DecompType) void
+  + setNprFormula(Formula) void
+  + getNprFormula() Formula
+  + getPreFormula() Formula
 }
 class DivideOperator {
-   String formula
+  + getFormula() String
 }
+class DomainPredicate
+class DomainVariable
 class EQOperator {
-   String formula
+  + getFormula() String
 }
 class Effect {
-  - List~String~ turnsFalse
-  - float probability
-  - Task task
   - List~String~ turnsTrue
-  - Formula nprFormula
   - boolean satisfying
+  - List~String~ turnsFalse
+  - Formula nprFormula
   - Formula preFormula
-  + addTurnsTrue(String) void
+  - Task task
+  - float probability
+  + isSatisfying() boolean
   + addTurnsFalse(String) void
+  + setProbability(float) void
+  + setTurnsTrue(List~String~) void
+  + getNprFormula() Formula
+  + getTask() Task
+  + addTurnsTrue(String) void
   + toString() String
+  + getTurnsFalse() List~String~
+  + getPreFormula() Formula
+  + setTask(Task) void
+  + getProbability() float
+  + setTurnsFalse(List~String~) void
+  + getTurnsTrue() List~String~
+  + setSatisfying(boolean) void
+  + getSiblings() List~Effect~
+  + setPreFormula(Formula) void
+  + setNprFormula(Formula) void
   + isSiblingOf(Effect) boolean
-   float probability
-   List~String~ turnsTrue
-   boolean satisfying
-   Task task
-   List~Effect~ siblings
-   List~String~ turnsFalse
-   Formula preFormula
-   Formula nprFormula
 }
 class Element {
   - String id
   - Atom representation
+  + setId(String) void
+  + setRepresentation(Atom) void
+  + getName() String
+  + getAtom() Atom
+  + getId() String
   + toString() String
-   String name
-   Atom atom
-   String id
-   Atom representation
-}
-class Environment {
-  - List~NonDecompositionElement~ nonDecompElements
-  + addNonDecompElement(NonDecompositionElement) void
-  + getElementById(String) NonDecompositionElement
-  + toString() String
-   List~NonDecompositionElement~ nonDecompElements
 }
 class Formula {
   + createConstantFormula(String) Formula
   + createBooleanFormula(boolean) Formula
-   String formula
+  + getFormula() String
 }
 class GTEOperator {
-   String formula
+  + getFormula() String
 }
 class GTOperator {
-   String formula
+  + getFormula() String
 }
 class Goal {
-  - String episodeLength
-  - List~String~ childGoalRefs
-  - Actor actor
-  - List~String~ childTaskRefs
   - int runs
+  - Actor actor
+  - List~String~ childGoalRefs
+  - List~String~ childTaskRefs
   - boolean root
   + addChildTaskRef(String) void
-  + toString() String
+  + setRoot(boolean) void
+  + getChildGoalRefs() List~String~
+  + getActor() Actor
+  + setChildGoalRefs(List~String~) void
+  + getChildTaskRefs() List~String~
+  + getRuns() int
+  + setRuns(int) void
   + addChildGoalRef(String) void
-   int runs
-   Actor actor
-   String episodeLength
-   List~String~ childGoalRefs
-   List~String~ childTaskRefs
-   boolean root
+  + isRoot() boolean
+  + setActor(Actor) void
+  + toString() String
+  + setChildTaskRefs(List~String~) void
 }
-class IndirectEffect {
-  - boolean exported
-   boolean exported
-   Formula formula
-}
+class GoalId
+class Invariant
 class LTEOperator {
-   String formula
+  + getFormula() String
 }
 class LTOperator {
-   String formula
+  + getFormula() String
 }
 class MinusOperator {
-   String formula
+  + getFormula() String
 }
 class Model {
-  - Environment environment
+  - ModelHeader modelHeader
   - List~Actor~ actors
-  + toString() String
-   List~Actor~ actors
-   Environment environment
+  + setModelHeader(ModelHeader) void
+  + getActors() List~Actor~
+  + setActors(List~Actor~) void
+  + getModelHeader() ModelHeader
+}
+class ModelHeader {
+  - String version
+  - String lastUpdated
+  - String author
+  - String notes
+  + getAuthor() String
+  + setVersion(String) void
+  + setNotes(String) void
+  + getLastUpdated() String
+  + setLastUpdated(String) void
+  + setAuthor(String) void
+  + getNotes() String
+  + getVersion() String
 }
 class MultiplyOperator {
-   String formula
+  + getFormula() String
 }
 class NEQOperator {
-   String formula
+  + getFormula() String
 }
 class NOTOperator {
-   String formula
+  + getFormula() String
 }
 class NegateOperator {
-   String formula
+  + getFormula() String
 }
 class NonDecompositionElement {
-  - Boolean previous
   - Formula valueFormula
-   Formula valueFormula
-   Boolean previous
-   Formula formula
+  + setValueFormula(Formula) void
+  + getFormula() Formula
 }
+class NumInvariant
 class OROperator {
-   String formula
+  + getFormula() String
 }
 class OperatorDecorator {
   # Formula left
   # Formula right
+  + getLeft() Formula
+  + getRight() Formula
 }
 class PlusOperator {
-   String formula
+  + getFormula() String
 }
 class PreviousOperator {
-   String formula
+  + getFormula() String
 }
+class QualId
 class Quality {
   - boolean root
   - boolean exported
-   boolean exported
-   Formula formula
-   boolean root
+  - Actor actor
+  + isExported() boolean
+  + setRoot(boolean) void
+  + setExported(boolean) void
+  + isRoot() boolean
+  + getFormula() Formula
 }
 class Task {
   - List~Effect~ effects
   - Actor actor
+  + getActor() Actor
+  + setActor(Actor) void
   + addEffect(Effect) void
+  + setEffects(List~Effect~) void
+  + isDeterministic() boolean
+  + getEffects() List~Effect~
   + toString() String
-   boolean deterministic
-   Actor actor
-   List~Effect~ effects
 }
+class TaskId
 
 ANDOperator  -->  OperatorDecorator 
-Actor "1" *--> "directEffects *" Effect 
+Actor "1" *--> "effects *" Effect 
 Actor  -->  Element 
 Actor "1" *--> "goals *" Goal 
 Actor "1" *--> "qualities *" Quality 
@@ -209,38 +261,41 @@ DecompositionElement "1" *--> "decompType 1" DecompType
 DecompositionElement  -->  Element 
 DecompositionElement "1" *--> "preFormula 1" Formula 
 DivideOperator  -->  OperatorDecorator 
+DomainPredicate  -->  Atom 
+DomainVariable  -->  Atom 
 EQOperator  -->  OperatorDecorator 
 Effect "1" *--> "preFormula 1" Formula 
 Effect  -->  NonDecompositionElement 
 Effect "1" *--> "task 1" Task 
 Element "1" *--> "representation 1" Atom 
-Environment "1" *--> "nonDecompElements *" NonDecompositionElement 
 GTEOperator  -->  OperatorDecorator 
 GTOperator  -->  OperatorDecorator 
 Goal "1" *--> "actor 1" Actor 
 Goal  -->  DecompositionElement 
-IndirectEffect  ..>  Atom : «create»
-IndirectEffect  -->  NonDecompositionElement 
+GoalId  -->  Atom 
+Invariant  -->  Atom 
 LTEOperator  -->  OperatorDecorator 
 LTOperator  -->  OperatorDecorator 
 MinusOperator  -->  OperatorDecorator 
 Model "1" *--> "actors *" Actor 
-Model "1" *--> "environment 1" Environment 
-Model  ..>  Environment : «create»
+Model "1" *--> "modelHeader 1" ModelHeader 
 MultiplyOperator  -->  OperatorDecorator 
 NEQOperator  -->  OperatorDecorator 
 NOTOperator  -->  OperatorDecorator 
 NegateOperator  -->  OperatorDecorator 
 NonDecompositionElement  -->  Element 
 NonDecompositionElement "1" *--> "valueFormula 1" Formula 
+NumInvariant  -->  Atom 
 OROperator  -->  OperatorDecorator 
-OperatorDecorator  -->  Formula 
 OperatorDecorator "1" *--> "left 1" Formula 
+OperatorDecorator  -->  Formula 
 PlusOperator  -->  OperatorDecorator 
 PreviousOperator  -->  OperatorDecorator 
+QualId  -->  Atom 
 Quality "1" *--> "actor 1" Actor 
 Quality  -->  NonDecompositionElement 
 Task "1" *--> "actor 1" Actor 
 Task  -->  DecompositionElement 
 Task "1" *--> "effects *" Effect 
+TaskId  -->  Atom 
 ```
