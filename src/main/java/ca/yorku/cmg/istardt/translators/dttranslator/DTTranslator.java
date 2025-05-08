@@ -1,6 +1,6 @@
 package ca.yorku.cmg.istardt.translators.dttranslator;
 
-import ca.yorku.cmg.istardt.xmlparser;
+import ca.yorku.cmg.istardt.xmlparser.objects.*;
 
 public class DTTranslator {
 	private Model model;

@@ -1,14 +1,8 @@
 package ca.yorku.cmg.istardt.xmlparser;
 
-<<<<<<< HEAD:src/main/java/com/example/IStarTApplication.java
-import com.example.DTTranslator.DTTranslator;
-import com.example.objects.*;
-
-import com.example.xml.IStarUnmarshaller;
-=======
+import ca.yorku.cmg.istardt.translators.dttranslator.DTTranslator;
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
->>>>>>> refs/remotes/origin/main:src/main/java/ca/yorku/cmg/istardt/xmlparser/IStarTApplication.java
 
 import java.io.File;
 import java.util.ArrayList;
