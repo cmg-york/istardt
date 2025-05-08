@@ -11,6 +11,16 @@
         </predicate>
 
         <predicate primitive="true" init="false" exported="false"
+                   description="Materials are banned">
+            materialBanned
+        </predicate>
+
+        <predicate primitive="true" init="false" exported="false"
+                   description="Materials are available">
+            materialAvailable
+        </predicate>
+
+        <predicate primitive="true" init="false" exported="false"
                    description="Materials delivered late (domestic)">
             deliveredLateDom
         </predicate>
@@ -63,10 +73,16 @@
     <preBoxes>
         <preBox name="materialAvailable" description="Material availability in stock">
            <formula>
-               <gt>
-                   <left><const>4</const></left>
-                   <right><const>5</const></right>
-               </gt>
+           <or>
+	           	<and>
+	           	   <not><boolAtom>materialBanned</boolAtom></not>
+	           	   <gt>
+	                   <left><numAtom>stock</numAtom></left>
+	                   <right><const>5</const></right>
+	               </gt>
+	           	</and>
+	           	<boolAtom>materialAvailable</boolAtom>
+           	</or>
            </formula>
         </preBox>
 
@@ -186,9 +202,22 @@
     <tasks>
         <task name="SourceDomestically" description="Source materials from a domestic supplier">
             <pre>
-                <formula>
+<!--                <formula>
                     <boolAtom>materialAvailable</boolAtom>
                 </formula>
+-->            
+				<formula>
+	           		<or>
+			           	<and>
+			           	   <not><boolAtom>materialBanned</boolAtom></not>
+			           	   <gt>
+			                   <left><numAtom>stock</numAtom></left>
+			                   <right><const>5</const></right>
+			               </gt>
+			           	</and>
+		           	<boolAtom>materialAvailable</boolAtom>
+	           		</or>
+           		 </formula>
             </pre>
             <effectGroup>
                 <effect name="successDeliveredInTimeDom" satisfying="true" probability="0.75"

@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.DTTranslator.DTTranslator;
 import com.example.objects.*;
 
 import com.example.xml.IStarUnmarshaller;
@@ -69,8 +70,11 @@ public class IStarTApplication {
             Model model = unmarshaller.unmarshalToModel(xmlFile);
 
             // Display model information
-            printModelInformation(model);
-
+            //printModelInformation(model);
+            DTTranslator trans = new DTTranslator(model);
+            trans.translate();
+            
+            
         } catch (Exception e) {
             System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();

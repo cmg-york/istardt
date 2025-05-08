@@ -9,6 +9,15 @@ public class NOTOperator extends OperatorDecorator {
         this.right = null;
     }
 
+    public Formula getLeft() {
+    	return(this.left);
+    }
+    
+    public Formula getRight() {
+    	return(this.right);
+    }
+    
+    
     @Override
     public String getFormula() {
         return "NOT(" + left.getFormula() + ")";

@@ -9,6 +9,14 @@ public class GTOperator extends OperatorDecorator {
         this.right = right;
     }
 
+    public Formula getLeft() {
+    	return(this.left);
+    }
+    
+    public Formula getRight() {
+    	return(this.right);
+    }
+    
     @Override
     public String getFormula() {
         return "(" + left.getFormula() + " > " + right.getFormula() + ")";
