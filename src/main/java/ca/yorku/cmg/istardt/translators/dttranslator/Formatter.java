@@ -1,4 +1,4 @@
-package com.example.dttranslator;
+package ca.yorku.cmg.istardt.translators.dttranslator;
 
 public class Formatter {
 
