@@ -1,13 +1,13 @@
 # istar-unmarshal
 
-A Java-based system for deserializing iStar-T XML models into a structured object model. 
+A Java-based system for deserializing iStar-DT-X XML models into a structured object model. 
 
 ## Table of Contents
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
-    - [Running the Application](#running-the-application)
+  - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
 - [Architecture](#architecture)
 - [Configuration](#configuration)
@@ -19,7 +19,7 @@ A Java-based system for deserializing iStar-T XML models into a structured objec
 - XML validation against XSD and Schematron schemas
 - Two-phase deserialization for resolving complex references
 - Formula processing using the Visitor pattern
-- Comprehensive domain model for iStar-T elements
+- Comprehensive domain model
 
 ## Requirements
 
@@ -34,11 +34,11 @@ A Java-based system for deserializing iStar-T XML models into a structured objec
 4. In `settings.xml`, add in your GitHub username and personal access token (classic) with `read:packages` scope
 ```xml
 <servers>
-    <server>
-        <id>github</id>
-        <username>GITHUB_USERNAME</username>
-        <password>GITHUB_PERSONAL_ACCESS_TOKEN</password>
-    </server>
+  <server>
+    <id>github</id>
+    <username>GITHUB_USERNAME</username>
+    <password>GITHUB_PERSONAL_ACCESS_TOKEN</password>
+  </server>
 </servers>
 ```
 
@@ -76,62 +76,83 @@ To use different input files, you'll need to modify the file path constants in `
 ```java
 public class IStarTApplication {
 
-    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v3.xsd";
-    private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron3.sch";
-    private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_fixed2.xml";
-    // ...
+  private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v3.xsd";
+  private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron3.sch";
+  private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_fixed2.xml";
+  // ...
 }
 ```
 
 ## Project Structure
 
 ```
-src
-├── main
-│   ├── java
-│   │   └── com
-│   │       └── example
-│   │           ├── IStarTApplication.java       # Main application
-│   │           ├── XmlValidation.java           # Validation utility
-│   │           ├── objects                      # Domain model
-│   │           │   ├── Model.java
-│   │           │   ├── Actor.java
-│   │           │   ├── Goal.java
-│   │           │   ├── Task.java
-│   │           │   ├── Element.java
-│   │           │   ├── DecompositionElement.java
-│   │           │   ├── NonDecompositionElement.java
-│   │           │   ├── Formula.java
-│   │           │   └── ...
-│   │           ├── xml                          
-│   │               ├── IStarUnmarshaller.java
-│   │               ├── ReferenceResolver.java
-│   │               ├── deserializers
-│   │               │   ├── IStarTModule.java
-│   │               │   ├── BaseDeserializer.java
-│   │               │   ├── ModelDeserializer.java
-│   │               │   ├── ActorDeserializer.java
-│   │               │   ├── GoalDeserializer.java
-│   │               │   ├── TaskDeserializer.java
-│   │               │   ├── FormulaDeserializer.java
-│   │               │   └── ...
-│   │               ├── formula
-│   │               │   ├── FormulaNodeVisitor.java
-│   │               │   └── FormulaNodeVisitorImpl.java
-│   │               ├── processing
-│   │               │   └── ReferenceProcessor.java
-│   │               └── utils
-│   │                   └── DeserializerUtils.java
-│   └── resources
-│       ├── xsd                                  # XSD schemas
-│       ├── schematron                           # Schematron schemas
-│       └── xml                                  # Sample XML files
-└── pom.xml                                      # Maven configuration
+.
+├── README.md
+├── pom.xml
+├── settingsExample.xml
+├── .gitignore
+├── docs
+   ├── README.md
+   ├── bnf_grammar.md
+   ├── domain_model_uml.md
+   ├── domain_model_uml.png
+   ├── domain_model_uml.uml
+   ├── images
+   ├── sequence_diagram_deserialization_system.md
+   └── xml_uml.md
+├── src
+   ├── main
+     ├── java
+        └── ca
+          └── yorku
+            └── cmg
+              └── istardt
+                └── xmlparser
+                  ├── IStarTApplication.java  # Main application
+                  ├── XmlValidation.java
+                  ├── objects         # Domain model
+                    ├── ANDOperator.java
+                    ├── Actor.java
+                    ├── Atom.java
+                    ├── Condition.java
+                    ...
+                  └── xml
+                    ├── IStarUnmarshaller.java
+                    ├── ReferenceResolver.java
+                    ├── deserializers
+                      ├── ActorDeserializer.java
+                      ├── BaseDeserializer.java
+                      ...
+                    ├── formula
+                      ├── FormulaNodeVisitor.java
+                      └── FormulaNodeVisitorImpl.java
+                    ├── processing
+                      └── ReferenceProcessor.java
+                    └── utils
+                      └── DeserializerUtils.java
+     └── resources
+       ├── schematron
+       ├── textualRep_figure1a.txt
+       ├── textualRep_figure1b.txt
+       ├── xml
+       └── xsd
+   └── test
+     ├── java
+       └── ca
+         └── yorku
+           └── cmg
+             └── istardt
+               └── xmlparser
+                 └── IStarUnmarshallerTest.java
+     └── resources
+       ├── schematron
+       ├── xml
+       └── xsd
 ```
 
 ## Architecture
 
-The system follows a pipeline architecture with these main components:
+The system has the following main components:
 
 1. **Validation**: XML validation against schemas
 2. **Unmarshalling**: Conversion of XML to Java objects
@@ -155,5 +176,4 @@ mvn test
 
 ## Limitations/Future notes
 
-- Current XSD defines 1 actor per model. In the future, will consider multiple actors per model. 
-- 
+- Current XSD defines 1 actor per model. In the future, will consider multiple actors per model.

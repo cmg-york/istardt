@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sch:schema
         xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-        xmlns:istar-t="https://example.org/istar-t"
+        xmlns:istar-dt-x="https://example.org/istar-dt-x"
         queryBinding="xslt2">
 
-  <!-- Declare the 'istar-t' prefix here -->
-  <sch:ns prefix="istar-t" uri="https://example.org/istar-t"/>
+  <!-- Declare the 'istar-dt-x' prefix here -->
+  <sch:ns prefix="istar-dt-x" uri="https://example.org/istar-dt-x"/>
 
   <!-- Pattern to Check Descriptions -->
   <sch:pattern id="CheckDescriptions">
-    <sch:rule context="istar-t:actor | istar-t:quality | istar-t:goal | istar-t:task | istar-t:effect | istar-t:indirectEffect | istar-t:prebox">
+    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect | istar-dt-x:indirectEffect | istar-dt-x:prebox">
       <!-- Missing description => report (warning) -->
       <sch:report test="not(@description)" role="WARN">
         <sch:text>
@@ -18,7 +18,7 @@
       </sch:report>
     </sch:rule>
 
-    <sch:rule context="istar-t:predicate">
+    <sch:rule context="istar-dt-x:predicate">
       <sch:report test="not(@description)" role="WARN">
         <sch:text>
           Element &lt;<sch:value-of select="name()"/>&gt; with content="<sch:value-of select="normalize-space(.)"/>" has no @description.
@@ -30,16 +30,16 @@
   <!-- Pattern to Check Unique Names Across All Elements -->
   <sch:pattern id="CheckUniqueNames">
     <!-- Check that element names are unique across all element types in the whole XML -->
-    <sch:rule context="istar-t:actor | istar-t:quality | istar-t:goal | istar-t:task | istar-t:effect | istar-t:indirectEffect | istar-t:preBox">
+    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect | istar-dt-x:indirectEffect | istar-dt-x:preBox">
       <sch:let name="name" value="@name"/>
       <sch:let name="currentType" value="local-name()"/>
-      <sch:let name="allNamed" value="//istar-t:actor[@name=$name] |
-                                    //istar-t:quality[@name=$name] |
-                                    //istar-t:goal[@name=$name] |
-                                    //istar-t:task[@name=$name] |
-                                    //istar-t:effect[@name=$name] |
-                                    //istar-t:indirectEffect[@name=$name] |
-                                    //istar-t:preBox[@name=$name]"/>
+      <sch:let name="allNamed" value="//istar-dt-x:actor[@name=$name] |
+                                    //istar-dt-x:quality[@name=$name] |
+                                    //istar-dt-x:goal[@name=$name] |
+                                    //istar-dt-x:task[@name=$name] |
+                                    //istar-dt-x:effect[@name=$name] |
+                                    //istar-dt-x:indirectEffect[@name=$name] |
+                                    //istar-dt-x:preBox[@name=$name]"/>
 
       <sch:assert test="count($allNamed) = 1" role="ERROR">
         <sch:text>
@@ -49,9 +49,9 @@
     </sch:rule>
 
     <!-- Check that predicate content is unique across all predicates in the whole XML -->
-    <sch:rule context="istar-t:predicate">
+    <sch:rule context="istar-dt-x:predicate">
       <sch:let name="content" value="normalize-space(.)"/>
-      <sch:let name="allPredicates" value="//istar-t:predicate[normalize-space(.) = $content]"/>
+      <sch:let name="allPredicates" value="//istar-dt-x:predicate[normalize-space(.) = $content]"/>
 
       <sch:assert test="count($allPredicates) = 1" role="ERROR">
         <sch:text>
@@ -63,7 +63,7 @@
 
   <!-- Pattern to Check Root Goals Episode Length -->
   <sch:pattern id="CheckRootGoalsEpisodeLength">
-    <sch:rule context="istar-t:goal[@root='true']">
+    <sch:rule context="istar-dt-x:goal[@root='true']">
       <!-- Missing @episodeLength => warning -->
       <sch:report test="not(@episodeLength)" role="WARN">
         <sch:text>
@@ -82,9 +82,9 @@
 
   <!-- Pattern to Check Leaf Goals Refinement -->
   <sch:pattern id="CheckLeafGoalsRefinement">
-    <sch:rule context="istar-t:goal">
+    <sch:rule context="istar-dt-x:goal">
       <!-- No <refinement> => warning -->
-      <sch:report test="not(istar-t:refinement)" role="WARN">
+      <sch:report test="not(istar-dt-x:refinement)" role="WARN">
         <sch:text>
           Goal "<sch:value-of select="@name"/>" has no &lt;refinement&gt; (leaf-level goal).
         </sch:text>
@@ -94,15 +94,15 @@
 
   <!-- Pattern to Check Refinement Children Count -->
   <sch:pattern id="CheckRefinementChildrenCount">
-    <sch:rule context="istar-t:refinement[@type='AND']">
-      <sch:assert test="count(istar-t:childGoal | istar-t:childTask) &gt;= 2" role="ERROR">
+    <sch:rule context="istar-dt-x:refinement[@type='AND']">
+      <sch:assert test="count(istar-dt-x:childGoal | istar-dt-x:childTask) &gt;= 2" role="ERROR">
         <sch:text>
           AND-refinement must have at least 2 children.
         </sch:text>
       </sch:assert>
     </sch:rule>
-    <sch:rule context="istar-t:refinement[@type='OR']">
-      <sch:assert test="count(istar-t:childGoal | istar-t:childTask) &gt;= 1" role="ERROR">
+    <sch:rule context="istar-dt-x:refinement[@type='OR']">
+      <sch:assert test="count(istar-dt-x:childGoal | istar-dt-x:childTask) &gt;= 1" role="ERROR">
         <sch:text>
           OR-refinement must have at least 1 child.
         </sch:text>
@@ -112,10 +112,10 @@
 
   <!-- Pattern to Check Task Reference Count -->
   <sch:pattern id="CheckTaskReferenceCount">
-    <sch:rule context="istar-t:task">
+    <sch:rule context="istar-dt-x:task">
       <sch:let name="thisName" value="@name"/>
-      <!-- Count how many istar-t:childTask elements refer to this task, anywhere under the same actor -->
-      <sch:let name="refCount" value="count(ancestor::istar-t:actor//istar-t:childTask[@ref = $thisName])"/>
+      <!-- Count how many istar-dt-x:childTask elements refer to this task, anywhere under the same actor -->
+      <sch:let name="refCount" value="count(ancestor::istar-dt-x:actor//istar-dt-x:childTask[@ref = $thisName])"/>
       <!-- Not exactly once => warning -->
       <sch:report test="$refCount != 1" role="WARN">
         <sch:text>
@@ -127,15 +127,15 @@
 
   <!-- Pattern to Check Child References Exist -->
   <sch:pattern id="CheckChildRefsExist">
-    <sch:rule context="istar-t:childGoal">
-      <sch:assert test="@ref = ancestor::istar-t:actor//istar-t:goal/@name" role="ERROR">
+    <sch:rule context="istar-dt-x:childGoal">
+      <sch:assert test="@ref = ancestor::istar-dt-x:actor//istar-dt-x:goal/@name" role="ERROR">
         <sch:text>
           childGoal ref="<sch:value-of select="@ref"/>" does not match any &lt;goal name="..."&gt;.
         </sch:text>
       </sch:assert>
     </sch:rule>
-    <sch:rule context="istar-t:childTask">
-      <sch:assert test="@ref = ancestor::istar-t:actor//istar-t:task/@name" role="ERROR">
+    <sch:rule context="istar-dt-x:childTask">
+      <sch:assert test="@ref = ancestor::istar-dt-x:actor//istar-dt-x:task/@name" role="ERROR">
         <sch:text>
           childTask ref="<sch:value-of select="@ref"/>" does not match any &lt;task name="..."&gt;.
         </sch:text>
@@ -145,7 +145,7 @@
 
   <!-- Pattern to Check Effects Probability -->
   <sch:pattern id="CheckEffectsProbability">
-    <sch:rule context="istar-t:effect">
+    <sch:rule context="istar-dt-x:effect">
       <!-- Probability must be 0..1 => error -->
       <sch:assert test="@probability castable as xs:decimal and @probability &gt;= 0 and @probability &lt;= 1" role="ERROR">
         <sch:text>
@@ -171,11 +171,11 @@
 
   <!-- Pattern to Check Sum of Probabilities in Each EffectGroup -->
   <sch:pattern id="CheckEffectGroupProbabilitySum">
-    <sch:rule context="istar-t:effectGroup">
+    <sch:rule context="istar-dt-x:effectGroup">
       <!-- Assert that the sum of @probability equals 1.0 within a small tolerance -->
-      <sch:assert test="abs(xs:decimal(sum(istar-t:effect/@probability)) - 1.0) le 0.001" role="ERROR">
+      <sch:assert test="abs(xs:decimal(sum(istar-dt-x:effect/@probability)) - 1.0) le 0.001" role="ERROR">
         <sch:text>
-          The sum of @probability in &lt;effectGroup&gt; should be 1.0, but it is <sch:value-of select="format-number(sum(istar-t:effect/@probability), '0.000')"/>.
+          The sum of @probability in &lt;effectGroup&gt; should be 1.0, but it is <sch:value-of select="format-number(sum(istar-dt-x:effect/@probability), '0.000')"/>.
         </sch:text>
       </sch:assert>
     </sch:rule>
@@ -184,8 +184,8 @@
 
   <!-- Pattern to Check TurnsTrue and TurnsFalse in Predicates -->
   <sch:pattern id="CheckTurnsTrueInPredicates">
-    <sch:rule context="istar-t:turnsTrue | istar-t:turnsFalse">
-      <sch:assert test="normalize-space(.) = ancestor::istar-t:actor//istar-t:predicates/istar-t:predicate/normalize-space()"
+    <sch:rule context="istar-dt-x:turnsTrue | istar-dt-x:turnsFalse">
+      <sch:assert test="normalize-space(.) = ancestor::istar-dt-x:actor//istar-dt-x:predicates/istar-dt-x:predicate/normalize-space()"
                   role="ERROR">
         <sch:text>
           <sch:value-of select="name()"/>="
@@ -198,14 +198,14 @@
 
   <!-- Pattern to Check Pre/NPR References -->
   <sch:pattern id="CheckPreNprReferences">
-    <sch:rule context="istar-t:pre | istar-t:npr">
+    <sch:rule context="istar-dt-x:pre | istar-dt-x:npr">
       <sch:let name="ref" value="normalize-space(.)"/>
       <sch:assert
               test="
-          $ref = ancestor::istar-t:actor//istar-t:preBox/@name
-          or $ref = ancestor::istar-t:actor//istar-t:goal/@name
-          or $ref = ancestor::istar-t:actor//istar-t:task/@name
-          or $ref = ancestor::istar-t:actor//istar-t:effectGroup/istar-t:effect/@name
+          $ref = ancestor::istar-dt-x:actor//istar-dt-x:preBox/@name
+          or $ref = ancestor::istar-dt-x:actor//istar-dt-x:goal/@name
+          or $ref = ancestor::istar-dt-x:actor//istar-dt-x:task/@name
+          or $ref = ancestor::istar-dt-x:actor//istar-dt-x:effectGroup/istar-dt-x:effect/@name
         "
               role="ERROR">
         <sch:text>
@@ -218,10 +218,10 @@
   <!-- Pattern to Check Atoms in Boolean Expressions -->
   <sch:pattern id="CheckBooleanExpressionAtoms">
     <!-- Check atoms in all boolean expressions -->
-    <sch:rule context="istar-t:boolAtom[ancestor::istar-t:preBox or ancestor::istar-t:and or ancestor::istar-t:or or ancestor::istar-t:not]">
-      <sch:let name="actor" value="ancestor::istar-t:actor"/>
+    <sch:rule context="istar-dt-x:boolAtom[ancestor::istar-dt-x:preBox or ancestor::istar-dt-x:and or ancestor::istar-dt-x:or or ancestor::istar-dt-x:not]">
+      <sch:let name="actor" value="ancestor::istar-dt-x:actor"/>
       <sch:let name="boolAtom" value="normalize-space(.)"/>
-      <sch:let name="predicateNames" value="$actor//istar-t:predicates/istar-t:predicate/normalize-space(.)"/>
+      <sch:let name="predicateNames" value="$actor//istar-dt-x:predicates/istar-dt-x:predicate/normalize-space(.)"/>
       <sch:let name="isValidPredicate" value="$boolAtom = $predicateNames"/>
 
       <!-- Atom must be a valid predicate name -->
@@ -233,10 +233,10 @@
     </sch:rule>
 
     <!-- Check atoms referenced inside a previous element in boolean expressions -->
-    <sch:rule context="istar-t:previous/istar-t:boolAtom[ancestor::istar-t:preBox or ancestor::istar-t:and or ancestor::istar-t:or or ancestor::istar-t:not]">
-      <sch:let name="actor" value="ancestor::istar-t:actor"/>
+    <sch:rule context="istar-dt-x:previous/istar-dt-x:boolAtom[ancestor::istar-dt-x:preBox or ancestor::istar-dt-x:and or ancestor::istar-dt-x:or or ancestor::istar-dt-x:not]">
+      <sch:let name="actor" value="ancestor::istar-dt-x:actor"/>
       <sch:let name="boolAtom" value="normalize-space(.)"/>
-      <sch:let name="predicateNames" value="$actor//istar-t:predicates/istar-t:predicate/normalize-space(.)"/>
+      <sch:let name="predicateNames" value="$actor//istar-dt-x:predicates/istar-dt-x:predicate/normalize-space(.)"/>
       <sch:let name="isValidPredicate" value="$boolAtom = $predicateNames"/>
 
       <!-- Atom inside previous must be a valid predicate name -->
@@ -251,12 +251,12 @@
   <!-- Pattern to Check Atoms in Numeric Expressions -->
   <sch:pattern id="CheckNumericExpressionAtoms">
     <!-- Check atoms in all numeric expressions -->
-    <sch:rule context="istar-t:numAtom[ancestor::istar-t:quality or ancestor::istar-t:add or ancestor::istar-t:subtract or
-                                    ancestor::istar-t:multiply or ancestor::istar-t:divide or ancestor::istar-t:negate]">
-      <sch:let name="actor" value="ancestor::istar-t:actor"/>
+    <sch:rule context="istar-dt-x:numAtom[ancestor::istar-dt-x:quality or ancestor::istar-dt-x:add or ancestor::istar-dt-x:subtract or
+                                    ancestor::istar-dt-x:multiply or ancestor::istar-dt-x:divide or ancestor::istar-dt-x:negate]">
+      <sch:let name="actor" value="ancestor::istar-dt-x:actor"/>
       <sch:let name="numAtom" value="normalize-space(.)"/>
-      <sch:let name="predicateNames" value="$actor//istar-t:predicates/istar-t:predicate/normalize-space(.)"/>
-      <sch:let name="qualityNames" value="$actor//istar-t:qualities/istar-t:quality/@name"/>
+      <sch:let name="predicateNames" value="$actor//istar-dt-x:predicates/istar-dt-x:predicate/normalize-space(.)"/>
+      <sch:let name="qualityNames" value="$actor//istar-dt-x:qualities/istar-dt-x:quality/@name"/>
       <sch:let name="isValidReference" value="$numAtom = $predicateNames or $numAtom = $qualityNames"/>
 
       <!-- Atom must be a valid predicate or quality name -->
@@ -268,12 +268,12 @@
     </sch:rule>
 
     <!-- Check atoms referenced inside a previous element in numeric expressions -->
-    <sch:rule context="istar-t:previous/istar-t:numAtom[ancestor::istar-t:quality or ancestor::istar-t:add or ancestor::istar-t:subtract or
-                                                    ancestor::istar-t:multiply or ancestor::istar-t:divide or ancestor::istar-t:negate]">
-      <sch:let name="actor" value="ancestor::istar-t:actor"/>
+    <sch:rule context="istar-dt-x:previous/istar-dt-x:numAtom[ancestor::istar-dt-x:quality or ancestor::istar-dt-x:add or ancestor::istar-dt-x:subtract or
+                                                    ancestor::istar-dt-x:multiply or ancestor::istar-dt-x:divide or ancestor::istar-dt-x:negate]">
+      <sch:let name="actor" value="ancestor::istar-dt-x:actor"/>
       <sch:let name="numAtom" value="normalize-space(.)"/>
-      <sch:let name="predicateNames" value="$actor//istar-t:predicates/istar-t:predicate/normalize-space(.)"/>
-      <sch:let name="qualityNames" value="$actor//istar-t:qualities/istar-t:quality/@name"/>
+      <sch:let name="predicateNames" value="$actor//istar-dt-x:predicates/istar-dt-x:predicate/normalize-space(.)"/>
+      <sch:let name="qualityNames" value="$actor//istar-dt-x:qualities/istar-dt-x:quality/@name"/>
       <sch:let name="isValidReference" value="$numAtom = $predicateNames or $numAtom = $qualityNames"/>
 
       <!-- Atom inside previous must be a valid predicate or quality name -->
@@ -287,8 +287,8 @@
 
   <!-- Pattern to Check Root Quality -->
   <sch:pattern id="CheckRootQuality">
-    <sch:rule context="istar-t:quality[@root='true']">
-      <sch:assert test="count(ancestor::istar-t:actor/istar-t:qualities/istar-t:quality[@root='true']) = 1" role="ERROR">
+    <sch:rule context="istar-dt-x:quality[@root='true']">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:qualities/istar-dt-x:quality[@root='true']) = 1" role="ERROR">
         <sch:text>
           There must be exactly one root quality per actor.
         </sch:text>

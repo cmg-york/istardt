@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns="https://example.org/istar-t"
-        targetNamespace="https://example.org/istar-t"
+        xmlns="https://example.org/istar-dt-x"
+        targetNamespace="https://example.org/istar-dt-x"
         elementFormDefault="qualified"
         attributeFormDefault="unqualified">
 
@@ -10,9 +10,7 @@
     <xsd:element name="actor" type="ActorType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
-                Root element representing an actor in the iStar-RL framework.
-                Contains all behavioral elements including predicates, preBoxes, indirectEffects, qualities, goals, and tasks.
-                This model-driven approach facilitates the creation of training simulators for Reinforcement Learning (RL) agents by providing a structured representation of goals, actions, and their effects.
+                Root element representing an actor in iStar-DT-X.
             ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
