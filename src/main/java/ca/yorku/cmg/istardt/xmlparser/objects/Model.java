@@ -18,8 +18,7 @@ public class Model {
     @JacksonXmlProperty(localName = "actor")
     @JsonManagedReference("model-actors")
     private List<Actor> actors;
-
-    private ModelHeader modelHeader;
+    private Header header;
 
     public Model() {
         this.actors = new ArrayList<>();
@@ -31,11 +30,11 @@ public class Model {
         this.actors = actors;
     }
 
-    public ModelHeader getModelHeader() {
-        return modelHeader;
+    public Header getHeader() {
+        return header;
     }
 
-    public void setModelHeader(ModelHeader modelHeader) {
-        this.modelHeader = modelHeader;
+    public void setHeader(Header header) {
+        this.header = header;
     }
 }

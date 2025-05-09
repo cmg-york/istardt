@@ -29,16 +29,15 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
     protected void handleSpecificAttributes(Quality quality, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
         // Get specific attributes
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
-        boolean exported = DeserializerUtils.getBooleanAttribute(node, "exported", false);
 
         quality.setRoot(root);
-        quality.setExported(exported);
+        // TODO add init
 
         // Process formula
         try {
             if (node.has("formula")) {
                 Formula formula = ctxt.readValue(node.get("formula").traverse(p.getCodec()), Formula.class);
-                quality.setValueFormula(formula);
+                quality.setFormula(formula);
             }
         } catch (IOException e) {
             DeserializerUtils.handleDeserializationError(LOGGER,
