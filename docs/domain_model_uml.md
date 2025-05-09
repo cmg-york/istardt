@@ -3,49 +3,45 @@ classDiagram
 direction BT
 class ANDOperator {
   + getFormula() String
+  + getLeft() Formula
+  + getRight() Formula
 }
 class Actor {
-  - List~Goal~ goals
+  - List~Task~ tasks
   - List~Quality~ qualities
   - List~NonDecompositionElement~ nonDecompElements
-  - List~Task~ tasks
+  - List~Goal~ goals
   - List~Effect~ effects
-  + setNonDecompElements(List~NonDecompositionElement~) void
-  + getRoot() Element
-  + getNonDecompElements() List~NonDecompositionElement~
-  + addNonDecompElement(NonDecompositionElement) void
-  + getEffects() List~Effect~
-  + setTasks(List~Task~) void
-  + setEffects(List~Effect~) void
-  + getGoals() List~Goal~
-  + setQualities(List~Quality~) void
   + setGoals(List~Goal~) void
-  + getQualities() List~Quality~
+  + setEffects(List~Effect~) void
+  + getNonDecompElements() List~NonDecompositionElement~
+  + setNonDecompElements(List~NonDecompositionElement~) void
   + toString() String
   + getTasks() List~Task~
+  + addNonDecompElement(NonDecompositionElement) void
+  + setQualities(List~Quality~) void
+  + getGoals() List~Goal~
+  + getEffects() List~Effect~
+  + getRoot() Element
+  + setTasks(List~Task~) void
+  + getQualities() List~Quality~
 }
 class Atom {
+  - String titleText
+  - String description
   - String id
   - String titleHTMLText
-  - String description
-  - boolean exported
-  - String titleText
-  - boolean crossRun
+  + setId(String) void
+  + getTitleText() String
   + toString() String
+  + setTitleHTMLText(String) void
+  + getAtomRepresentation() String
   + getTitleHTMLText() String
   + setDescription(String) void
-  + isExported() boolean
-  + setTitleText(String) void
-  + getAtomRepresentation() String
-  + isCrossRun() boolean
-  + setTitleHTMLText(String) void
   + getFormula() String
-  + getId() String
-  + setId(String) void
-  + setExported(boolean) void
   + getDescription() String
-  + getTitleText() String
-  + setCrossRun(boolean) void
+  + getId() String
+  + setTitleText(String) void
 }
 class Condition {
   + getFormula() Formula
@@ -53,33 +49,33 @@ class Condition {
 class DecompType {
 <<enumeration>>
   +  OR
-  +  AND
   +  TERM
+  +  AND
   + values() DecompType[]
   + valueOf(String) DecompType
 }
 class DecompositionElement {
   - DecompType decompType
-  - Formula nprFormula
-  - List~DecompositionElement~ children
-  - Formula preFormula
   - DecompositionElement parent
-  + setPreFormula(Formula) void
-  + getChildren() List~DecompositionElement~
-  + isSiblings() boolean
+  - List~DecompositionElement~ children
+  - Formula nprFormula
+  - Formula preFormula
   + getSiblings() List~DecompositionElement~
-  + addANDChild(DecompositionElement) void
-  + toString() String
-  + setChildren(List~DecompositionElement~) void
-  + addORChild(DecompositionElement) void
   + isRoot() boolean
-  + setParent(DecompositionElement) void
-  + getDecompType() DecompType
-  + getParent() DecompositionElement
-  + setDecompType(DecompType) void
-  + setNprFormula(Formula) void
   + getNprFormula() Formula
+  + addANDChild(DecompositionElement) void
+  + isSiblings() boolean
+  + setPreFormula(Formula) void
+  + getParent() DecompositionElement
+  + setParent(DecompositionElement) void
+  + setNprFormula(Formula) void
+  + setDecompType(DecompType) void
+  + getChildren() List~DecompositionElement~
+  + setChildren(List~DecompositionElement~) void
   + getPreFormula() Formula
+  + toString() String
+  + getDecompType() DecompType
+  + addORChild(DecompositionElement) void
 }
 class DivideOperator {
   + getFormula() String
@@ -91,74 +87,95 @@ class EQOperator {
 }
 class Effect {
   - List~String~ turnsTrue
+  - Task task
   - boolean satisfying
+  - Formula preFormula
   - List~String~ turnsFalse
   - Formula nprFormula
-  - Formula preFormula
-  - Task task
   - float probability
-  + isSatisfying() boolean
-  + addTurnsFalse(String) void
-  + setProbability(float) void
-  + setTurnsTrue(List~String~) void
-  + getNprFormula() Formula
-  + getTask() Task
-  + addTurnsTrue(String) void
-  + toString() String
-  + getTurnsFalse() List~String~
-  + getPreFormula() Formula
-  + setTask(Task) void
-  + getProbability() float
-  + setTurnsFalse(List~String~) void
   + getTurnsTrue() List~String~
-  + setSatisfying(boolean) void
-  + getSiblings() List~Effect~
   + setPreFormula(Formula) void
-  + setNprFormula(Formula) void
+  + getPreFormula() Formula
+  + getNprFormula() Formula
+  + getSiblings() List~Effect~
+  + getProbability() float
   + isSiblingOf(Effect) boolean
+  + setTurnsFalse(List~String~) void
+  + toString() String
+  + addTurnsTrue(String) void
+  + setProbability(float) void
+  + isSatisfying() boolean
+  + setTurnsTrue(List~String~) void
+  + setTask(Task) void
+  + getTurnsFalse() List~String~
+  + setNprFormula(Formula) void
+  + setSatisfying(boolean) void
+  + addTurnsFalse(String) void
+  + getTask() Task
 }
 class Element {
-  - String id
   - Atom representation
-  + setId(String) void
-  + setRepresentation(Atom) void
-  + getName() String
-  + getAtom() Atom
-  + getId() String
+  - String id
   + toString() String
+  + setId(String) void
+  + getId() String
+  + setRepresentation(Atom) void
+  + getAtom() Atom
+  + getName() String
 }
 class Formula {
   + createConstantFormula(String) Formula
-  + createBooleanFormula(boolean) Formula
   + getFormula() String
+  + createBooleanFormula(boolean) Formula
 }
 class GTEOperator {
+  + getLeft() Formula
   + getFormula() String
+  + getRight() Formula
 }
 class GTOperator {
+  + getLeft() Formula
+  + getRight() Formula
   + getFormula() String
 }
 class Goal {
-  - int runs
-  - Actor actor
   - List~String~ childGoalRefs
+  - Actor actor
+  - int runs
   - List~String~ childTaskRefs
   - boolean root
   + addChildTaskRef(String) void
-  + setRoot(boolean) void
-  + getChildGoalRefs() List~String~
-  + getActor() Actor
-  + setChildGoalRefs(List~String~) void
-  + getChildTaskRefs() List~String~
   + getRuns() int
-  + setRuns(int) void
+  + setChildTaskRefs(List~String~) void
+  + getActor() Actor
+  + getChildGoalRefs() List~String~
+  + getChildTaskRefs() List~String~
   + addChildGoalRef(String) void
+  + setChildGoalRefs(List~String~) void
+  + toString() String
+  + setRuns(int) void
+  + setRoot(boolean) void
   + isRoot() boolean
   + setActor(Actor) void
-  + toString() String
-  + setChildTaskRefs(List~String~) void
 }
 class GoalId
+class Header {
+  - String source
+  - String lastUpdated
+  - String author
+  - String title
+  - String notes
+  + getNotes() String
+  + setTitle(String) void
+  + setAuthor(String) void
+  + getTitle() String
+  + setSource(String) void
+  + getLastUpdated() String
+  + setNotes(String) void
+  + setLastUpdated(String) void
+  + getAuthor() String
+  + getSource() String
+}
 class Invariant
 class LTEOperator {
   + getFormula() String
@@ -170,26 +187,12 @@ class MinusOperator {
   + getFormula() String
 }
 class Model {
-  - ModelHeader modelHeader
   - List~Actor~ actors
-  + setModelHeader(ModelHeader) void
+  - Header header
+  + getHeader() Header
   + getActors() List~Actor~
   + setActors(List~Actor~) void
-  + getModelHeader() ModelHeader
-}
-class ModelHeader {
-  - String version
-  - String lastUpdated
-  - String author
-  - String notes
-  + getAuthor() String
-  + setVersion(String) void
-  + setNotes(String) void
-  + getLastUpdated() String
-  + setLastUpdated(String) void
-  + setAuthor(String) void
-  + getNotes() String
-  + getVersion() String
+  + setHeader(Header) void
 }
 class MultiplyOperator {
   + getFormula() String
@@ -198,25 +201,29 @@ class NEQOperator {
   + getFormula() String
 }
 class NOTOperator {
+  + getLeft() Formula
   + getFormula() String
+  + getRight() Formula
 }
 class NegateOperator {
   + getFormula() String
 }
 class NonDecompositionElement {
   - Formula valueFormula
-  + setValueFormula(Formula) void
+  + setFormula(Formula) void
   + getFormula() Formula
 }
 class NumInvariant
 class OROperator {
+  + getLeft() Formula
+  + getRight() Formula
   + getFormula() String
 }
 class OperatorDecorator {
   # Formula left
   # Formula right
-  + getLeft() Formula
   + getRight() Formula
+  + getLeft() Formula
 }
 class PlusOperator {
   + getFormula() String
@@ -226,25 +233,25 @@ class PreviousOperator {
 }
 class QualId
 class Quality {
-  - boolean root
-  - boolean exported
   - Actor actor
-  + isExported() boolean
+  - float init
+  - boolean root
   + setRoot(boolean) void
-  + setExported(boolean) void
+  + getInit() float
+  + setInit(float) void
   + isRoot() boolean
   + getFormula() Formula
 }
 class Task {
   - List~Effect~ effects
   - Actor actor
-  + getActor() Actor
-  + setActor(Actor) void
-  + addEffect(Effect) void
-  + setEffects(List~Effect~) void
-  + isDeterministic() boolean
-  + getEffects() List~Effect~
   + toString() String
+  + addEffect(Effect) void
+  + setActor(Actor) void
+  + isDeterministic() boolean
+  + setEffects(List~Effect~) void
+  + getActor() Actor
+  + getEffects() List~Effect~
 }
 class TaskId
 
@@ -278,7 +285,7 @@ LTEOperator  -->  OperatorDecorator
 LTOperator  -->  OperatorDecorator 
 MinusOperator  -->  OperatorDecorator 
 Model "1" *--> "actors *" Actor 
-Model "1" *--> "modelHeader 1" ModelHeader 
+Model "1" *--> "header 1" Header 
 MultiplyOperator  -->  OperatorDecorator 
 NEQOperator  -->  OperatorDecorator 
 NOTOperator  -->  OperatorDecorator 
@@ -287,8 +294,8 @@ NonDecompositionElement  -->  Element
 NonDecompositionElement "1" *--> "valueFormula 1" Formula 
 NumInvariant  -->  Atom 
 OROperator  -->  OperatorDecorator 
-OperatorDecorator "1" *--> "left 1" Formula 
 OperatorDecorator  -->  Formula 
+OperatorDecorator "1" *--> "left 1" Formula 
 PlusOperator  -->  OperatorDecorator 
 PreviousOperator  -->  OperatorDecorator 
 QualId  -->  Atom 
