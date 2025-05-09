@@ -79,22 +79,6 @@ public class Atom extends Formula {
                 '}';
     }
 
-    public boolean isExported() {
-        return exported;
-    }
-
-    public void setExported(boolean exported) {
-        this.exported = exported;
-    }
-
-    public boolean isCrossRun() {
-        return crossRun;
-    }
-
-    public void setCrossRun(boolean crossRun) {
-        this.crossRun = crossRun;
-    }
-
     @Override
     public String toString() {
         return "Atom{id=" + id +

@@ -11,8 +11,7 @@ public class Quality extends NonDecompositionElement {
     @JacksonXmlProperty(isAttribute = true)
     private boolean root = false;
 
-    @JacksonXmlProperty(isAttribute = true)
-    private boolean exported = false;
+    private float init;
 
     @JsonBackReference("actor-qualities")
     private Actor actor;
@@ -42,22 +41,12 @@ public class Quality extends NonDecompositionElement {
         this.root = isRoot;
     }
 
-    /**
-     * Check if this quality is exported.
-     *
-     * @return True if this quality is exported, false otherwise
-     */
-    public boolean isExported() {
-        return exported;
+    public float getInit() {
+        return init;
     }
 
-    /**
-     * Set whether this quality is exported.
-     *
-     * @param exported True if this quality is exported, false otherwise
-     */
-    public void setExported(boolean exported) {
-        this.exported = exported;
+    public void setInit(float init) {
+        this.init = init;
     }
 
     @Override

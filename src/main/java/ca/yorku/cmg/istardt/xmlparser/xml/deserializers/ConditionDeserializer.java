@@ -40,7 +40,7 @@ public class ConditionDeserializer extends BaseDeserializer<Condition> {
 
         // Set the formula if found
         if (formula != null) {
-            condition.setValueFormula(formula);
+            condition.setFormula(formula);
         }
     }
 }
