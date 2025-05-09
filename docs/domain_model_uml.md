@@ -233,7 +233,6 @@ class PreviousOperator {
 }
 class QualId
 class Quality {
-  - Actor actor
   - float init
   - boolean root
   + setRoot(boolean) void
