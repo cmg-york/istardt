@@ -13,9 +13,6 @@ public class Quality extends NonDecompositionElement {
 
     private float init;
 
-    @JsonBackReference("actor-qualities")
-    private Actor actor;
-
     /**
      * Default constructor.
      */
