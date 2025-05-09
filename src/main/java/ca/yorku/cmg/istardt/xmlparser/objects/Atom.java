@@ -5,8 +5,6 @@ public class Atom extends Formula {
     private String titleText;
     private String titleHTMLText;
     private String description;
-    private boolean exported;
-    private boolean crossRun;
 
     /**
      * Get the ID of this atom
