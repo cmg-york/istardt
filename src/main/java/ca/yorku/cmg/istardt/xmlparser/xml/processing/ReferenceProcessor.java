@@ -45,9 +45,6 @@ public class ReferenceProcessor {
 
                 // Collect effects
                 if (task.getEffects() != null) {
-                    for (Effect effect : task.getEffects()) {
-                        actor.addNonDecompElement(effect);
-                    }
                     allEffects.addAll(task.getEffects());
                 }
             }

@@ -34,16 +34,16 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
             // Process predicates
             if (node.has("predicates") && node.get("predicates").has("predicate")) {
                 JsonNode predicatesNode = node.get("predicates").get("predicate");
+                // TODO change Atom to Predicate
                 List<Atom> predicates = deserializePredicates(predicatesNode);
+                actor.setPredicates(predicates);
             }
 
             // Process preBoxes (conditions)
             if (node.has("preBoxes") && node.get("preBoxes").has("preBox")) {
                 JsonNode preBoxesNode = node.get("preBoxes").get("preBox");
                 List<Condition> conditions = DeserializerUtils.deserializeList(preBoxesNode, p, ctxt, Condition.class);
-                for (Condition condition : conditions) {
-                    actor.addNonDecompElement(condition);
-                }
+                actor.setConditions(conditions);
             }
 
             // Process qualities
@@ -51,9 +51,6 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode qualitiesNode = node.get("qualities").get("quality");
                 List<Quality> qualities = DeserializerUtils.deserializeList(qualitiesNode, p, ctxt, Quality.class);
                 actor.setQualities(qualities);
-                for (Quality quality : qualities) {
-                    actor.addNonDecompElement(quality);
-                }
             }
 
             // Process goals
@@ -80,12 +77,6 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
         LOGGER.info("Deserialized actor: " + name);
     }
 
-    /**
-     * Deserializes predicates into Atom objects.
-     *
-     * @param predicatesNode The JSON node containing predicate elements
-     * @return A list of Atom objects
-     */
     private List<Atom> deserializePredicates(JsonNode predicatesNode) {
         return DeserializerUtils.processNodeItems(predicatesNode, this::deserializePredicate);
     }

@@ -128,24 +128,9 @@ public class IStarTApplication {
             }
 
 
-            // Print non-decomposition
-            System.out.println("\nNon-Decomposition Information:");
-            List<NonDecompositionElement> nonDecompElements = actor.getNonDecompElements();
-            if (nonDecompElements != null && !nonDecompElements.isEmpty()) {
-
-                List<Condition> conditions = new ArrayList<>();
-                List<Quality> qualitiesNonDecomp = new ArrayList<>();
-                List<Effect> effects = new ArrayList<>();
-
-                for (NonDecompositionElement element : nonDecompElements) {
-                    if (element instanceof Condition) {
-                        conditions.add((Condition) element);
-                    } else if (element instanceof Quality) {
-                        qualitiesNonDecomp.add((Quality) element);
-                    } else if (element instanceof Effect) {
-                        effects.add((Effect) element);
-                    }
-                }
+                List<Condition> conditions = actor.getConditions();
+                List<Quality> qualitiesNonDecomp = actor.getQualities();
+                List<Effect> effects = actor.getEffects();
 
                 // Print Conditions (PreBoxes)
                 if (!conditions.isEmpty()) {
@@ -195,7 +180,6 @@ public class IStarTApplication {
             }
 
             actorCount++;
-        }
     }
 
     /**
