@@ -11,8 +11,6 @@ public class Quality extends NonDecompositionElement {
     @JacksonXmlProperty(isAttribute = true)
     private boolean root = false;
 
-    private float init;
-
     /**
      * Default constructor.
      */
@@ -36,14 +34,6 @@ public class Quality extends NonDecompositionElement {
      */
     public void setRoot(boolean isRoot) {
         this.root = isRoot;
-    }
-
-    public float getInit() {
-        return init;
-    }
-
-    public void setInit(float init) {
-        this.init = init;
     }
 
     @Override
