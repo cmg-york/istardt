@@ -6,7 +6,7 @@ public abstract class NonDecompositionElement extends Element {
     @JacksonXmlProperty(localName = "formula")
     private Formula valueFormula;
 
-    public void setValueFormula(Formula valueFormula) {
+    public void setFormula(Formula valueFormula) {
         this.valueFormula = valueFormula;
     }
 

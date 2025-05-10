@@ -5,8 +5,6 @@ public class Atom extends Formula {
     private String titleText;
     private String titleHTMLText;
     private String description;
-    private boolean exported;
-    private boolean crossRun;
 
     /**
      * Get the ID of this atom
@@ -79,22 +77,6 @@ public class Atom extends Formula {
                 ", titleHTMLText='" + titleHTMLText + '\'' +
                 ", description='" + description + '\'' +
                 '}';
-    }
-
-    public boolean isExported() {
-        return exported;
-    }
-
-    public void setExported(boolean exported) {
-        this.exported = exported;
-    }
-
-    public boolean isCrossRun() {
-        return crossRun;
-    }
-
-    public void setCrossRun(boolean crossRun) {
-        this.crossRun = crossRun;
     }
 
     @Override
