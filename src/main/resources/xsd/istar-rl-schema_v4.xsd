@@ -600,7 +600,8 @@
                 - root
                 - description
                 - episodeLength
-                Goals can include at most one pre and one npr element, each containing a formula element.
+                - terminal
+                Goals can include at most one pre and one npr element.
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
@@ -659,7 +660,8 @@
         <xsd:attribute name="name" type="xsd:string" use="required"/>
         <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
-        <xsd:attribute name="episodeLength" type="xsd:string" use="optional">
+        <xsd:attribute name="terminal" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="episodeLength" type="xsd:nonNegativeInteger" use="optional" default="1">
             <xsd:annotation>
                 <xsd:documentation><![CDATA[
                     Attribute: episodeLength

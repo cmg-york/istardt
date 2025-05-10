@@ -138,7 +138,8 @@
 
 
             <goals>
-                <goal name="ProductManufactured" terminal="false" root="true" description="Product Manufactured" episodeLength="1">
+                <goal name="ProductManufactured" terminal="false" root="true" description="Product Manufactured"
+                      episodeLength="4">
                     <pre>
                         <boolAtom>hasManufacturingCapacity</boolAtom>
                     </pre>
