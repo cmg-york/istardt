@@ -20,6 +20,8 @@ public class Model {
     private List<Actor> actors;
     private Header header;
 
+    private Options options;
+
     public Model() {
         this.actors = new ArrayList<>();
     }
@@ -36,5 +38,13 @@ public class Model {
 
     public void setHeader(Header header) {
         this.header = header;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
     }
 }
