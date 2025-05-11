@@ -10,7 +10,7 @@
         notes here
     </header>
 
-    <options continuous="true" infeasible-action-penalty="1.0"> </options>
+    <options continuous="true" infeasible-action-penalty="1.0"></options>
 
     <!--  TODO all xml tag names with - should be avoided, need to adjust those -->
     <actors>
@@ -90,6 +90,13 @@
                     deliveredBadQualitySpec
                 </predicate>
             </predicates>
+
+        <!-- TODO complete variables section in XSD/XML -->
+            <variables>
+                <variable>
+
+                </variable>
+            </variables>
 
             <condBoxes>
                 <condBox name="materialAvailable" description="Material availability in stock">
