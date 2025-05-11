@@ -77,9 +77,10 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
         String name = DeserializerUtils.getStringAttribute(node, "name", null);
         String description = DeserializerUtils.getStringAttribute(node, "description", null);
 
-        // Create and set the atom
+        // Create atom and add bidirectional relationship
         Atom atom = createAtom(name, description);
         element.setRepresentation(atom);
+        atom.setElement(element);
 
         // Register the element
         registerElement(element);

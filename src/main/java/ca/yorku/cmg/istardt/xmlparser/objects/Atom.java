@@ -5,6 +5,7 @@ public class Atom extends Formula {
     private String titleText;
     private String titleHTMLText;
     private String description;
+    private Element element;
 
     /**
      * Get the ID of this atom
@@ -65,6 +66,13 @@ public class Atom extends Formula {
     @Override
     public String getFormula() {
         return id != null ? id : "";
+    }
+
+    public Element getElement() {
+        return element;
+    }
+    public void setElement(Element element) {
+        this.element = element;
     }
 
     /**
