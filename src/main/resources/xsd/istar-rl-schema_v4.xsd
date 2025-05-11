@@ -33,7 +33,7 @@
     </xsd:complexType>
 
     <!-- ===== Header ===== -->
-    <xsd:complexType name="ModelHeaderType">
+    <xsd:complexType name="ModelHeaderType" mixed="true">
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining a model header.]]></xsd:documentation>
         </xsd:annotation>
@@ -178,7 +178,7 @@
             <xsd:documentation><![CDATA[Complex type defining an initialization.]]></xsd:documentation>
         </xsd:annotation>
         <xsd:attribute name="element" type="xsd:string" use="required"></xsd:attribute>
-<!--TODO content pick between boolean or decimal -->
+        <!--TODO content pick between boolean or decimal -->
     </xsd:complexType>
 
     <!-- ===== Predicates ===== -->
