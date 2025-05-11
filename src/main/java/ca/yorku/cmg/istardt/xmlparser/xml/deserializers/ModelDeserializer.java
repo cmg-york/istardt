@@ -1,7 +1,9 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Actor;
+import ca.yorku.cmg.istardt.xmlparser.objects.Header;
 import ca.yorku.cmg.istardt.xmlparser.objects.Model;
+import ca.yorku.cmg.istardt.xmlparser.objects.Options;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -15,7 +17,6 @@ import java.util.logging.Logger;
 
 /**
  * Deserializer for Model objects.
- * Handles the conversion of XML root element to Model.
  */
 public class ModelDeserializer extends StdDeserializer<Model> {
     private static final Logger LOGGER = Logger.getLogger(ModelDeserializer.class.getName());
@@ -27,28 +28,83 @@ public class ModelDeserializer extends StdDeserializer<Model> {
     @Override
     public Model deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
-
         Model model = new Model();
-        List<Actor> actors = new ArrayList<>();
 
         try {
-            // If root node is an actor, deserialize it directly
-            if (node.has("name")) {
-                Actor actor = ctxt.readValue(node.traverse(p.getCodec()), Actor.class);
-                actors.add(actor);
-                LOGGER.info("Deserialized single actor model");
+            if (rootNode.has("header")) {
+                Header header = deserializeHeader(rootNode.get("header"), p, ctxt);
+                model.setHeader(header);
+            } else {
+                model.setHeader(new Header());
+                LOGGER.info("No header found, using default");
             }
-            // Multiple actors (future implementation)
-            else if (node.has("actor")) {
-                JsonNode actorNodes = node.get("actor");
-                actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
-                LOGGER.info("Deserialized multi-actor model with " + actors.size() + " actors");
-            }
-        } catch (IOException e) {
-            DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing actors in model", e);
-        }
 
-        model.setActors(actors);
+            if (rootNode.has("options")) {
+                Options options = deserializeOptions(rootNode.get("options"), p, ctxt);
+                model.setOptions(options);
+            } else {
+                model.setOptions(new Options());
+                LOGGER.info("No options found, using default");
+            }
+
+            List<Actor> actors = new ArrayList<>();
+            if (rootNode.has("actors")) {
+                JsonNode actorsNode = rootNode.get("actors");
+                if (actorsNode.has("actor")) {
+                    JsonNode actorNodes = actorsNode.get("actor");
+                    actors = deserializeActors(actorNodes, p, ctxt);
+                    LOGGER.info("Deserialized " + actors.size() + " actors");
+                } else {
+                    LOGGER.warning("No actors found within actors tag");
+                }
+            } else {
+                LOGGER.warning("No actors tag found");
+            }
+            model.setActors(actors);
+        } catch (IOException e) {
+            DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing model", e);
+        }
         return model;
     }
+    private Header deserializeHeader(JsonNode headerNode, JsonParser p, DeserializationContext ctxt) throws IOException {
+        Header header = new Header();
+        header.setTitle(DeserializerUtils.getStringAttribute(headerNode, "title", ""));
+        header.setAuthor(DeserializerUtils.getStringAttribute(headerNode, "author", ""));
+        header.setSource(DeserializerUtils.getStringAttribute(headerNode, "source", ""));
+        header.setLastUpdated(DeserializerUtils.getStringAttribute(headerNode, "lastUpdated", ""));
+
+        if (headerNode.asText() != null && !headerNode.asText().isEmpty()) {
+            header.setNotes(headerNode.asText().trim());
+        }
+
+        return header;
+    }
+
+    private Options deserializeOptions(JsonNode optionsNode, JsonParser p, DeserializationContext ctxt) throws IOException {
+        Options options = new Options();
+        options.setContinuous(DeserializerUtils.getBooleanAttribute(optionsNode, "continuous", false));
+        options.setInfActionPenalty(DeserializerUtils.getFloatAttribute(optionsNode, "infeasible-action-penalty", 0.0f));
+        return options;
+    }
+
+    private List<Actor> deserializeActors(JsonNode actorNodes, JsonParser p, DeserializationContext ctxt) throws IOException {
+        List<Actor> actors = new ArrayList<>();
+
+        if (actorNodes.isArray()) {
+            for (JsonNode actorNode : actorNodes) {
+                Actor actor = ctxt.readValue(actorNode.traverse(p.getCodec()), Actor.class);
+                if (actor != null) {
+                    actors.add(actor);
+                }
+            }
+        } else {
+            Actor actor = ctxt.readValue(actorNodes.traverse(p.getCodec()), Actor.class);
+            if (actor != null) {
+                actors.add(actor);
+            }
+        }
+
+        return actors;
+    }
+
 }
