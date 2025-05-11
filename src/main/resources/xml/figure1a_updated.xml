@@ -19,9 +19,9 @@
         [ [condBoxes] ] [ [cross-set] ] [ [exported-set] ]  [ [initializations] ]   -->
 
             <crossSet>
-                <crossRun><predicate-id>identifer</predicate-id></crossRun>
-                <crossRun><variable-id>identifer</variable-id></crossRun>
-                <crossRun><qual-id>identifer</qual-id></crossRun>
+                <crossRun><predicateId>identifer</predicateId></crossRun>
+                <crossRun><variableId>identifer</variableId></crossRun>
+                <crossRun><qualId>identifer</qualId></crossRun>
             </crossSet>
 
             <exportedSet>
@@ -178,9 +178,7 @@
                             description="Successful">
                         <turnsTrue>deliveredInTimeDom</turnsTrue>
                         <pre>
-                            <formula>
-                                <boolAtom>SourceDomestically</boolAtom>
-                            </formula>
+                            <boolAtom>SourceDomestically</boolAtom>
                         </pre>
                     </effect>
                     <effect name="successDeliveredLateDom" satisfying="true" probability="0.20"
@@ -213,7 +211,7 @@
 
             <task name="BuildInHouse" description="Build the product in-house">
                 <pre>
-                        <boolAtom>hasManufacturingCapacity</boolAtom>
+                    <boolAtom>hasManufacturingCapacity</boolAtom>
                 </pre>
                 <effectGroup>
                     <effect name="successInHGood" satisfying="true" probability="0.5"
@@ -229,7 +227,7 @@
 
             <task name="AssignToSpecialists" description="Assign product manufacturing to specialists">
                 <npr>
-                        <boolAtom>SourceFromAbroad</boolAtom>
+                    <boolAtom>SourceFromAbroad</boolAtom>
                 </npr>
                 <effectGroup>
                     <effect name="successSpecGood" satisfying="true" probability="0.7"

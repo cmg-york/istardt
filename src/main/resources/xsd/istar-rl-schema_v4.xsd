@@ -151,7 +151,11 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining an cross-run.]]></xsd:documentation>
         </xsd:annotation>
-<!--      TODO add element group selection here -->
+        <xsd:choice>
+            <xsd:element name="predicateId" type="xsd:string"/>
+            <xsd:element name="variableId" type="xsd:string"/>
+            <xsd:element name="qualId" type="xsd:string"/>
+        </xsd:choice>
     </xsd:complexType>
 
     <!-- ===== Initializations ===== -->
@@ -222,8 +226,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="condBox" type="CondBoxType"
-                         minOccurs="1" maxOccurs="unbounded">
+            <xsd:element name="condBox" type="CondBoxType" minOccurs="1" maxOccurs="unbounded">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Defines a single precondition box.
@@ -552,18 +555,9 @@
                 Numeric quality attribute with a structured value representation.
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="formula" type="NumericExpressionType" minOccurs="1" maxOccurs="1">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        Defines the formula representing the quality.
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
+        <xsd:group ref="NumericExpressionElements" minOccurs="1" maxOccurs="1"/>
         <xsd:attribute name="name" type="xsd:string" use="required"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
-        <xsd:attribute name="exported" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
     </xsd:complexType>
 
@@ -605,7 +599,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="pre" minOccurs="0" maxOccurs="1">
+            <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Element: pre
@@ -613,19 +607,8 @@
                         Used to define logical conditions that must be met for the goal to be achievable.
                     ]]></xsd:documentation>
                 </xsd:annotation>
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    Defines the boolean formula representing the precedence.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                    </xsd:sequence>
-                </xsd:complexType>
             </xsd:element>
-            <xsd:element name="npr" minOccurs="0" maxOccurs="1">
+            <xsd:element name="npr" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Element: npr
@@ -633,19 +616,7 @@
                         Used to define logical conditions that must not be met for the goal to be achievable.
                     ]]></xsd:documentation>
                 </xsd:annotation>
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    Defines the boolean formula representing the negative precedence.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                    </xsd:sequence>
-                </xsd:complexType>
             </xsd:element>
-
             <xsd:element name="refinement" type="RefinementType"
                          minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
@@ -661,14 +632,7 @@
         <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
         <xsd:attribute name="terminal" type="xsd:boolean" use="optional" default="false"/>
-        <xsd:attribute name="episodeLength" type="xsd:nonNegativeInteger" use="optional" default="1">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Attribute: episodeLength
-                    Used to model multi-run episodes where an episode may consist of multiple goal runs.
-                ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
+        <xsd:attribute name="episodeLength" type="xsd:nonNegativeInteger" use="optional" default="1"/>
     </xsd:complexType>
 
     <xsd:complexType name="RefinementType">
@@ -756,47 +720,24 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="pre" minOccurs="0" maxOccurs="1">
+            <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Element: pre
                         Specifies a precedence using a boolean formula.
                     ]]></xsd:documentation>
                 </xsd:annotation>
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    Defines the boolean formula representing the precedence.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                    </xsd:sequence>
-                </xsd:complexType>
             </xsd:element>
-            <xsd:element name="npr" minOccurs="0" maxOccurs="1">
+            <xsd:element name="npr" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Element: npr
                         Specifies a negative precedence using a boolean formula.
                     ]]></xsd:documentation>
                 </xsd:annotation>
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    Defines the boolean formula representing the negative precedence.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                    </xsd:sequence>
-                </xsd:complexType>
             </xsd:element>
 
-            <xsd:element name="effectGroup" type="EffectGroupType"
-                         minOccurs="0" maxOccurs="1">
+            <xsd:element name="effectGroup" type="EffectGroupType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Element: effectGroup
@@ -805,6 +746,7 @@
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
+
         <xsd:attribute name="name" type="xsd:string" use="required"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
@@ -816,8 +758,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="effect" type="EffectType"
-                         minOccurs="1" maxOccurs="unbounded">
+            <xsd:element name="effect" type="EffectType" minOccurs="1" maxOccurs="unbounded">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Defines a single effect within the effect group.
@@ -841,83 +782,31 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="turnsTrue" type="xsd:string"
-                         minOccurs="0" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Element: turnsTrue
-                        Specifies a predicate that is set to true when the effect occurs.
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="turnsFalse" type="xsd:string"
-                         minOccurs="0" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Element: turnsFalse
-                        Specifies a predicate that is set to false when the effect occurs.
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
+            <xsd:element name="turnsTrue" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="turnsFalse" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 
-            <xsd:element name="pre" minOccurs="0" maxOccurs="1">
+            <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Element: pre
                         Specifies a precedence using a boolean formula.
                     ]]></xsd:documentation>
                 </xsd:annotation>
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    Defines the boolean formula representing the precedence.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                    </xsd:sequence>
-                </xsd:complexType>
             </xsd:element>
-            <xsd:element name="npr" minOccurs="0" maxOccurs="1">
+            <xsd:element name="npr" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
                         Element: npr
                         Specifies a negative precedence using a boolean formula.
                     ]]></xsd:documentation>
                 </xsd:annotation>
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    Defines the boolean formula representing the negative precedence.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                    </xsd:sequence>
-                </xsd:complexType>
             </xsd:element>
         </xsd:sequence>
 
-        <xsd:attribute name="name" type="xsd:string" use="required">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Attribute: name
-                    Unique identifier for the effect.
-                ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
         <xsd:attribute name="satisfying" type="xsd:boolean" use="optional" default="true"/>
         <xsd:attribute name="probability" type="xsd:float" use="required"/>
-        <xsd:attribute name="description" type="xsd:string" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Attribute: description
-                    Optional description providing details about the effect.
-                ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
 
 </xsd:schema>
