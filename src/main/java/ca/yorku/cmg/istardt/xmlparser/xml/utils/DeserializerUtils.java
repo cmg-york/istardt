@@ -156,14 +156,6 @@ public class DeserializerUtils {
     }
 
     /**
-     * Standardized error handling for deserialization with retry suggestion.
-     * Logs the error but doesn't throw, allowing recovery with defaults.
-     */
-    public static void handleDeserializationErrorWithRecovery(Logger logger, String message, Exception e) {
-        logger.log(Level.WARNING, message + " (continuing with default values)", e);
-    }
-
-    /**
      * Safely extracts a list of string values from child nodes with a specific name.
      */
     public static List<String> getStringList(JsonNode node, String childName) {

@@ -52,7 +52,8 @@ public class ModelDeserializer extends StdDeserializer<Model> {
                 JsonNode actorsNode = rootNode.get("actors");
                 if (actorsNode.has("actor")) {
                     JsonNode actorNodes = actorsNode.get("actor");
-                    actors = deserializeActors(actorNodes, p, ctxt);
+                    // Use the utility method instead
+                    actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
                     LOGGER.info("Deserialized " + actors.size() + " actors");
                 } else {
                     LOGGER.warning("No actors found within actors tag");
@@ -86,25 +87,4 @@ public class ModelDeserializer extends StdDeserializer<Model> {
         options.setInfActionPenalty(DeserializerUtils.getFloatAttribute(optionsNode, "infeasible-action-penalty", 0.0f));
         return options;
     }
-
-    private List<Actor> deserializeActors(JsonNode actorNodes, JsonParser p, DeserializationContext ctxt) throws IOException {
-        List<Actor> actors = new ArrayList<>();
-
-        if (actorNodes.isArray()) {
-            for (JsonNode actorNode : actorNodes) {
-                Actor actor = ctxt.readValue(actorNode.traverse(p.getCodec()), Actor.class);
-                if (actor != null) {
-                    actors.add(actor);
-                }
-            }
-        } else {
-            Actor actor = ctxt.readValue(actorNodes.traverse(p.getCodec()), Actor.class);
-            if (actor != null) {
-                actors.add(actor);
-            }
-        }
-
-        return actors;
-    }
-
 }
