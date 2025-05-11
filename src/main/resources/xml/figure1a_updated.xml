@@ -213,9 +213,7 @@
 
             <task name="BuildInHouse" description="Build the product in-house">
                 <pre>
-                    <formula>
                         <boolAtom>hasManufacturingCapacity</boolAtom>
-                    </formula>
                 </pre>
                 <effectGroup>
                     <effect name="successInHGood" satisfying="true" probability="0.5"
@@ -231,9 +229,7 @@
 
             <task name="AssignToSpecialists" description="Assign product manufacturing to specialists">
                 <npr>
-                    <formula>
                         <boolAtom>SourceFromAbroad</boolAtom>
-                    </formula>
                 </npr>
                 <effectGroup>
                     <effect name="successSpecGood" satisfying="true" probability="0.7"
