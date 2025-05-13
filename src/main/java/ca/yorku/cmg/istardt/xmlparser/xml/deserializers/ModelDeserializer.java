@@ -31,16 +31,16 @@ public class ModelDeserializer extends StdDeserializer<Model> {
         Model model = new Model();
 
         try {
-            if (rootNode.has("header")) {
-                Header header = deserializeHeader(rootNode.get("header"), p, ctxt);
+            if (node.has("header")) {
+                Header header = deserializeHeader(node.get("header"), p, ctxt);
                 model.setHeader(header);
             } else {
                 model.setHeader(new Header());
                 LOGGER.info("No header found, using default");
             }
 
-            if (rootNode.has("options")) {
-                Options options = deserializeOptions(rootNode.get("options"), p, ctxt);
+            if (node.has("options")) {
+                Options options = deserializeOptions(node.get("options"), p, ctxt);
                 model.setOptions(options);
             } else {
                 model.setOptions(new Options());
@@ -48,11 +48,10 @@ public class ModelDeserializer extends StdDeserializer<Model> {
             }
 
             List<Actor> actors = new ArrayList<>();
-            if (rootNode.has("actors")) {
-                JsonNode actorsNode = rootNode.get("actors");
+            if (node.has("actors")) {
+                JsonNode actorsNode = node.get("actors");
                 if (actorsNode.has("actor")) {
                     JsonNode actorNodes = actorsNode.get("actor");
-                    // Use the utility method instead
                     actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
                     LOGGER.info("Deserialized " + actors.size() + " actors");
                 } else {
@@ -74,8 +73,9 @@ public class ModelDeserializer extends StdDeserializer<Model> {
         header.setSource(DeserializerUtils.getStringAttribute(headerNode, "source", ""));
         header.setLastUpdated(DeserializerUtils.getStringAttribute(headerNode, "lastUpdated", ""));
 
-        if (headerNode.asText() != null && !headerNode.asText().isEmpty()) {
-            header.setNotes(headerNode.asText().trim());
+        // Get mixed content text
+        if (headerNode.has("")) {
+            header.setNotes(headerNode.get("").asText().trim());
         }
 
         return header;
