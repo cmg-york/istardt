@@ -90,22 +90,8 @@
             <xsd:element name="exportedSet" type="ExportedSetType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="initializations" type="InitializationsType" minOccurs="0" maxOccurs="1"/>
         </xsd:all>
-        <xsd:attribute name="name" type="xsd:string" use="required">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Attribute: name
-                    Unique identifier for the actor.
-                ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="description" type="xsd:string" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Attribute: description
-                    Optional description providing details about the actor.
-                ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
 
     <!-- ===== ExportedSet ===== -->
@@ -242,9 +228,11 @@
 
     <xsd:group name="BooleanExpressionElements">
         <xsd:choice>
-            <xsd:element name="boolConst" type="BoolConstType"/>
-            <xsd:element name="boolAtom" type="xsd:string"/>
-            <xsd:element name="previous" type="PreviousType"/>
+            <xsd:element name="boolConst" type="xsd:boolean"/>
+            <xsd:element name="predicateId" type="xsd:string"/>
+            <xsd:element name="goalId" type="xsd:string"/>
+            <xsd:element name="taskId" type="xsd:string"/>
+            <xsd:element name="previous" type="BoolAtomType"/>
 
             <xsd:element name="gt" type="NumericComparisonType"/>
             <xsd:element name="gte" type="NumericComparisonType"/>
@@ -261,6 +249,18 @@
         </xsd:choice>
     </xsd:group>
 
+    <xsd:group name="BoolAtomElements">
+        <xsd:choice>
+            <xsd:element name="predicateId" type="xsd:string"/>
+            <xsd:element name="goalId" type="xsd:string"/>
+            <xsd:element name="taskId" type="xsd:string"/>
+        </xsd:choice>
+    </xsd:group>
+
+    <xsd:complexType name="BoolAtomType">
+        <xsd:group ref="BoolAtomElements"/>
+    </xsd:complexType>
+
     <!-- ===== BooleanExpressionType ===== -->
     <xsd:complexType name="BooleanExpressionType">
         <xsd:annotation>
@@ -276,33 +276,6 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:group ref="BooleanExpressionElements"/>
-    </xsd:complexType>
-
-    <!-- Boolean constant: must be "true" or "false" -->
-    <xsd:simpleType name="BoolConstType">
-        <xsd:annotation>
-            <xsd:documentation>
-                Boolean constants; allowed values are "true" and "false".
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="true"/>
-            <xsd:enumeration value="false"/>
-        </xsd:restriction>
-    </xsd:simpleType>
-
-    <!-- The "previous" function: wraps an atom -->
-    <xsd:complexType name="PreviousType">
-        <xsd:annotation>
-            <xsd:documentation>
-                Represents a previous value reference. For example,
-                previous(predicate_identifier) is modeled as:
-                &lt;previous&gt;&lt;atom&gt;predicate_identifier&lt;/atom&gt;&lt;/previous&gt;
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="boolAtom" type="xsd:string"/>
-        </xsd:sequence>
     </xsd:complexType>
 
     <!-- ===== Numeric Expression Type Structure ===== -->

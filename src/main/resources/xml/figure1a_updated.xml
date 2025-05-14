@@ -103,7 +103,7 @@
                     <!--  TODO double check [boolean-expression] -->
                     <formula>
                         <previous>
-                            <boolAtom>deliveredBadQualitySpec</boolAtom>
+                            <predicateId>deliveredBadQualitySpec</predicateId>
                         </previous>
                     </formula>
                 </condBox>
@@ -112,6 +112,7 @@
                     <formula>
                         <boolConst>false</boolConst>
                     </formula>
+
                 </condBox>
             </condBoxes>
 
