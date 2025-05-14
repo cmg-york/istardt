@@ -7,7 +7,7 @@
         attributeFormDefault="unqualified">
 
     <!-- Root element -->
-    <xsd:element name="istardt" type="IstardtType">
+    <xsd:element name="iStarDT" type="IStarDTType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
                 Root element representing a model in iStar-DT-X.
@@ -15,7 +15,7 @@
         </xsd:annotation>
     </xsd:element>
 
-    <xsd:complexType name="IstardtType">
+    <xsd:complexType name="IStarDTType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
                 Complex type defining iStar-DT-X model.
@@ -89,10 +89,22 @@
             <xsd:element name="crossSet" type="CrossSetType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="exportedSet" type="ExportedSetType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="initializations" type="InitializationsType" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="variables" type="VariablesType" minOccurs="0" maxOccurs="1"/>
         </xsd:all>
         <xsd:attribute name="name" type="xsd:string" use="required"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
+
+    <xsd:simpleType name="IdentifierType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Must start with a lowercase letter, then letters or digits.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[a-z][a-zA-Z0-9]*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
     <!-- ===== ExportedSet ===== -->
     <xsd:complexType name="ExportedSetType">
@@ -138,10 +150,35 @@
             <xsd:documentation><![CDATA[Complex type defining an cross-run.]]></xsd:documentation>
         </xsd:annotation>
         <xsd:choice>
-            <xsd:element name="predicateId" type="xsd:string"/>
-            <xsd:element name="variableId" type="xsd:string"/>
-            <xsd:element name="qualId" type="xsd:string"/>
+            <xsd:element name="predicateID" type="xsd:string"/>
+            <xsd:element name="variableID" type="xsd:string"/>
+            <xsd:element name="qualID" type="xsd:string"/>
         </xsd:choice>
+    </xsd:complexType>
+
+    <!-- ===== Variables ===== -->
+    <xsd:complexType name="VariablesType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[Container for variables.]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="variable" type="VariableType" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[Defines a single variable.]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="VariableType" mixed="true">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+                Attributes:
+                - description
+                The content of the variable element contains the identifier.
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
 
     <!-- ===== Initializations ===== -->
@@ -163,9 +200,21 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining an initialization.]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:attribute name="element" type="xsd:string" use="required"></xsd:attribute>
-        <!--TODO content pick between boolean or decimal -->
+        <xsd:simpleContent>
+            <xsd:extension base="BooleanOrFloatType">
+                <xsd:attribute name="element" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:simpleContent>
     </xsd:complexType>
+
+    <xsd:simpleType name="BooleanOrFloatType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Allows either an xsd:boolean or an xsd:float value.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:union memberTypes="xsd:boolean xsd:float"/>
+    </xsd:simpleType>
 
     <!-- ===== Predicates ===== -->
     <xsd:complexType name="PredicatesType">
@@ -186,21 +235,19 @@
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:complexType name="PredicateType" mixed="true">
+    <xsd:complexType name="PredicateType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
                 Attributes:
-                - primitive
-                - init
-                - exported
                 - description
                 The content of the predicate element contains the identifier.
             ]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:attribute name="primitive" type="xsd:boolean" use="optional" default="false"/>
-        <xsd:attribute name="init" type="xsd:boolean" use="optional" default="false"/>
-        <xsd:attribute name="exported" type="xsd:boolean" use="optional" default="false"/>
-        <xsd:attribute name="description" type="xsd:string" use="optional"/>
+        <xsd:simpleContent>
+            <xsd:extension base="IdentifierType">
+                <xsd:attribute name="description" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
     </xsd:complexType>
 
     <!-- ===== CondBoxes ===== -->
@@ -229,9 +276,9 @@
     <xsd:group name="BooleanExpressionElements">
         <xsd:choice>
             <xsd:element name="boolConst" type="xsd:boolean"/>
-            <xsd:element name="predicateId" type="xsd:string"/>
-            <xsd:element name="goalId" type="xsd:string"/>
-            <xsd:element name="taskId" type="xsd:string"/>
+            <xsd:element name="predicateID" type="xsd:string"/>
+            <xsd:element name="goalID" type="xsd:string"/>
+            <xsd:element name="taskID" type="xsd:string"/>
             <xsd:element name="previous" type="BoolAtomType"/>
 
             <xsd:element name="gt" type="NumericComparisonType"/>
@@ -251,9 +298,9 @@
 
     <xsd:group name="BoolAtomElements">
         <xsd:choice>
-            <xsd:element name="predicateId" type="xsd:string"/>
-            <xsd:element name="goalId" type="xsd:string"/>
-            <xsd:element name="taskId" type="xsd:string"/>
+            <xsd:element name="predicateID" type="xsd:string"/>
+            <xsd:element name="goalID" type="xsd:string"/>
+            <xsd:element name="taskID" type="xsd:string"/>
         </xsd:choice>
     </xsd:group>
 
@@ -282,8 +329,14 @@
     <!-- Define a group for numeric expression elements -->
     <xsd:group name="NumericExpressionElements">
         <xsd:choice>
-            <xsd:element name="const" type="xsd:decimal"/>
-            <xsd:element name="numAtom" type="xsd:string"/>
+            <xsd:element name="numConst" type="xsd:float"/>
+            <xsd:element name="variableID" type="xsd:string"/>
+            <xsd:element name="qualID" type="xsd:string"/>
+
+            <xsd:element name="predicateID" type="xsd:string"/>
+            <xsd:element name="goalID" type="xsd:string"/>
+            <xsd:element name="taskID" type="xsd:string"/>
+
             <xsd:element name="previous" type="NumericPreviousType"/>
             <xsd:element name="add" type="NumericNaryOpType"/>
             <xsd:element name="subtract" type="NumericBinaryOpType"/>
@@ -293,7 +346,23 @@
         </xsd:choice>
     </xsd:group>
 
-    <!-- Numeric expression type that uses the group -->
+    <xsd:group name="NumAtomElements">
+        <xsd:choice>
+            <xsd:element name="numConst" type="xsd:float"/>
+            <xsd:element name="variableID" type="xsd:string"/>
+            <xsd:element name="qualID" type="xsd:string"/>
+
+            <xsd:element name="predicateID" type="xsd:string"/>
+            <xsd:element name="goalID" type="xsd:string"/>
+            <xsd:element name="taskID" type="xsd:string"/>
+        </xsd:choice>
+    </xsd:group>
+
+
+    <xsd:complexType name="NumAtomType">
+        <xsd:group ref="NumAtomElements"/>
+    </xsd:complexType>
+
     <xsd:complexType name="NumericExpressionType">
         <xsd:annotation>
             <xsd:documentation>

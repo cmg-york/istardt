@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<istardt  xmlns="https://example.org/istar-dt-x"
+<iStarDT  xmlns="https://example.org/istar-dt-x"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="https://example.org/istar-dt-x ../xsd/istar-rl-schema_v4.xsd">
 
@@ -19,9 +19,9 @@
         [ [condBoxes] ] [ [cross-set] ] [ [exported-set] ]  [ [initializations] ]   -->
 
             <crossSet>
-                <crossRun><predicateId>identifer</predicateId></crossRun>
-                <crossRun><variableId>identifer</variableId></crossRun>
-                <crossRun><qualId>identifer</qualId></crossRun>
+                <crossRun><predicateID>identifer</predicateID></crossRun>
+                <crossRun><variableID>identifer</variableID></crossRun>
+                <crossRun><qualID>identifer</qualID></crossRun>
             </crossSet>
 
             <exportedSet>
@@ -40,61 +40,22 @@
         </initializations>
 
             <predicates>
-                <predicate init="false"
-                           description="Materials delivered on time (domestic)">
-                    deliveredInTimeDom
-                </predicate>
-
-                <predicate init="false"
-                           description="Materials delivered late (domestic)">
-                    deliveredLateDom
-                </predicate>
-
-                <predicate init="false"
-                           description="Materials never delivered (domestic)">
-                    neverDeliveredDom
-                </predicate>
-
-                <predicate init="false"
-                           description="Materials delivered on time (foreign)">
-                    deliveredInTimeFrgn
-                </predicate>
-
-                <predicate init="false"
-                           description="Materials delivered late (foreign)">
-                    deliveredLateFrgn
-                </predicate>
-
-                <predicate init="false"
-                           description="Materials never delivered (foreign)">
-                    neverDeliveredFrgn
-                </predicate>
-
-                <predicate init="false"
-                           description="In-house build with good quality">
-                    deliveredGoodQualityInH
-                </predicate>
-
-                <predicate init="false"
-                           description="In-house build with bad quality">
-                    deliveredBadQualityInH
-                </predicate>
-
-                <predicate init="false"
-                           description="Specialists produce good quality">
-                    deliveredGoodQualitySpec
-                </predicate>
-
-                <predicate init="false"
-                           description="Specialists produce bad quality">
-                    deliveredBadQualitySpec
-                </predicate>
+                <predicate description="Materials delivered on time (domestic)">deliveredInTimeDom</predicate>
+                <predicate description="Materials delivered late (domestic)">deliveredLateDom</predicate>
+                <predicate description="Materials never delivered (domestic)">neverDeliveredDom</predicate>
+                <predicate description="Materials delivered on time (foreign)">deliveredInTimeFrgn</predicate>
+                <predicate description="Materials delivered late (foreign)">deliveredLateFrgn</predicate>
+                <predicate description="Materials never delivered (foreign)">neverDeliveredFrgn</predicate>
+                <predicate description="In-house build with good quality">deliveredGoodQualityInH</predicate>
+                <predicate description="In-house build with bad quality">deliveredBadQualityInH</predicate>
+                <predicate description="Specialists produce good quality">deliveredGoodQualitySpec</predicate>
+                <predicate description="Specialists produce bad quality">deliveredBadQualitySpec</predicate>
             </predicates>
 
         <!-- TODO complete variables section in XSD/XML -->
             <variables>
-                <variable>
-
+                <variable description="description">
+                        hello
                 </variable>
             </variables>
 
@@ -103,7 +64,7 @@
                     <!--  TODO double check [boolean-expression] -->
                     <formula>
                         <previous>
-                            <predicateId>deliveredBadQualitySpec</predicateId>
+                            <predicateID>deliveredBadQualitySpec</predicateID>
                         </previous>
                     </formula>
                 </condBox>
@@ -112,14 +73,13 @@
                     <formula>
                         <boolConst>false</boolConst>
                     </formula>
-
                 </condBox>
             </condBoxes>
 
             <qualities>
                 <quality name="Reputation" description="Reputation of the Manufacturer">
                     <negate>
-                        <const>5</const>
+                        <numConst>5</numConst>
                     </negate>
                 </quality>
 
@@ -128,28 +88,26 @@
                     <!--   TODO no exported, has init decimal -->
                     <negate>
                         <add>
-                            <const>2</const>
-                            <const>5</const>
-                            <const>10</const>
+                            <numConst>2</numConst>
+                            <numConst>5</numConst>
+                            <numConst>10</numConst>
                         </add>
                     </negate>
                 </quality>
 
                 <quality name="TotalValue" root="true" description="Overall Value">
                     <add>
-                        <numAtom>Reputation</numAtom>
-                        <numAtom>FinancialGain</numAtom>
+                        <qualID>Reputation</qualID>
+                        <qualID>FinancialGain</qualID>
                     </add>
                 </quality>
             </qualities>
-
-
 
             <goals>
                 <goal name="ProductManufactured" terminal="false" root="true" description="Product Manufactured"
                       episodeLength="4">
                     <pre>
-                        <boolAtom>hasManufacturingCapacity</boolAtom>
+                        <predicateID>hasManufacturingCapacity</predicateID>
                     </pre>
                     <refinement type="AND">
                         <childGoal ref="MaterialOrdered"/>
@@ -166,7 +124,7 @@
 
                 <goal name="ManufacturingCompleted" terminal="false"  description="Manufacturing Completed">
                     <pre>
-                        <boolAtom>MaterialOrdered</boolAtom>
+                        <goalID>MaterialOrdered</goalID>
                     </pre>
                     <refinement type="OR">
                         <childTask ref="BuildInHouse"/>
@@ -175,113 +133,80 @@
                 </goal>
             </goals>
 
+            <tasks>
+                <task name="SourceDomestically" description="Source materials from a domestic supplier">
+                    <pre>
+                        <predicateID>materialAvailable</predicateID>
+                    </pre>
+                    <effectGroup>
+                        <effect name="successDeliveredInTimeDom" satisfying="true" probability="0.75"
+                                description="Successful">
+                            <turnsTrue>deliveredInTimeDom</turnsTrue>
+                            <pre>
+                                <taskID>SourceDomestically</taskID>
+                            </pre>
+                        </effect>
+                        <effect name="successDeliveredLateDom" satisfying="true" probability="0.20"
+                                description="Successful">
+                            <turnsTrue>deliveredLateDom</turnsTrue>
+                        </effect>
+                        <effect name="failureDeliveredDom" satisfying="false" probability="0.05"
+                                description="Failure">
+                            <turnsTrue>neverDeliveredDom</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
 
-        <tasks>
-            <task name="SourceDomestically" description="Source materials from a domestic supplier">
-                <pre>
-                    <boolAtom>materialAvailable</boolAtom>
-                </pre>
-                <effectGroup>
-                    <effect name="successDeliveredInTimeDom" satisfying="true" probability="0.75"
-                            description="Successful">
-                        <turnsTrue>deliveredInTimeDom</turnsTrue>
-                        <pre>
-                            <boolAtom>SourceDomestically</boolAtom>
-                        </pre>
-                    </effect>
-                    <effect name="successDeliveredLateDom" satisfying="true" probability="0.20"
-                            description="Successful">
-                        <turnsTrue>deliveredLateDom</turnsTrue>
-                    </effect>
-                    <effect name="failureDeliveredDom" satisfying="false" probability="0.05"
-                            description="Failure">
-                        <turnsTrue>neverDeliveredDom</turnsTrue>
-                    </effect>
-                </effectGroup>
-            </task>
+                <task name="SourceFromAbroad" description="Source materials from a foreign supplier">
+                    <effectGroup>
+                        <effect name="successDeliveredInTimeFrgn" satisfying="true" probability="0.50"
+                                description="Successful">
+                            <turnsTrue>deliveredInTimeFrgn</turnsTrue>
+                        </effect>
+                        <effect name="successDeliveredLateFrgn" satisfying="true" probability="0.35"
+                                description="Successful">
+                            <turnsTrue>deliveredLateFrgn</turnsTrue>
+                        </effect>
+                        <effect name="failureDeliveredFrgn" satisfying="false" probability="0.15"
+                                description="Failure">
+                            <turnsTrue>neverDeliveredFrgn</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
 
-            <task name="SourceFromAbroad" description="Source materials from a foreign supplier">
-                <effectGroup>
-                    <effect name="successDeliveredInTimeFrgn" satisfying="true" probability="0.50"
-                            description="Successful">
-                        <turnsTrue>deliveredInTimeFrgn</turnsTrue>
-                    </effect>
-                    <effect name="successDeliveredLateFrgn" satisfying="true" probability="0.35"
-                            description="Successful">
-                        <turnsTrue>deliveredLateFrgn</turnsTrue>
-                    </effect>
-                    <effect name="failureDeliveredFrgn" satisfying="false" probability="0.15"
-                            description="Failure">
-                        <turnsTrue>neverDeliveredFrgn</turnsTrue>
-                    </effect>
-                </effectGroup>
-            </task>
+                <task name="BuildInHouse" description="Build the product in-house">
+                    <pre>
+                        <predicateID>hasManufacturingCapacity</predicateID>
+                    </pre>
+                    <effectGroup>
+                        <effect name="successInHGood" satisfying="true" probability="0.5"
+                                description="Successful">
+                            <turnsTrue>deliveredGoodQualityInH</turnsTrue>
+                        </effect>
+                        <effect name="successInHBad" satisfying="true" probability="0.5"
+                                description="Successful">
+                            <turnsTrue>deliveredBadQualityInH</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
 
-            <task name="BuildInHouse" description="Build the product in-house">
-                <pre>
-                    <boolAtom>hasManufacturingCapacity</boolAtom>
-                </pre>
-                <effectGroup>
-                    <effect name="successInHGood" satisfying="true" probability="0.5"
-                            description="Successful">
-                        <turnsTrue>deliveredGoodQualityInH</turnsTrue>
-                    </effect>
-                    <effect name="successInHBad" satisfying="true" probability="0.5"
-                            description="Successful">
-                        <turnsTrue>deliveredBadQualityInH</turnsTrue>
-                    </effect>
-                </effectGroup>
-            </task>
-
-            <task name="AssignToSpecialists" description="Assign product manufacturing to specialists">
-                <npr>
-                    <boolAtom>SourceFromAbroad</boolAtom>
-                </npr>
-                <effectGroup>
-                    <effect name="successSpecGood" satisfying="true" probability="0.7"
-                            description="Successful">
-                        <turnsTrue>deliveredGoodQualitySpec</turnsTrue>
-                    </effect>
-                    <effect name="successSpecBad" satisfying="true" probability="0.3"
-                            description="Successful">
-                        <turnsTrue>deliveredBadQualitySpec</turnsTrue>
-                    </effect>
-                </effectGroup>
-            </task>
-        </tasks>
+                <task name="AssignToSpecialists" description="Assign product manufacturing to specialists">
+                    <npr>
+                        <taskID>SourceFromAbroad</taskID>
+                    </npr>
+                    <effectGroup>
+                        <effect name="successSpecGood" satisfying="true" probability="0.7"
+                                description="Successful">
+                            <turnsTrue>deliveredGoodQualitySpec</turnsTrue>
+                        </effect>
+                        <effect name="successSpecBad" satisfying="true" probability="0.3"
+                                description="Successful">
+                            <turnsTrue>deliveredBadQualitySpec</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
+            </tasks>
         </actor>
 
     </actors>
-</istardt>
-
-<!-- Validation
-        1. childGoal/childTask should be defined
-        2. Some goals do not have any refinment (they are leaf level goals). We may need to issue just a warning.
-        3. Pre/npr link can mention (a) preBox, (b) goal, (c) task, or (d) effect.
-        4. subGoal and subTask must be defined somewhere
-        5. AND refinmens have 2 or more children, OR refinments can have one or more.
-        6. If root is true, episodeLength is mandatory. If missing throws warning and says episodeLength not given, default of 1 is assumed.
--->
-<!-- Comments
-        1. childGoal/childTask turn them into subGoal and subTask
-        2. By default root = "false"?
-        3. Change precondition to pre
-
--->
-
-
-
-<!-- Validation
-        1. Each task should be referenced by exactly one goal (warning).
-        2. pre/npr origin must exist (error)
-        3. Pre/npr link can mention (a) preBox, (b) goal, (c) task, or (d) effect.
-        4. Content of turns true and turns false must exist in predicates (error).
--->
-
-<!-- Comments
-        1.We don't need contributes anymore. It is all in the formula in the qualities.
-        2. Precedences / nprs can target goals, effects, and tasks
-        3. default for effect is that it is satisfying, warning if it is missing.
-        4. Error if probability is missing.
-        5. For all elements, warning if description is missing.
--->
+</iStarDT>
