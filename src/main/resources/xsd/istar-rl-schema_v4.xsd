@@ -420,7 +420,7 @@
         </xsd:sequence>
     </xsd:complexType>
 
-    <!-- A numeric comparison: both operands are numeric expressions -->
+    <!-- A numeric comparison -->
     <xsd:complexType name="NumericComparisonType">
         <xsd:annotation>
             <xsd:documentation>
@@ -467,7 +467,6 @@
         </xsd:sequence>
     </xsd:complexType>
 
-
     <xsd:complexType name="CondBoxType">
         <xsd:group ref="BooleanExpressionElements" minOccurs="1" maxOccurs="1"/>
         <xsd:attribute name="name" type="IdentifierType" use="required">
@@ -486,60 +485,6 @@
         </xsd:attribute>
     </xsd:complexType>
 
-    <!-- ===== IndirectEffects ===== -->
-    <xsd:complexType name="IndirectEffectsType">
-        <xsd:annotation>
-            <xsd:documentation><![CDATA[
-                Container for indirect effects.
-            ]]></xsd:documentation>
-        </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="indirectEffect" type="IndirectEffectType"
-                         minOccurs="1" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Defines a single indirect effect.
-                        Attributes:
-                        - name
-                        - exported
-                        - description
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:complexType name="IndirectEffectType">
-        <xsd:annotation>
-            <xsd:documentation><![CDATA[
-                Derived effect with formula representation.
-                Attributes:
-                - name
-                - exported
-                - description
-            ]]></xsd:documentation>
-        </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="formula" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                Element: formula
-                Defines the boolean formula representing the indirect effect.
-            ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
-        <xsd:attribute name="name" type="IdentifierType" use="required"/>
-        <xsd:attribute name="exported" type="xsd:boolean" use="optional" default="false"/>
-        <xsd:attribute name="description" type="xsd:string" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Description providing details about the indirect effect.
-                ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-    </xsd:complexType>
-
     <!-- ===== Qualities ===== -->
     <xsd:complexType name="QualitiesType">
         <xsd:annotation>
@@ -548,19 +493,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="quality" type="QualityType"
-                         minOccurs="1" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Defines a single quality attribute.
-                        Attributes:
-                        - name
-                        - description
-                        - exported
-                        - root
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
+            <xsd:element name="quality" type="QualityType" minOccurs="1" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -674,18 +607,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="task" type="TaskType"
-                         minOccurs="1" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Defines a single task.
-                        Attributes:
-                        - name
-                        - description
-                        Each task can have pre or npr and an effectGroup detailing the outcomes of the task.
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
+            <xsd:element name="task" type="TaskType" minOccurs="1" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -738,14 +660,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="effect" type="EffectType" minOccurs="1" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Defines a single effect within the effect group.
-                        Each effect specifies the outcome of the task, including whether it satisfies the task's objectives and the probability of occurrence.
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
+            <xsd:element name="effect" type="EffectType" minOccurs="1" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
