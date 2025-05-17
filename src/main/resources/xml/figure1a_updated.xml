@@ -10,7 +10,7 @@
         notes here
     </header>
 
-    <options continuous="true" infeasible-action-penalty="1.0"></options>
+    <options continuous="true" infeasibleActionPenalty="1.0"></options>
 
     <!--  TODO all xml tag names with - should be avoided, need to adjust those -->
     <actors>
@@ -18,15 +18,15 @@
             <!--     [ [goals] ] [ [tasks] ] [ [qualities] ] [ [predicates] ]
         [ [condBoxes] ] [ [cross-set] ] [ [exported-set] ]  [ [initializations] ]   -->
 
-            <crossSet>
+            <crossRuns>
                 <crossRun><predicateID>identifer</predicateID></crossRun>
                 <crossRun><variableID>identifer</variableID></crossRun>
                 <crossRun><qualID>identifer</qualID></crossRun>
-            </crossSet>
+            </crossRuns>
 
             <exportedSet>
                 <export continuous="true" minVal="1.0" maxVal="2.0">
-                    [exp-id]
+                    <qualID>reputation</qualID>
                 </export>
             </exportedSet>
 
@@ -60,28 +60,23 @@
             <condBoxes>
                 <condBox name="materialAvailable" description="Material availability in stock">
                     <!--  TODO double check [boolean-expression] -->
-                    <formula>
-                        <previous>
-                            <predicateID>deliveredBadQualitySpec</predicateID>
-                        </previous>
-                    </formula>
+                    <previous>
+                        <predicateID>deliveredBadQualitySpec</predicateID>
+                    </previous>
                 </condBox>
-
                 <condBox name="hasManufacturingCapacity" description="Manufacturer has capacity to build in-house">
-                    <formula>
-                        <boolConst>false</boolConst>
-                    </formula>
+                    <boolConst>false</boolConst>
                 </condBox>
             </condBoxes>
 
             <qualities>
-                <quality name="Reputation" description="Reputation of the Manufacturer">
+                <quality name="reputation" description="Reputation of the Manufacturer">
                     <negate>
                         <numConst>5</numConst>
                     </negate>
                 </quality>
 
-                <quality name="FinancialGain" description="Financial Gain">
+                <quality name="financialGain" description="Financial Gain">
                     <!--  TODO check [numeric-expression] -->
                     <!--   TODO no exported, has init decimal -->
                     <negate>
@@ -93,7 +88,7 @@
                     </negate>
                 </quality>
 
-                <quality name="TotalValue" root="true" description="Overall Value">
+                <quality name="totalValue" root="true" description="Overall Value">
                     <add>
                         <qualID>reputation</qualID>
                         <qualID>financialGain</qualID>

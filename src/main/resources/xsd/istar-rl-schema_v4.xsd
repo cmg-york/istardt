@@ -44,12 +44,12 @@
     </xsd:complexType>
 
     <!-- ===== Options ===== -->
-    <xsd:complexType name="OptionsType">
+    <xsd:complexType name="OptionsType" mixed="true">
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining options.]]></xsd:documentation>
         </xsd:annotation>
         <xsd:attribute name="continuous" type="xsd:boolean" use="required"></xsd:attribute>
-        <xsd:attribute name="infeasible-action-penalty" type="xsd:float" use="required"></xsd:attribute>
+        <xsd:attribute name="infeasibleActionPenalty" type="xsd:float" use="required"></xsd:attribute>
     </xsd:complexType>
 
     <xsd:complexType name="ActorsType">
@@ -86,7 +86,7 @@
             <xsd:element name="qualities" type="QualitiesType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="predicates" type="PredicatesType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="condBoxes" type="CondBoxesType" minOccurs="0" maxOccurs="1"/>
-            <xsd:element name="crossSet" type="CrossSetType" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="crossRuns" type="CrossRunsType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="exportedSet" type="ExportedSetType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="initializations" type="InitializationsType" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="variables" type="VariablesType" minOccurs="0" maxOccurs="1"/>
@@ -121,17 +121,25 @@
     </xsd:complexType>
 
     <!-- ===== Export ===== -->
-    <xsd:complexType name="ExportType" mixed="true">
+    <xsd:complexType name="ExportType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining an export.]]></xsd:documentation>
         </xsd:annotation>
+        <xsd:choice minOccurs="1" maxOccurs="1">
+            <xsd:element name="variableID" type="IdentifierType"/>
+            <xsd:element name="qualID" type="IdentifierType"/>
+
+            <xsd:element name="predicateID" type="IdentifierType"/>
+            <xsd:element name="goalID" type="IdentifierType"/>
+            <xsd:element name="taskID" type="IdentifierType"/>
+        </xsd:choice>
         <xsd:attribute name="continuous" type="xsd:boolean" use="required"></xsd:attribute>
         <xsd:attribute name="minVal" type="xsd:float" use="optional"></xsd:attribute>
         <xsd:attribute name="maxVal" type="xsd:float" use="optional"></xsd:attribute>
     </xsd:complexType>
 
     <!-- ===== CrossSet ===== -->
-    <xsd:complexType name="CrossSetType">
+    <xsd:complexType name="CrossRunsType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[Container for cross-runs.]]></xsd:documentation>
         </xsd:annotation>
@@ -149,10 +157,10 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining an cross-run.]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:choice>
-            <xsd:element name="predicateID" type="xsd:string"/>
-            <xsd:element name="variableID" type="xsd:string"/>
-            <xsd:element name="qualID" type="xsd:string"/>
+        <xsd:choice maxOccurs="1" minOccurs="1">
+            <xsd:element name="predicateID" type="IdentifierType"/>
+            <xsd:element name="variableID" type="IdentifierType"/>
+            <xsd:element name="qualID" type="IdentifierType"/>
         </xsd:choice>
     </xsd:complexType>
 
@@ -263,17 +271,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="condBox" type="CondBoxType" minOccurs="1" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Defines a single precondition box.
-                        Attributes:
-                        - name
-                        - description
-                        Contains the boolean expression representing the precondition.
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
+            <xsd:element name="condBox" type="CondBoxType" minOccurs="1" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -330,18 +328,17 @@
     </xsd:complexType>
 
     <!-- ===== Numeric Expression Type Structure ===== -->
-    <!-- Define a group for numeric expression elements -->
     <xsd:group name="NumericExpressionElements">
         <xsd:choice>
             <xsd:element name="numConst" type="xsd:float"/>
             <xsd:element name="variableID" type="IdentifierType"/>
             <xsd:element name="qualID" type="IdentifierType"/>
 
-            <xsd:element name="predicateID" type="xsd:string"/>
-            <xsd:element name="goalID" type="xsd:string"/>
-            <xsd:element name="taskID" type="xsd:string"/>
+            <xsd:element name="predicateID" type="IdentifierType"/>
+            <xsd:element name="goalID" type="IdentifierType"/>
+            <xsd:element name="taskID" type="IdentifierType"/>
 
-            <xsd:element name="previous" type="NumericPreviousType"/>
+            <xsd:element name="previous" type="NumAtomType"/>
             <xsd:element name="add" type="NumericNaryOpType"/>
             <xsd:element name="subtract" type="NumericBinaryOpType"/>
             <xsd:element name="multiply" type="NumericNaryOpType"/>
@@ -381,20 +378,6 @@
         <xsd:group ref="NumericExpressionElements"/>
     </xsd:complexType>
 
-    <!-- Numeric Previous Type for quality references -->
-    <xsd:complexType name="NumericPreviousType">
-        <xsd:annotation>
-            <xsd:documentation>
-                Represents a previous value reference for a numeric value. For example,
-                previous(quality_identifier) is modeled as:
-                &lt;previous&gt;&lt;atom&gt;quality_identifier&lt;/atom&gt;&lt;/previous&gt;
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="numAtom" type="xsd:string"/>
-        </xsd:sequence>
-    </xsd:complexType>
-
     <!-- Numeric Binary Operations (subtract, divide) -->
     <xsd:complexType name="NumericBinaryOpType">
         <xsd:annotation>
@@ -404,10 +387,10 @@
                 The order of operands matters for these non-commutative operations.
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:sequence>
+        <xsd:all>
             <xsd:element name="left" type="NumericExpressionType"/>
             <xsd:element name="right" type="NumericExpressionType"/>
-        </xsd:sequence>
+        </xsd:all>
     </xsd:complexType>
 
     <!-- Numeric N-ary Operations (add, multiply) -->
@@ -444,10 +427,10 @@
                 A numeric comparison consists of a left and right operand.
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:sequence>
+        <xsd:all>
             <xsd:element name="left" type="NumericExpressionType"/>
             <xsd:element name="right" type="NumericExpressionType"/>
-        </xsd:sequence>
+        </xsd:all>
     </xsd:complexType>
 
     <xsd:complexType name="BooleanAndType">
@@ -486,15 +469,7 @@
 
 
     <xsd:complexType name="CondBoxType">
-        <xsd:sequence>
-            <xsd:element name="formula" type="BooleanExpressionType" minOccurs="1" maxOccurs="1">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        Defines the boolean formula representing the precondition.
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
+        <xsd:group ref="BooleanExpressionElements" minOccurs="1" maxOccurs="1"/>
         <xsd:attribute name="name" type="IdentifierType" use="required">
             <xsd:annotation>
                 <xsd:documentation>
@@ -596,7 +571,7 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:group ref="NumericExpressionElements" minOccurs="1" maxOccurs="1"/>
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
         <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
     </xsd:complexType>
@@ -610,19 +585,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="goal" type="GoalType"
-                         minOccurs="1" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Defines a single goal.
-                        Attributes:
-                        - name
-                        - description
-                        - root
-                        - episodeLength
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
+            <xsd:element name="goal" type="GoalType" minOccurs="1" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -638,7 +601,7 @@
                 Goals can include at most one pre and one npr element.
             ]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:sequence>
+        <xsd:all>
             <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
@@ -657,17 +620,8 @@
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="refinement" type="RefinementType"
-                         minOccurs="0" maxOccurs="1">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                        Element: refinement
-                        Defines how the goal is decomposed into sub-goals or tasks.
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
-
+            <xsd:element name="refinement" type="RefinementType" minOccurs="0" maxOccurs="1"/>
+        </xsd:all>
         <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
@@ -681,36 +635,22 @@
                 Goal decomposition structure (AND/OR) with child references.
                 Used to break down a goal into smaller, more manageable sub-goals or tasks.
                 Attributes:
-                - type: Specifies the type of refinement, typically "AND" for all children being necessary or "OR" for any one child being sufficient.
+                - type: Specifies the type of refinement, "AND" or "OR".
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
             <xsd:choice minOccurs="1" maxOccurs="unbounded">
-                <xsd:element name="childGoal" type="ChildRefType">
-                    <xsd:annotation>
-                        <xsd:documentation><![CDATA[
-                            Element: childGoal
-                            References a sub-goal.
-                        ]]></xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="childTask" type="ChildRefType">
-                    <xsd:annotation>
-                        <xsd:documentation><![CDATA[
-                            Element: childTask
-                            References a sub-task.
-                        ]]></xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
+                <xsd:element name="childGoal" type="ChildRefType"/>
+                <xsd:element name="childTask" type="ChildRefType"/>
             </xsd:choice>
         </xsd:sequence>
-        <xsd:attribute name="type" type="xsd:string" use="required">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Attribute: type
-                    Defines the nature of the refinement, such as "AND" for all children being necessary or "OR" for any one child being sufficient.
-                ]]></xsd:documentation>
-            </xsd:annotation>
+        <xsd:attribute name="type" use="required">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="AND"/>
+                    <xsd:enumeration value="OR"/>
+                </xsd:restriction>
+            </xsd:simpleType>
         </xsd:attribute>
     </xsd:complexType>
 
@@ -759,7 +699,7 @@
                 Tasks can include at most one pre and one npr element, each containing a formula element.
             ]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:sequence>
+        <xsd:all>
             <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
@@ -785,7 +725,7 @@
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
-        </xsd:sequence>
+        </xsd:all>
 
         <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
@@ -842,7 +782,6 @@
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
-
         <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="satisfying" type="xsd:boolean" use="optional" default="true"/>
         <xsd:attribute name="probability" type="xsd:float" use="required"/>
