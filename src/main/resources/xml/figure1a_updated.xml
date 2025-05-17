@@ -12,7 +12,6 @@
 
     <options continuous="true" infeasibleActionPenalty="1.0"></options>
 
-    <!--  TODO all xml tag names with - should be avoided, need to adjust those -->
     <actors>
         <actor name="Manufacturer" description="A Manufacturer actor">
             <!--     [ [goals] ] [ [tasks] ] [ [qualities] ] [ [predicates] ]

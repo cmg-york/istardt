@@ -12,23 +12,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ModelUnmarshallerTest {
     private IStarUnmarshaller unmarshaller;
+    private Model model;
+    File xmlFile = getResourceFile("xml/figure1a_updated.xml");
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
         unmarshaller = new IStarUnmarshaller();
+        model = unmarshaller.unmarshalToModel(xmlFile);
     }
 
     @Test
-    public void testUnmarshalValidXmlFile() throws IOException {
-        File xmlFile = getResourceFile("xml/figure1a_updated.xml");
+    public void testUnmarshalValidXmlFile() {
         assertTrue(xmlFile.exists(), "Test XML file should exist");
-
-        Model model = unmarshaller.unmarshalToModel(xmlFile);
-
-        // Verify the model structure
         assertNotNull(model, "Model should not be null");
         assertEquals(0, model.getActors().size(), "Model should have no actor");
+    }
 
+    @Test
+    public void testUnmarshalHeader() {
         Header header = model.getHeader();
         assertEquals("first last", header.getAuthor(), "Header author");
         assertEquals("title", header.getTitle(), "header title");
@@ -40,6 +41,13 @@ public class ModelUnmarshallerTest {
 //        assertEquals("Manufacturer", actor.getName(), "Actor name should be 'Manufacturer'");
     }
 
+    @Test
+    public void testUnmarshalOptions() {
+        Options options = model.getOptions();
+        assertTrue(options.isContinuous());
+        assertEquals(1.0, options.getInfActionPenalty(), "getInfActionPenalty");
+
+    }
 //    @Test
 //    public void testUnmarshalWithMissingFile() {
 //        File nonExistentFile = new File("non_existent_file.xml");

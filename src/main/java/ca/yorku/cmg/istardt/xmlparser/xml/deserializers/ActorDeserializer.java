@@ -32,12 +32,12 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
 
         try {
             // Process predicates
-            if (node.has("predicates") && node.get("predicates").has("predicate")) {
-                JsonNode predicatesNode = node.get("predicates").get("predicate");
-                // TODO change Atom to Predicate
-                List<Atom> predicates = deserializePredicates(predicatesNode);
-                actor.setPredicates(predicates);
-            }
+//            if (node.has("predicates") && node.get("predicates").has("predicate")) {
+//                JsonNode predicatesNode = node.get("predicates").get("predicate");
+//                // TODO change Atom to Predicate
+//                List<Atom> predicates = deserializePredicates(predicatesNode);
+//                actor.setPredicates(predicates);
+//            }
 
             // Process preBoxes (conditions)
             if (node.has("preBoxes") && node.get("preBoxes").has("preBox")) {

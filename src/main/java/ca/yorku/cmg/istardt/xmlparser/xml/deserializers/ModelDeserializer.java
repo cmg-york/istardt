@@ -48,18 +48,18 @@ public class ModelDeserializer extends StdDeserializer<Model> {
             }
 
             List<Actor> actors = new ArrayList<>();
-            if (node.has("actors")) {
-                JsonNode actorsNode = node.get("actors");
-                if (actorsNode.has("actor")) {
-                    JsonNode actorNodes = actorsNode.get("actor");
-                    actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
-                    LOGGER.info("Deserialized " + actors.size() + " actors");
-                } else {
-                    LOGGER.warning("No actors found within actors tag");
-                }
-            } else {
-                LOGGER.warning("No actors tag found");
-            }
+//            if (node.has("actors")) {
+//                JsonNode actorsNode = node.get("actors");
+//                if (actorsNode.has("actor")) {
+//                    JsonNode actorNodes = actorsNode.get("actor");
+//                    actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
+//                    LOGGER.info("Deserialized " + actors.size() + " actors");
+//                } else {
+//                    LOGGER.warning("No actors found within actors tag");
+//                }
+//            } else {
+//                LOGGER.warning("No actors tag found");
+//            }
             model.setActors(actors);
         } catch (IOException e) {
             DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing model", e);
@@ -84,7 +84,7 @@ public class ModelDeserializer extends StdDeserializer<Model> {
     private Options deserializeOptions(JsonNode optionsNode, JsonParser p, DeserializationContext ctxt) throws IOException {
         Options options = new Options();
         options.setContinuous(DeserializerUtils.getBooleanAttribute(optionsNode, "continuous", false));
-        options.setInfActionPenalty(DeserializerUtils.getFloatAttribute(optionsNode, "infeasible-action-penalty", 0.0f));
+        options.setInfActionPenalty(DeserializerUtils.getFloatAttribute(optionsNode, "infeasibleActionPenalty", 0.0f));
         return options;
     }
 }
