@@ -34,7 +34,7 @@
             <initialization element="[b-const-id]">true</initialization>
             <initialization element="[predicate-id]">true</initialization>
 
-            <initialization element="[n-const-id]">1.0</initialization>
+            <initialization element="n-const-id]">1.0</initialization>
             <initialization element="[variable-id]">1.0</initialization>
             <initialization element="[qual-id]">1.0</initialization>
         </initializations>
@@ -54,9 +54,7 @@
 
         <!-- TODO complete variables section in XSD/XML -->
             <variables>
-                <variable description="description">
-                        hello
-                </variable>
+                <variable description="description">hello</variable>
             </variables>
 
             <condBoxes>
@@ -97,44 +95,44 @@
 
                 <quality name="TotalValue" root="true" description="Overall Value">
                     <add>
-                        <qualID>Reputation</qualID>
-                        <qualID>FinancialGain</qualID>
+                        <qualID>reputation</qualID>
+                        <qualID>financialGain</qualID>
                     </add>
                 </quality>
             </qualities>
 
             <goals>
-                <goal name="ProductManufactured" terminal="false" root="true" description="Product Manufactured"
+                <goal name="productManufactured" terminal="false" root="true" description="Product Manufactured"
                       episodeLength="4">
                     <pre>
                         <predicateID>hasManufacturingCapacity</predicateID>
                     </pre>
                     <refinement type="AND">
-                        <childGoal ref="MaterialOrdered"/>
-                        <childGoal ref="ManufacturingCompleted"/>
+                        <childGoal ref="materialOrdered"/>
+                        <childGoal ref="manufacturingCompleted"/>
                     </refinement>
                 </goal>
 
-                <goal name="MaterialOrdered" terminal="false"  description="Material Ordered">
+                <goal name="materialOrdered" terminal="false"  description="Material Ordered">
                     <refinement type="OR">
-                        <childTask ref="SourceDomestically"/>
-                        <childTask ref="SourceFromAbroad"/>
+                        <childTask ref="sourceDomestically"/>
+                        <childTask ref="sourceFromAbroad"/>
                     </refinement>
                 </goal>
 
-                <goal name="ManufacturingCompleted" terminal="false"  description="Manufacturing Completed">
+                <goal name="manufacturingCompleted" terminal="false"  description="Manufacturing Completed">
                     <pre>
-                        <goalID>MaterialOrdered</goalID>
+                        <goalID>materialOrdered</goalID>
                     </pre>
                     <refinement type="OR">
-                        <childTask ref="BuildInHouse"/>
-                        <childTask ref="AssignToSpecialists"/>
+                        <childTask ref="buildInHouse"/>
+                        <childTask ref="assignToSpecialists"/>
                     </refinement>
                 </goal>
             </goals>
 
             <tasks>
-                <task name="SourceDomestically" description="Source materials from a domestic supplier">
+                <task name="sourceDomestically" description="Source materials from a domestic supplier">
                     <pre>
                         <predicateID>materialAvailable</predicateID>
                     </pre>
@@ -143,7 +141,7 @@
                                 description="Successful">
                             <turnsTrue>deliveredInTimeDom</turnsTrue>
                             <pre>
-                                <taskID>SourceDomestically</taskID>
+                                <taskID>sourceDomestically</taskID>
                             </pre>
                         </effect>
                         <effect name="successDeliveredLateDom" satisfying="true" probability="0.20"
@@ -157,7 +155,7 @@
                     </effectGroup>
                 </task>
 
-                <task name="SourceFromAbroad" description="Source materials from a foreign supplier">
+                <task name="sourceFromAbroad" description="Source materials from a foreign supplier">
                     <effectGroup>
                         <effect name="successDeliveredInTimeFrgn" satisfying="true" probability="0.50"
                                 description="Successful">
@@ -174,7 +172,7 @@
                     </effectGroup>
                 </task>
 
-                <task name="BuildInHouse" description="Build the product in-house">
+                <task name="buildInHouse" description="Build the product in-house">
                     <pre>
                         <predicateID>hasManufacturingCapacity</predicateID>
                     </pre>
@@ -190,9 +188,9 @@
                     </effectGroup>
                 </task>
 
-                <task name="AssignToSpecialists" description="Assign product manufacturing to specialists">
+                <task name="assignToSpecialists" description="Assign product manufacturing to specialists">
                     <npr>
-                        <taskID>SourceFromAbroad</taskID>
+                        <taskID>sourceFromAbroad</taskID>
                     </npr>
                     <effectGroup>
                         <effect name="successSpecGood" satisfying="true" probability="0.7"

@@ -121,7 +121,7 @@
     </xsd:complexType>
 
     <!-- ===== Export ===== -->
-    <xsd:complexType name="ExportType">
+    <xsd:complexType name="ExportType" mixed="true">
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining an export.]]></xsd:documentation>
         </xsd:annotation>
@@ -178,7 +178,11 @@
                 The content of the variable element contains the identifier.
             ]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:attribute name="description" type="xsd:string" use="optional"/>
+        <xsd:simpleContent>
+            <xsd:extension base="IdentifierType">
+                <xsd:attribute name="description" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
     </xsd:complexType>
 
     <!-- ===== Initializations ===== -->
@@ -202,7 +206,7 @@
         </xsd:annotation>
         <xsd:simpleContent>
             <xsd:extension base="BooleanOrFloatType">
-                <xsd:attribute name="element" type="xsd:string" use="required"/>
+                <xsd:attribute name="element" type="IdentifierType" use="required"/>
             </xsd:extension>
         </xsd:simpleContent>
     </xsd:complexType>
@@ -276,9 +280,9 @@
     <xsd:group name="BooleanExpressionElements">
         <xsd:choice>
             <xsd:element name="boolConst" type="xsd:boolean"/>
-            <xsd:element name="predicateID" type="xsd:string"/>
-            <xsd:element name="goalID" type="xsd:string"/>
-            <xsd:element name="taskID" type="xsd:string"/>
+            <xsd:element name="predicateID" type="IdentifierType"/>
+            <xsd:element name="goalID" type="IdentifierType"/>
+            <xsd:element name="taskID" type="IdentifierType"/>
             <xsd:element name="previous" type="BoolAtomType"/>
 
             <xsd:element name="gt" type="NumericComparisonType"/>
@@ -298,9 +302,9 @@
 
     <xsd:group name="BoolAtomElements">
         <xsd:choice>
-            <xsd:element name="predicateID" type="xsd:string"/>
-            <xsd:element name="goalID" type="xsd:string"/>
-            <xsd:element name="taskID" type="xsd:string"/>
+            <xsd:element name="predicateID" type="IdentifierType"/>
+            <xsd:element name="goalID" type="IdentifierType"/>
+            <xsd:element name="taskID" type="IdentifierType"/>
         </xsd:choice>
     </xsd:group>
 
@@ -330,8 +334,8 @@
     <xsd:group name="NumericExpressionElements">
         <xsd:choice>
             <xsd:element name="numConst" type="xsd:float"/>
-            <xsd:element name="variableID" type="xsd:string"/>
-            <xsd:element name="qualID" type="xsd:string"/>
+            <xsd:element name="variableID" type="IdentifierType"/>
+            <xsd:element name="qualID" type="IdentifierType"/>
 
             <xsd:element name="predicateID" type="xsd:string"/>
             <xsd:element name="goalID" type="xsd:string"/>
@@ -349,12 +353,12 @@
     <xsd:group name="NumAtomElements">
         <xsd:choice>
             <xsd:element name="numConst" type="xsd:float"/>
-            <xsd:element name="variableID" type="xsd:string"/>
-            <xsd:element name="qualID" type="xsd:string"/>
+            <xsd:element name="variableID" type="IdentifierType"/>
+            <xsd:element name="qualID" type="IdentifierType"/>
 
-            <xsd:element name="predicateID" type="xsd:string"/>
-            <xsd:element name="goalID" type="xsd:string"/>
-            <xsd:element name="taskID" type="xsd:string"/>
+            <xsd:element name="predicateID" type="IdentifierType"/>
+            <xsd:element name="goalID" type="IdentifierType"/>
+            <xsd:element name="taskID" type="IdentifierType"/>
         </xsd:choice>
     </xsd:group>
 
@@ -491,7 +495,7 @@
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string" use="required">
+        <xsd:attribute name="name" type="IdentifierType" use="required">
             <xsd:annotation>
                 <xsd:documentation>
                     Unique identifier for the preBox.
@@ -550,13 +554,7 @@
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string" use="required">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[
-                    Unique identifier for the indirect effect.
-                ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
+        <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="exported" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="description" type="xsd:string" use="optional">
             <xsd:annotation>
@@ -670,7 +668,7 @@
             </xsd:element>
         </xsd:sequence>
 
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
         <xsd:attribute name="terminal" type="xsd:boolean" use="optional" default="false"/>
@@ -724,7 +722,7 @@
                 - ref: Identifier for the referenced child element (goal or task).
             ]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:attribute name="ref" type="xsd:string" use="required"/>
+        <xsd:attribute name="ref" type="IdentifierType" use="required"/>
     </xsd:complexType>
 
     <!-- ===== Tasks ===== -->
@@ -789,7 +787,7 @@
             </xsd:element>
         </xsd:sequence>
 
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
 
@@ -824,8 +822,8 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="turnsTrue" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-            <xsd:element name="turnsFalse" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="turnsTrue" type="IdentifierType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="turnsFalse" type="IdentifierType" minOccurs="0" maxOccurs="unbounded"/>
 
             <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
@@ -845,7 +843,7 @@
             </xsd:element>
         </xsd:sequence>
 
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="name" type="IdentifierType" use="required"/>
         <xsd:attribute name="satisfying" type="xsd:boolean" use="optional" default="true"/>
         <xsd:attribute name="probability" type="xsd:float" use="required"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
