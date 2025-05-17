@@ -110,23 +110,23 @@
             <!--
             *** Q U A L I T I E S ***
             -->
-<!--            <qualities>-->
-<!--                <quality name = "avoidMoneyLoss" description = "Avoid Money Loss" root = "PROBLEM">-->
-<!--                    <multiply><numConst>1.0</numConst><predicateID>refTixSucc</predicateID></multiply>-->
-<!--                </quality>-->
-<!--                <quality name = "privacy" description = "Privacy" root = "PROBLEM">-->
-<!--                    <add>-->
-<!--                        <multiply><numConst>0.8</numConst><taskID>headAuthorizes</taskID></multiply>-->
-<!--                        <multiply><numConst>0.3</numConst><taskID>committeeAuthorizes</taskID></multiply>-->
-<!--                    </add>-->
-<!--                </quality>-->
-<!--                <quality name = "overallQuality" description = "Overall Quality" root = "PROBLEM">-->
-<!--                    <add>-->
-<!--                        <multiply><numConst>0.7</numConst><qualID>avoidMoneyLoss</qualID></multiply>-->
-<!--                        <multiply><numConst>0.3</numConst><qualID>privacy</qualID></multiply>-->
-<!--                    </add>-->
-<!--                </quality>-->
-<!--            </qualities>-->
+            <qualities>
+                <quality name = "avoidMoneyLoss" description = "Avoid Money Loss" root = "PROBLEM">
+                    <multiply><numConst>1.0</numConst><predicateID>refTixSucc</predicateID></multiply>
+                </quality>
+                <quality name = "privacy" description = "Privacy" root = "PROBLEM">
+                    <add>
+                        <multiply><numConst>0.8</numConst><taskID>headAuthorizes</taskID></multiply>
+                        <multiply><numConst>0.3</numConst><taskID>committeeAuthorizes</taskID></multiply>
+                    </add>
+                </quality>
+                <quality name = "overallQuality" description = "Overall Quality" root = "PROBLEM">
+                    <add>
+                        <multiply><numConst>0.7</numConst><qualID>avoidMoneyLoss</qualID></multiply>
+                        <multiply><numConst>0.3</numConst><qualID>privacy</qualID></multiply>
+                    </add>
+                </quality>
+            </qualities>
 
 
             <!--
@@ -134,26 +134,7 @@
             -->
             <condBoxes>
                 <condBox name="condition">
-                    <or>
-                        <or>
-                        <taskID>bookRefundableTickets</taskID>
-                        <and><and>
-                            <and>
-                            <previous>
-                            <predicateID>nonRefTixFailed</predicateID>
-                        </previous>
-                            <gt><left><variableID>cost</variableID></left>
-                                <right><numConst>50</numConst></right>
-                            </gt>
-                        </and>
-                            <lt><left><qualID>privacy</qualID></left>
-                                <right><numConst>0.5</numConst></right>
-                            </lt>
-                        </and>
-                            <predicateID>headAvailable</predicateID></and>
-                    </or>
-                        <predicateID>flightsExist</predicateID>
-                    </or>
+                    <or><or><taskID>bookRefundableTickets</taskID><and><and><and><previous><predicateID>nonRefTixFailed</predicateID></previous><gt><left><variableID>cost</variableID></left><right><numConst>50</numConst></right></gt></and><lt><left><qualID>privacy</qualID></left><right><numConst>0.5</numConst></right></lt></and><predicateID>headAvailable</predicateID></and></or><predicateID>flightsExist</predicateID></or>
                 </condBox>
             </condBoxes>
 
