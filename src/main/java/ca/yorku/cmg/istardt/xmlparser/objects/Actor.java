@@ -124,11 +124,27 @@ public class Actor extends Element {
      *
      * @return The root element, or null if not found
      */
-    public Element getRoot() {
+    public Goal getGoalRoot() {
         if (goals != null) {
             for (Goal goal : goals) {
-                if (goal instanceof DecompositionElement && ((DecompositionElement) goal).isRoot()) {
+                if (goal.isRoot()) {
                     return goal;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the root element among the qualities.
+     *
+     * @return The root element, or null if not found
+     */
+    public Quality getQualityRoot() {
+        if (qualities != null) {
+            for (Quality quality : qualities) {
+                if (quality.isRoot()) {
+                    return quality;
                 }
             }
         }
