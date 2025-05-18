@@ -10,9 +10,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-/**
- * Deserializer for Actor objects.
- */
 public class ActorDeserializer extends BaseDeserializer<Actor> {
     private static final Logger LOGGER = Logger.getLogger(ActorDeserializer.class.getName());
 
@@ -38,12 +35,12 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 actor.setPredicates(predicates);
             }
 
+            // Process variables
             if (node.has("variables") && node.get("variables").has("variable")) {
                 JsonNode variablesNode = node.get("variables").get("variable");
                 List<Variable> variables = DeserializerUtils.deserializeList(variablesNode, p, ctxt, Variable.class);
                 actor.setVariables(variables);
             }
-
 
             // Process condBoxes
             if (node.has("condBoxes") && node.get("condBoxes").has("condBox")) {
@@ -73,12 +70,10 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 actor.setTasks(tasks);
             }
         } catch (IOException e) {
-            // Get name from atom for logging
             String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
             DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing actor " + name, e);
         }
 
-        // Log with name from atom for consistency
         String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
         LOGGER.info("Deserialized actor: " + name);
     }

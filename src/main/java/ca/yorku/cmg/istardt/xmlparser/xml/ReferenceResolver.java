@@ -1,5 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.xml;
 
+import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
 import ca.yorku.cmg.istardt.xmlparser.objects.Element;
 
 import java.util.HashMap;
@@ -8,8 +9,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * Enhanced central reference resolver for managing object references during deserialization.
- * Implemented as a singleton to provide global access during the unmarshalling process.
+ * Reference resolver for managing object references during deserialization.
  */
 public class ReferenceResolver {
     private static final Logger LOGGER = Logger.getLogger(ReferenceResolver.class.getName());
@@ -89,40 +89,6 @@ public class ReferenceResolver {
     }
 
     /**
-     * Retrieves an element by its ID and casts it to the specified type.
-     *
-     * @param <T> The expected type of the element
-     * @param id The unique identifier of the element to retrieve
-     * @param clazz The class representing the expected type
-     * @return The element cast to the specified type, or null if not found or of wrong type
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Element> T getElementById(String id, Class<T> clazz) {
-        Element element = getElementById(id);
-        if (element != null && clazz.isInstance(element)) {
-            return (T) element;
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves an element by its name (titleText) and casts it to the specified type.
-     *
-     * @param <T> The expected type of the element
-     * @param name The name (titleText) of the element to retrieve
-     * @param clazz The class representing the expected type
-     * @return The element cast to the specified type, or null if not found or of wrong type
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Element> T getElementByName(String name, Class<T> clazz) {
-        Element element = getElementByName(name);
-        if (element != null && clazz.isInstance(element)) {
-            return (T) element;
-        }
-        return null;
-    }
-
-    /**
      * Gets all element IDs registered in the resolver.
      *
      * @return A set of all element IDs
@@ -132,40 +98,10 @@ public class ReferenceResolver {
     }
 
     /**
-     * Gets all element names registered in the resolver.
-     *
-     * @return A set of all element names
-     */
-    public Set<String> getAllElementNames() {
-        return elementsByName.keySet();
-    }
-
-    /**
      * Clears all registered elements.
-     * This should be called before processing a new XML file.
      */
     public void clear() {
         elementsById.clear();
         elementsByName.clear();
-    }
-
-    /**
-     * Gets the number of registered elements by ID.
-     * Useful for debugging and testing.
-     *
-     * @return The number of elements registered by ID
-     */
-    public int getElementCount() {
-        return elementsById.size();
-    }
-
-    /**
-     * Gets the number of registered elements by name.
-     * Useful for debugging and testing.
-     *
-     * @return The number of elements registered by name
-     */
-    public int getElementByNameCount() {
-        return elementsByName.size();
     }
 }

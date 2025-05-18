@@ -10,9 +10,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-/**
- * Deserializer for Quality objects.
- */
 public class QualityDeserializer extends BaseDeserializer<Quality> {
     private static final Logger LOGGER = Logger.getLogger(QualityDeserializer.class.getName());
 
@@ -27,21 +24,12 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
 
     @Override
     protected void handleSpecificAttributes(Quality quality, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        // Get specific attributes
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
-
         quality.setRoot(root);
-        // TODO add init
 
+        quality.setRawFormulaNode(node);
         // Process formula
-        try {
-            if (node.has("formula")) {
-                Formula formula = ctxt.readValue(node.get("formula").traverse(p.getCodec()), Formula.class);
-                quality.setFormula(formula);
-            }
-        } catch (IOException e) {
-            DeserializerUtils.handleDeserializationError(LOGGER,
-                    "Error processing formula for quality " + quality.getAtom().getTitleText(), e);
-        }
+//        quality.setFormula(DeserializerUtils.processDirectFormula(node, p, ctxt, LOGGER));
+
     }
 }

@@ -53,7 +53,7 @@
                 <condBox name="materialAvailable" description="Material availability in stock">
                     <!--  TODO double check [boolean-expression] -->
                     <previous>
-                        <predicateID>deliveredBadQualitySpec</predicateID>
+                        <predicateID>deliveredLateDom</predicateID>
                     </previous>
                 </condBox>
                 <condBox name="hasManufacturingCapacity" description="Manufacturer has capacity to build in-house">

@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-/**
- * Deserializer for Model objects.
- */
 public class ModelDeserializer extends StdDeserializer<Model> {
     private static final Logger LOGGER = Logger.getLogger(ModelDeserializer.class.getName());
 

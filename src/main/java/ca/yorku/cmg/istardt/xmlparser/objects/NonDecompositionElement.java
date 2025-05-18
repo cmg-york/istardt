@@ -1,11 +1,19 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public abstract class NonDecompositionElement extends Element {
+public class NonDecompositionElement extends Element {
     @JacksonXmlProperty(localName = "formula")
-    private Formula valueFormula;
+    protected Formula valueFormula;
 
+    protected JsonNode rawFormulaNode;
+    public JsonNode getRawFormulaNode() {
+        return rawFormulaNode;
+    }
+    public void setRawFormulaNode(JsonNode rawFormulaNode) {
+        this.rawFormulaNode = rawFormulaNode;
+    }
     public void setFormula(Formula valueFormula) {
         this.valueFormula = valueFormula;
     }

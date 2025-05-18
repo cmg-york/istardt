@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,25 @@ public class Effect extends NonDecompositionElement {
 
     private Formula preFormula;
     private Formula nprFormula;
+
+    private JsonNode rawPreFormulaNode;
+    private JsonNode rawNprFormulaNode;
+
+    public JsonNode getRawPreFormulaNode() {
+        return rawPreFormulaNode;
+    }
+
+    public void setRawPreFormulaNode(JsonNode rawPreFormulaNode) {
+        this.rawPreFormulaNode = rawPreFormulaNode;
+    }
+
+    public JsonNode getRawNprFormulaNode() {
+        return rawNprFormulaNode;
+    }
+
+    public void setRawNprFormulaNode(JsonNode rawNprFormulaNode) {
+        this.rawNprFormulaNode = rawNprFormulaNode;
+    }
 
     @JsonBackReference("task-effects")
     private Task task;

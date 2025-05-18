@@ -32,14 +32,9 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
             FormulaNodeVisitor visitor = new FormulaNodeVisitorImpl(p, ctxt);
 
             // Check for each formula type and delegate to the appropriate visitor
-            if (node.has("const")) {
-                LOGGER.info("Found constant formula: " + node.get("const").asText());
-                return visitor.visitConstant(node.get("const"));
-            }
-
-            if (node.has("numAtom")) {
-                LOGGER.info("Found numeric atom formula: " + node.get("numAtom").asText());
-                return visitor.visitNumAtom(node.get("numAtom"));
+            if (node.has("numConst")) {
+                LOGGER.info("Found constant formula: " + node.get("numConst").asText());
+                return visitor.visitNumConst(node.get("numConst"));
             }
 
             if (node.has("boolConst")) {
@@ -47,9 +42,29 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
                 return visitor.visitBoolConst(node.get("boolConst"));
             }
 
-            if (node.has("boolAtom")) {
-                LOGGER.info("Found boolean atom formula: " + node.get("boolAtom").asText());
-                return visitor.visitBoolAtom(node.get("boolAtom"));
+            if (node.has("predicateID")) {
+                LOGGER.info("Found predicate ID atom: " + node.get("predicateID").asText());
+                return visitor.visitPredicateID(node.get("predicateID"));
+            }
+
+            if (node.has("goalID")) {
+                LOGGER.info("Found goal ID atom: " + node.get("goalID").asText());
+                return visitor.visitGoalID(node.get("goalID"));
+            }
+
+            if (node.has("taskID")) {
+                LOGGER.info("Found task ID atom: " + node.get("taskID").asText());
+                return visitor.visitTaskID(node.get("taskID"));
+            }
+
+            if (node.has("variableID")) {
+                LOGGER.info("Found variable ID atom: " + node.get("variableID").asText());
+                return visitor.visitVariableID(node.get("variableID"));
+            }
+
+            if (node.has("qualID")) {
+                LOGGER.info("Found quality ID atom: " + node.get("qualID").asText());
+                return visitor.visitQualID(node.get("qualID"));
             }
 
             if (node.has("add")) {
@@ -87,7 +102,6 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
                 return visitor.visitGreaterThan(node.get("gt"));
             }
 
-            // New operators
             if (node.has("gte")) {
                 LOGGER.info("Found greater than or equals operator formula");
                 return visitor.visitGreaterThanEquals(node.get("gte"));
@@ -128,7 +142,7 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
                 return visitor.visitNot(node.get("not"));
             }
 
-            // Default case - return a simple constant formula
+            // Default case
             LOGGER.warning("Unknown formula type encountered: " + node.toString());
             return Formula.createConstantFormula("Unknown Formula");
         } catch (IOException e) {

@@ -14,9 +14,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
-/**
- * Deserializer for Effect objects with support for formula-based pre/npr.
- */
 public class EffectDeserializer extends BaseDeserializer<Effect> {
     private static final Logger LOGGER = Logger.getLogger(EffectDeserializer.class.getName());
 
@@ -47,11 +44,11 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
             entry.getValue().accept(effect, values);
         }
 
-        // Process pre formula
-        processPreFormula(effect, node, p, ctxt);
-
-        // Process npr formula
-        processNprFormula(effect, node, p, ctxt);
+//        // Process pre formula
+//        processPreFormula(effect, node, p, ctxt);
+//
+//        // Process npr formula
+//        processNprFormula(effect, node, p, ctxt);
     }
 
     /**

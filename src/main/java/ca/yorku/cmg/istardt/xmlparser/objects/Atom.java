@@ -65,7 +65,7 @@ public class Atom extends Formula {
 
     @Override
     public String getFormula() {
-        return id != null ? id : "";
+        return titleText;
     }
 
     public Element getElement() {

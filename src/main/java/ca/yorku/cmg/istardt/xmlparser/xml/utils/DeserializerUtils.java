@@ -62,6 +62,44 @@ public class DeserializerUtils {
         return result;
     }
 
+    /**
+     * Process a node that directly contains a formula expression.
+     * @param node The node containing the formula expression
+     * @param p The JsonParser
+     * @param ctxt The DeserializationContext
+     * @param logger Logger for messages
+     * @return The deserialized Formula, or null if no expression found
+     */
+    public static Formula processDirectFormula(JsonNode node, JsonParser p, DeserializationContext ctxt, Logger logger) {
+        try {
+            // Check if the node has any formula expression
+            if (containsFormulaExpression(node)) {
+                return ctxt.readValue(node.traverse(p.getCodec()), Formula.class);
+            }
+
+            logger.warning("No formula expression found in node: " + node);
+            return null;
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error processing direct formula: " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Check if a node contains any formula expression element.
+     */
+    private static boolean containsFormulaExpression(JsonNode node) {
+        String[] expressions = {
+                "boolConst", "numConst", "predicateID", "goalID", "taskID", "variableID", "qualID",
+                "previous", "add", "subtract", "multiply", "divide", "negate",
+                "gt", "gte", "lt", "lte", "eq", "neq", "and", "or", "not"
+        };
+        for (String expr : expressions) {
+            if (node.has(expr)) return true;
+        }
+        return false;
+    }
+
     public static Formula processFormula(String elementName, JsonNode node, JsonParser p, DeserializationContext ctxt, Logger logger) throws IOException {
         if (node.has(elementName)) {
             JsonNode formulaNode = node.get(elementName);

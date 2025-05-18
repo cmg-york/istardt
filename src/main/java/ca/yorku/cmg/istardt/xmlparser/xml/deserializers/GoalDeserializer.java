@@ -11,9 +11,6 @@ import ca.yorku.cmg.istardt.xmlparser.objects.Goal;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-/**
- * Enhanced deserializer for Goal objects with improved formula handling
- */
 public class GoalDeserializer extends BaseDeserializer<Goal> {
     private static final Logger LOGGER = Logger.getLogger(GoalDeserializer.class.getName());
 
@@ -36,19 +33,12 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         int episodeLength = DeserializerUtils.getIntAttribute(node, "episodeLength", 1);
         goal.setRuns(episodeLength);
 
-        // Process pre formula with detailed logging
-        DeserializerUtils.logInfo(LOGGER, "Processing goal: " + goal.getId());
-        Formula preFormula = DeserializerUtils.processFormula("pre", node, p, ctxt, LOGGER);
-        if (preFormula != null) {
-            goal.setPreFormula(preFormula);
-            DeserializerUtils.logInfo(LOGGER, "Set pre formula for goal: " + goal.getId());
+        // Store formula nodes for future processing
+        if (node.has("pre")) {
+            goal.setRawPreFormulaNode(node.get("pre"));
         }
-
-        // Process npr formula with detailed logging
-        Formula nprFormula = DeserializerUtils.processFormula("npr", node, p, ctxt, LOGGER);
-        if (nprFormula != null) {
-            goal.setNprFormula(nprFormula);
-            DeserializerUtils.logInfo(LOGGER, "Set npr formula for goal: " + goal.getId());
+        if (node.has("npr")) {
+            goal.setRawNprFormulaNode(node.get("npr"));
         }
 
         // Process refinements

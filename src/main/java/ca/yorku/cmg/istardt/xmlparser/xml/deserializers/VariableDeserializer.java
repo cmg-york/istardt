@@ -48,5 +48,4 @@ public class VariableDeserializer extends BaseDeserializer<Variable> {
 
         return element;
     }
-
 }

@@ -75,7 +75,7 @@
                 - Qualities
                 - Goals
                 - Tasks
-                - CrossSet
+                - CrossRuns
                 - ExportedSet
                 - Initializations
             ]]></xsd:documentation>
@@ -368,7 +368,7 @@
         <xsd:annotation>
             <xsd:documentation>
                 A numeric expression is defined recursively as follows:
-                • A numeric constant: const (e.g., 5, 10.5)
+                • A numeric ant: const (e.g., 5, 10.5)
                 • A numeric identifier: atom (references a quality)
                 • A previous call: previous wrapping an atom
                 • Arithmetic operations: add, subtract, multiply, divide
@@ -476,13 +476,7 @@
                 </xsd:documentation>
             </xsd:annotation>
         </xsd:attribute>
-        <xsd:attribute name="description" type="xsd:string" use="optional">
-            <xsd:annotation>
-                <xsd:documentation>
-                    Description for the preBox.
-                </xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
+        <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
 
     <!-- ===== Qualities ===== -->

@@ -2,6 +2,7 @@ package ca.yorku.cmg.istardt.xmlparser.objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +12,35 @@ import java.util.List;
  */
 public class DecompositionElement extends Element {
 
-    private List<DecompositionElement> children;
+    protected List<DecompositionElement> children;
 
     @JacksonXmlProperty(isAttribute = true)
-    private DecompType decompType;
+    protected DecompType decompType;
 
-    private Formula preFormula;
-    private Formula nprFormula;
+    protected Formula preFormula;
+    protected Formula nprFormula;
 
     @JsonIgnore
-    private DecompositionElement parent;
+    protected DecompositionElement parent;
+
+    protected JsonNode rawPreFormulaNode;
+    protected JsonNode rawNprFormulaNode;
+
+    public JsonNode getRawPreFormulaNode() {
+        return rawPreFormulaNode;
+    }
+
+    public void setRawPreFormulaNode(JsonNode rawPreFormulaNode) {
+        this.rawPreFormulaNode = rawPreFormulaNode;
+    }
+
+    public JsonNode getRawNprFormulaNode() {
+        return rawNprFormulaNode;
+    }
+
+    public void setRawNprFormulaNode(JsonNode rawNprFormulaNode) {
+        this.rawNprFormulaNode = rawNprFormulaNode;
+    }
 
     public DecompositionElement() {
         this.children = new ArrayList<>();
