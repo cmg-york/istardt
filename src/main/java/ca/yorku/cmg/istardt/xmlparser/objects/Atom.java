@@ -50,14 +50,14 @@ public class Atom extends Formula {
     }
 
     /**
-     * Get the description of this atom (from XML description attribute)
+     * Get the description of this atom
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Set the description of this atom (from XML description attribute)
+     * Set the description of this atom
      */
     public void setDescription(String description) {
         this.description = description;

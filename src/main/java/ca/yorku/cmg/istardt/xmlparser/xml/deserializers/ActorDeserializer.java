@@ -32,16 +32,22 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
 
         try {
             // Process predicates
-//            if (node.has("predicates") && node.get("predicates").has("predicate")) {
-//                JsonNode predicatesNode = node.get("predicates").get("predicate");
-//                // TODO change Atom to Predicate
-//                List<Atom> predicates = deserializePredicates(predicatesNode);
-//                actor.setPredicates(predicates);
-//            }
+            if (node.has("predicates") && node.get("predicates").has("predicate")) {
+                JsonNode predicatesNode = node.get("predicates").get("predicate");
+                List<Predicate> predicates = DeserializerUtils.deserializeList(predicatesNode, p, ctxt, Predicate.class);
+                actor.setPredicates(predicates);
+            }
 
-            // Process preBoxes (conditions)
-            if (node.has("preBoxes") && node.get("preBoxes").has("preBox")) {
-                JsonNode preBoxesNode = node.get("preBoxes").get("preBox");
+            if (node.has("variables") && node.get("variables").has("variable")) {
+                JsonNode variablesNode = node.get("variables").get("variable");
+                List<Variable> variables = DeserializerUtils.deserializeList(variablesNode, p, ctxt, Variable.class);
+                actor.setVariables(variables);
+            }
+
+
+            // Process condBoxes
+            if (node.has("condBoxes") && node.get("condBoxes").has("condBox")) {
+                JsonNode preBoxesNode = node.get("condBoxes").get("condBox");
                 List<Condition> conditions = DeserializerUtils.deserializeList(preBoxesNode, p, ctxt, Condition.class);
                 actor.setConditions(conditions);
             }
@@ -75,31 +81,5 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
         // Log with name from atom for consistency
         String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
         LOGGER.info("Deserialized actor: " + name);
-    }
-
-    private List<Atom> deserializePredicates(JsonNode predicatesNode) {
-        return DeserializerUtils.processNodeItems(predicatesNode, this::deserializePredicate);
-    }
-
-    /**
-     * Deserializes a single predicate into an Atom.
-     *
-     * @param predicateNode The JSON node representing a predicate
-     * @return An Atom object
-     */
-    private Atom deserializePredicate(JsonNode predicateNode) {
-        String value = predicateNode.asText().trim();
-        String description = DeserializerUtils.getStringAttribute(predicateNode, "description", null);
-
-        Atom atom = new Atom();
-        atom.setId(java.util.UUID.randomUUID().toString()); // Generate UUID for atom ID
-        atom.setTitleText(value); // Use predicate value as titleText
-
-        if (description != null) {
-            atom.setTitleHTMLText(description);
-        }
-
-        // Don't register atoms in the reference resolver as they don't extend Element
-        return atom;
     }
 }

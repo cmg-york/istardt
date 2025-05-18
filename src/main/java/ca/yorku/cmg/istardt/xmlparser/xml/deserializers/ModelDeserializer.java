@@ -48,18 +48,18 @@ public class ModelDeserializer extends StdDeserializer<Model> {
             }
 
             List<Actor> actors = new ArrayList<>();
-//            if (node.has("actors")) {
-//                JsonNode actorsNode = node.get("actors");
-//                if (actorsNode.has("actor")) {
-//                    JsonNode actorNodes = actorsNode.get("actor");
-//                    actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
-//                    LOGGER.info("Deserialized " + actors.size() + " actors");
-//                } else {
-//                    LOGGER.warning("No actors found within actors tag");
-//                }
-//            } else {
-//                LOGGER.warning("No actors tag found");
-//            }
+            if (node.has("actors")) {
+                JsonNode actorsNode = node.get("actors");
+                if (actorsNode.has("actor")) {
+                    JsonNode actorNodes = actorsNode.get("actor");
+                    actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
+                    LOGGER.info("Deserialized " + actors.size() + " actors");
+                } else {
+                    LOGGER.warning("No actors found within actors tag");
+                }
+            } else {
+                LOGGER.warning("No actors tag found");
+            }
             model.setActors(actors);
         } catch (IOException e) {
             DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing model", e);

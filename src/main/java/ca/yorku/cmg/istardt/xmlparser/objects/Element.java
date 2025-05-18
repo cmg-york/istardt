@@ -53,6 +53,9 @@ public abstract class Element {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{id='" + id + "'}";
+        return "Element{" +
+                "id='" + id + '\'' +
+                ", representation=" + representation +
+                '}';
     }
 }
