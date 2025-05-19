@@ -18,9 +18,9 @@
         [ [condBoxes] ] [ [cross-set] ] [ [exported-set] ]  [ [initializations] ]   -->
 
             <crossRuns>
-                <crossRun><predicateID>identifer</predicateID></crossRun>
-                <crossRun><variableID>identifer</variableID></crossRun>
-                <crossRun><qualID>identifer</qualID></crossRun>
+                <crossRun><predicateID>deliveredLateDom</predicateID></crossRun>
+                <crossRun><variableID>test1</variableID></crossRun>
+                <crossRun><qualID>reputation</qualID></crossRun>
             </crossRuns>
 
             <exportedSet>

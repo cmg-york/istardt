@@ -66,7 +66,7 @@ public class ModelUnmarshallerTest {
         assertEquals(2, actor.getConditions().size(), "actor getConditions size");
         assertEquals(3, actor.getPredicates().size(), "actor getPredicates size");
         assertEquals(2, actor.getVariables().size(), "actor getVariables size");
-//        assertEquals(2, actor.getCrossRunSet(), "actor getVariables size");
+        assertEquals(3, actor.getCrossRunSetElements().size(), "actor getCrossRunSet size");
 
         Quality rootQuality = actor.getQualityRoot();
         assertEquals("totalValue", rootQuality.getName(), "root quality Name");
@@ -110,6 +110,32 @@ public class ModelUnmarshallerTest {
         Atom variableAtom2 = variables.get(1).getAtom();
         assertEquals("test2", variableAtom2.getTitleText(), "variable Name");
         assertEquals("description2", variableAtom2.getDescription(), "variable Description");
+    }
+
+    @Test
+    public void testUnmarshalCrossRuns() {
+        List<Element> crossRuns = actor.getCrossRunSetElements();
+
+        // ========= CROSSRUN 1 =========
+        Atom crossRunAtom1 = crossRuns.get(0).getAtom();
+        assertTrue(crossRuns.get(0) instanceof Predicate,
+                "Expected the element to be a Predicate but was " + crossRuns.get(0).getClass().getName());
+        assertEquals("deliveredLateDom", crossRunAtom1.getTitleText(), "crossRun element Name");
+        assertEquals("Materials delivered late (domestic)", crossRunAtom1.getDescription(), "crossRun element  Description");
+
+        // ========= CROSSRUN 2 =========
+        Atom crossRunAtom2 = crossRuns.get(1).getAtom();
+        assertTrue(crossRuns.get(1) instanceof Variable,
+                "Expected the element to be a Variable but was " + crossRuns.get(1).getClass().getName());
+        assertEquals("test1", crossRunAtom2.getTitleText(), "crossRun element Name");
+        assertEquals("description1", crossRunAtom2.getDescription(), "crossRun element Description");
+
+        // ========= CROSSRUN 3 =========
+        Atom crossRunAtom3 = crossRuns.get(2).getAtom();
+        assertTrue(crossRuns.get(2) instanceof Quality,
+                "Expected the element to be a Quality but was " + crossRuns.get(2).getClass().getName());
+        assertEquals("reputation", crossRunAtom3.getTitleText(), "crossRun element Name");
+        assertEquals("Reputation of the Manufacturer", crossRunAtom3.getDescription(), "crossRun element Description");
     }
 
     @Test

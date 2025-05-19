@@ -1,26 +1,16 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.ActorDeserializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonRootName("actor")
 @JsonDeserialize(using = ActorDeserializer.class)
 public class Actor extends Element {
-    @JsonManagedReference("actor-goals")
     private List<Goal> goals;
-    @JsonManagedReference("actor-tasks")
     private List<Task> tasks;
-    @JsonIgnore
     private List<Effect> effects;
-    @JsonManagedReference("actor-qualities")
     private List<Quality> qualities;
     private List<Condition> conditions;
     private List<Predicate> predicates;
@@ -95,7 +85,11 @@ public class Actor extends Element {
         this.variables = variables;
     }
 
-    public List<Element> getCrossRunSet() {
+    public CrossRunSet getCrossRunSet() {
+        return crossRunSet;
+    }
+
+    public List<Element> getCrossRunSetElements() {
         return crossRunSet.getElements();
     }
 
