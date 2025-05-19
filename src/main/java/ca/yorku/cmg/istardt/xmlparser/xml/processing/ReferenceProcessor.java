@@ -41,12 +41,9 @@ public class ReferenceProcessor {
             // Process goal hierarchies and refinements
             processGoalRefinements(actor.getGoals());
 
-            // Process task-effect relationships and collect effects
+            // Collect effects
             List<Effect> allEffects = new ArrayList<>();
             for (Task task : actor.getTasks()) {
-                processTaskEffects(task);
-
-                // Collect effects
                 if (task.getEffects() != null) {
                     allEffects.addAll(task.getEffects());
                 }
@@ -74,7 +71,6 @@ public class ReferenceProcessor {
      * Uses name-based lookup rather than ID-based lookup.
      *
      * @param goals The list of goals to process
-     * @param elementsByName The map of elements by name for lookup
      */
     private void processGoalRefinements(List<Goal> goals) {
         if (goals == null) return;
@@ -111,20 +107,6 @@ public class ReferenceProcessor {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Process task effects to establish the two-way relationship between tasks and effects.
-     *
-     * @param task The task to process
-     */
-    private void processTaskEffects(Task task) {
-        if (task == null || task.getEffects() == null) return;
-
-        for (Effect effect : task.getEffects()) {
-            // Set the task as the parent of the effect
-            effect.setTask(task);
         }
     }
 

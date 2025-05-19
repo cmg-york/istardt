@@ -36,14 +36,6 @@ public class Task extends DecompositionElement {
         }
     }
 
-    public void addEffect(Effect e) {
-        if (effects == null) {
-            effects = new ArrayList<>();
-        }
-        effects.add(e);
-        e.setTask(this);
-    }
-
     public List<Effect> getEffects() {
         return effects;
     }

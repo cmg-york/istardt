@@ -49,10 +49,7 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
                 JsonNode effectNodes = effectGroupNode.get("effect");
                 LOGGER.info("Processing effect group for task " + task.getId());
                 List<Effect> effects = DeserializerUtils.deserializeList(effectNodes, p, ctxt, Effect.class);
-                for (Effect effect: effects){
-                    effect.setTask(task);
-                }
-                task.setEffects(effects);
+                task.setEffects(effects); // bidirectional relationship
                 LOGGER.info("Successfully processed " + effects.size() + " effects for task " + task.getId());
             }
         } catch (IOException e) {

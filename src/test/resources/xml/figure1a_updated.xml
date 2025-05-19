@@ -121,7 +121,7 @@
             <tasks>
                 <task name="sourceDomestically" description="Source materials from a domestic supplier">
                     <pre>
-                        <predicateID>materialAvailable</predicateID>
+                        <goalID>manufacturingCompleted</goalID>
                     </pre>
                     <effectGroup>
                         <effect name="successDeliveredInTimeDom" satisfying="true" probability="0.75"
@@ -144,33 +144,21 @@
 
                 <task name="sourceFromAbroad" description="Source materials from a foreign supplier">
                     <effectGroup>
-                        <effect name="successDeliveredInTimeFrgn" satisfying="true" probability="0.50"
+                        <effect name="successDeliveredInTimeFrgn" satisfying="true" probability="1"
                                 description="Successful">
                             <turnsTrue>deliveredInTimeFrgn</turnsTrue>
-                        </effect>
-                        <effect name="successDeliveredLateFrgn" satisfying="true" probability="0.35"
-                                description="Successful">
-                            <turnsTrue>deliveredLateFrgn</turnsTrue>
-                        </effect>
-                        <effect name="failureDeliveredFrgn" satisfying="false" probability="0.15"
-                                description="Failure">
-                            <turnsTrue>neverDeliveredFrgn</turnsTrue>
                         </effect>
                     </effectGroup>
                 </task>
 
                 <task name="buildInHouse" description="Build the product in-house">
-                    <pre>
-                        <predicateID>hasManufacturingCapacity</predicateID>
-                    </pre>
+                    <npr>
+                        <taskID>sourceFromAbroad</taskID>
+                    </npr>
                     <effectGroup>
-                        <effect name="successInHGood" satisfying="true" probability="0.5"
+                        <effect name="successInHGood" satisfying="true" probability="1.0"
                                 description="Successful">
                             <turnsTrue>deliveredGoodQualityInH</turnsTrue>
-                        </effect>
-                        <effect name="successInHBad" satisfying="true" probability="0.5"
-                                description="Successful">
-                            <turnsTrue>deliveredBadQualityInH</turnsTrue>
                         </effect>
                     </effectGroup>
                 </task>

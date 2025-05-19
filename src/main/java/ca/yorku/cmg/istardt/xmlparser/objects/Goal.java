@@ -87,10 +87,6 @@ public class Goal extends DecompositionElement {
         this.actor = actor;
     }
 
-    /**
-     * Override toString to prevent infinite recursion from parent-child circular references.
-     * Includes Goal-specific information while avoiding circular references.
-     */
     @Override
     public String toString() {
         return "Goal{id=" + getId() +

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,15 @@ public class ModelUnmarshallerTest {
         Atom atom = actor.getAtom();
         assertEquals("Manufacturer", actor.getName(), "actor Name");
         assertEquals("A Manufacturer actor", atom.getDescription(), "actor Description");
+
+        assertEquals(3, actor.getGoals().size(), "actor getGoals size");
+        assertEquals(4, actor.getTasks().size(), "actor getTasks size");
+        assertEquals(7, actor.getEffects().size(), "actor getEffects size");
+        assertEquals(3, actor.getQualities().size(), "actor getQualities size");
+        assertEquals(2, actor.getConditions().size(), "actor getConditions size");
+        assertEquals(3, actor.getPredicates().size(), "actor getPredicates size");
+        assertEquals(2, actor.getVariables().size(), "actor getVariables size");
+//        assertEquals(2, actor.getCrossRunSet(), "actor getVariables size");
 
         Quality rootQuality = actor.getQualityRoot();
         assertEquals("totalValue", rootQuality.getName(), "root quality Name");
@@ -170,9 +180,11 @@ public class ModelUnmarshallerTest {
     @Test
     public void testUnmarshalGoals() {
         List<Goal> goals = actor.getGoals();
+
+        // ========= GOAL 1 =========
         Goal goal1 = goals.get(0);
         Atom goalAtom1 = goal1.getAtom();
-
+        assertTrue(goal1.isRoot());
         assertEquals("productManufactured", goalAtom1.getTitleText(), "goal Name");
         assertEquals("Product Manufactured", goalAtom1.getDescription(), "goal Description");
         assertEquals(4, goal1.getRuns(), "goal episodeLength/runs");
@@ -185,9 +197,13 @@ public class ModelUnmarshallerTest {
         assertEquals("materialOrdered", goal1.getChildren().get(0).getName(), "goal child name 1");
         assertEquals("manufacturingCompleted", goal1.getChildren().get(1).getName(), "goal child name 2");
         assertNull(goal1.getNprFormula());
+        assertNull(goal1.getParent());
+        assertTrue(goal1.getSiblings().isEmpty());
 
+        // ========= GOAL 2 =========
         Goal goal2 = goals.get(1);
         Atom goalAtom2 = goal2.getAtom();
+        assertFalse(goal2.isRoot());
         assertEquals("materialOrdered", goalAtom2.getTitleText(), "root goal Name");
         assertEquals("Material Ordered", goalAtom2.getDescription(), "root goal Description");
         assertEquals(1, goal2.getRuns(), "root goal episodeLength/runs");
@@ -198,8 +214,19 @@ public class ModelUnmarshallerTest {
         assertNull(goal2.getNprFormula());
         assertNull(goal2.getPreFormula());
 
+        assertEquals("productManufactured", goal2.getParent().getName(), "goal parent's name");
+
+        List<String> expectedSiblings2 = Arrays.asList("manufacturingCompleted");
+        List<String> actualSiblings2 = goal2.getSiblings().stream()
+                .map(effect -> effect.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedSiblings2, actualSiblings2, "Goal getSiblings");
+
+
+        // ========= GOAL 3 =========
         Goal goal3 = goals.get(2);
         Atom goalAtom3 = goal3.getAtom();
+        assertFalse(goal3.isRoot());
         assertEquals("manufacturingCompleted", goalAtom3.getTitleText(), "goal Name");
         assertEquals("Manufacturing Completed", goalAtom3.getDescription(), "goal Description");
         assertEquals(1, goal3.getRuns(), "goal episodeLength/runs");
@@ -212,6 +239,143 @@ public class ModelUnmarshallerTest {
         assertEquals("buildInHouse", goal3.getChildren().get(0).getName(), "goal child name 1");
         assertEquals("assignToSpecialists", goal3.getChildren().get(1).getName(), "goal child name 2");
         assertNull(goal3.getNprFormula());
+
+        assertEquals("productManufactured", goal3.getParent().getName(), "goal parent's name");
+
+        List<String> expectedSiblings3 = Arrays.asList("materialOrdered");
+        List<String> actualSiblings3 = goal3.getSiblings().stream()
+                .map(effect -> effect.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedSiblings3, actualSiblings3, "Goal getSiblings");
+    }
+
+    @Test
+    public void testUnmarshalTasks() {
+        List<Task> tasks = actor.getTasks();
+
+        // ========= TASK 1 =========
+        Task task1 = tasks.get(0);
+        Atom taskAtom1 = task1.getAtom();
+        assertEquals("sourceDomestically", taskAtom1.getTitleText(), "task Name");
+        assertEquals("Source materials from a domestic supplier", taskAtom1.getDescription(), "task Description");
+        assertEquals("manufacturingCompleted", task1.getPreFormula().getFormula(), "task pre");
+        assertNull(task1.getNprFormula());
+
+        // Cast to Atom test
+        Formula formula1 = task1.getPreFormula();
+        assertTrue(formula1 instanceof Atom,
+                "Expected the formula to be a Atom but was " + formula1.getClass().getName());
+        Atom atomFormula1 = (Atom) formula1;
+        assertEquals("manufacturingCompleted", atomFormula1.getTitleText(), "task pre atom Name");
+        assertEquals("Manufacturing Completed", atomFormula1.getDescription(), "task pre atom Description");
+        assertTrue(atomFormula1.getElement() instanceof Goal,
+                "Expected the element to be a Goal but was " + atomFormula1.getElement().getClass().getName());
+
+        assertEquals(DecompType.TERM, task1.getDecompType(), "task DecompType");
+        assertTrue(task1.getChildren().isEmpty(), "Expected task getChildren to be empty");
+        assertEquals("materialOrdered", task1.getParent().getName(), "task parent's name");
+
+        assertEquals(3, task1.getEffects().size(), "task getEffects size");
+        assertEquals(false, task1.isDeterministic(), "task isDeterministic");
+        assertEquals(false, task1.isRoot(), "task isDeterministic");
+
+        List<String> expectedEffects1 = Arrays.asList("successDeliveredInTimeDom", "successDeliveredLateDom", "failureDeliveredDom");
+        List<String> actualEffects1 = task1.getEffects().stream()
+                .map(effect -> effect.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedEffects1, actualEffects1, "Task EffectGroup");
+
+
+        // ========= TASK 2 =========
+        Task task2 = tasks.get(1);
+        Atom taskAtom2 = task2.getAtom();
+        assertEquals("sourceFromAbroad", taskAtom2.getTitleText(), "task Name");
+        assertEquals("Source materials from a foreign supplier", taskAtom2.getDescription(), "task Description");
+        assertNull(task2.getNprFormula());
+        assertNull(task2.getPreFormula());
+        assertEquals(DecompType.TERM, task2.getDecompType(), "task DecompType");
+        assertTrue(task2.getChildren().isEmpty(), "Expected task getChildren to be empty");
+        assertEquals("materialOrdered", task2.getParent().getName(), "task parent's name");
+        assertEquals(1, task2.getEffects().size(), "task getEffects size");
+        assertEquals(true, task2.isDeterministic(), "task isDeterministic");
+        assertEquals(false, task2.isRoot(), "task isDeterministic");
+
+        List<String> expectedEffects2 = Arrays.asList("successDeliveredInTimeFrgn");
+        List<String> actualEffects2 = task2.getEffects().stream()
+                .map(effect -> effect.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedEffects2, actualEffects2, "Task EffectGroup");
+
+
+        // ========= TASK 3 =========
+        Task task3 = tasks.get(2);
+        Atom taskAtom3 = task3.getAtom();
+        assertEquals("buildInHouse", taskAtom3.getTitleText(), "task Name");
+        assertEquals("Build the product in-house", taskAtom3.getDescription(), "task Description");
+        assertEquals("sourceFromAbroad", task3.getNprFormula().getFormula(), "task npr");
+        assertNull(task3.getPreFormula());
+
+        // Cast to Atom test
+        Formula formula3 = task3.getNprFormula();
+        assertTrue(formula3 instanceof Atom,
+                "Expected the formula to be a Atom but was " + formula3.getClass().getName());
+        Atom atomFormula3 = (Atom) formula3;
+        assertEquals("sourceFromAbroad", atomFormula3.getTitleText(), "task npr atom Name");
+        assertEquals("Source materials from a foreign supplier", atomFormula3.getDescription(), "task npr atom Description");
+        assertTrue(atomFormula3.getElement() instanceof Task,
+                "Expected the element to be a Task but was " + atomFormula3.getElement().getClass().getName());
+
+        assertEquals(DecompType.TERM, task3.getDecompType(), "task DecompType");
+        assertTrue(task3.getChildren().isEmpty(), "Expected task getChildren to be empty");
+        assertEquals("manufacturingCompleted", task3.getParent().getName(), "task parent's name");
+
+        assertEquals(1, task3.getEffects().size(), "task getEffects size");
+        assertEquals(true, task3.isDeterministic(), "task isDeterministic");
+        assertEquals(false, task3.isRoot(), "task isDeterministic");
+
+        List<String> expectedEffects3 = Arrays.asList("successInHGood");
+        List<String> actualEffects3 = task3.getEffects().stream()
+                .map(effect -> effect.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedEffects3, actualEffects3, "Task EffectGroup");
+
+
+        // ========= TASK 4 =========
+        Task task4 = tasks.get(3);
+        Atom taskAtom4 = task4.getAtom();
+        assertEquals("assignToSpecialists", taskAtom4.getTitleText(), "task Name");
+        assertEquals("Assign product manufacturing to specialists", taskAtom4.getDescription(), "task Description");
+        assertEquals("sourceFromAbroad", task4.getNprFormula().getFormula(), "task npr");
+        assertNull(task4.getPreFormula());
+
+        // Cast to Atom test
+        Formula formula4 = task4.getNprFormula();
+        assertTrue(formula4 instanceof Atom,
+                "Expected the formula to be a Atom but was " + formula3.getClass().getName());
+        Atom atomFormula4 = (Atom) formula4;
+        assertEquals("sourceFromAbroad", atomFormula4.getTitleText(), "task npr atom Name");
+        assertEquals("Source materials from a foreign supplier", atomFormula4.getDescription(), "task npr atom Description");
+        assertTrue(atomFormula4.getElement() instanceof Task,
+                "Expected the element to be a Task but was " + atomFormula4.getElement().getClass().getName());
+
+        assertEquals(DecompType.TERM, task4.getDecompType(), "task DecompType");
+        assertTrue(task4.getChildren().isEmpty(), "Expected task getChildren to be empty");
+        assertEquals("manufacturingCompleted", task4.getParent().getName(), "task parent's name");
+
+        assertEquals(2, task4.getEffects().size(), "task getEffects size");
+        assertEquals(false, task4.isDeterministic(), "task isDeterministic");
+        assertEquals(false, task4.isRoot(), "task isDeterministic");
+
+        List<String> expectedEffects4 = Arrays.asList("successSpecGood", "successSpecBad");
+        List<String> actualEffects4 = task4.getEffects().stream()
+                .map(effect -> effect.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedEffects4, actualEffects4, "Task EffectGroup");
+
+
+//        assertEquals(2, goal1.getChildren().size(), "goal child size");
+//        assertEquals("materialOrdered", goal1.getChildren().get(0).getName(), "goal child name 1");
+//        assertEquals("manufacturingCompleted", goal1.getChildren().get(1).getName(), "goal child name 2");
     }
 
 //    @Test
