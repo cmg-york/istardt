@@ -3,7 +3,7 @@ package ca.yorku.cmg.istardt.xmlparser.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrossRunSet extends DescriptionSet {
+public class CrossRunSet {
     private List<String> refs = new ArrayList<>();
     private List<Element> elements = new ArrayList<>();
 

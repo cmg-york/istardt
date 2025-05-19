@@ -3,7 +3,7 @@ package ca.yorku.cmg.istardt.xmlparser.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExportedSet extends DescriptionSet {
+public class ExportedSet {
     List<Export> exports = new ArrayList<>();
 
     public List<Export> getExports() {
