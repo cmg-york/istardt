@@ -92,7 +92,7 @@
                 <goal name="productManufactured" terminal="false" root="true" description="Product Manufactured"
                       episodeLength="4">
                     <pre>
-                        <predicateID>hasManufacturingCapacity</predicateID>
+                        <predicateID>deliveredInTimeDom</predicateID>
                     </pre>
                     <refinement type="AND">
                         <childGoal ref="materialOrdered"/>

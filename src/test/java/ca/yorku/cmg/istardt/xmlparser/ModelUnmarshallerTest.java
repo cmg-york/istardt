@@ -67,12 +67,11 @@ public class ModelUnmarshallerTest {
         assertEquals("Product Manufactured", rootGoal.getAtom().getDescription(), "root goal Description");
         assertEquals(4, rootGoal.getRuns(), "root goal episodeLength/runs");
         assertEquals(DecompType.AND, rootGoal.getDecompType(), "root goal DecompType");
-        assertEquals("hasManufacturingCapacity", rootGoal.getPreFormula().getFormula(), "root goal pre");
+        assertEquals("deliveredInTimeDom", rootGoal.getPreFormula().getFormula(), "root goal pre");
 
         assertEquals(2, rootGoal.getChildren().size(), "root goal child size");
         assertEquals("materialOrdered", rootGoal.getChildren().get(0).getName(), "root goal child name 1");
         assertEquals("manufacturingCompleted", rootGoal.getChildren().get(1).getName(), "root goal child name 2");
-
     }
 
     @Test
@@ -111,6 +110,7 @@ public class ModelUnmarshallerTest {
         assertEquals("reputation", qualityAtom1.getTitleText(), "quality Name");
         assertEquals("Reputation of the Manufacturer", qualityAtom1.getDescription(), "quality Description");
         assertEquals(false, quality1.isRoot(), "quality is root");
+        // TODO should const be Atom objects?
         assertEquals("-(5)", quality1.getFormula().getFormula(), "quality expression");
 
         Quality quality2 = qualities.get(1);
@@ -126,6 +126,17 @@ public class ModelUnmarshallerTest {
         assertEquals("Overall Value", qualityAtom3.getDescription(), "quality Description");
         assertEquals(true, quality3.isRoot(), "quality is root");
         assertEquals("(reputation + financialGain)", quality3.getFormula().getFormula(), "quality expression");
+        Formula formula = quality3.getFormula();
+        // Check if it is a PlusOperator
+        assertTrue(formula instanceof PlusOperator,
+                "Expected the formula to be a PlusOperator but was " + formula.getClass().getName());
+        PlusOperator op = (PlusOperator) formula;
+
+        // Check operands
+        assertTrue(op.getLeft() instanceof Atom,
+                "Expected the left operand to be an Atom but was " + op.getLeft().getClass().getName());
+        assertTrue(op.getRight() instanceof Atom,
+                "Expected the right operand to be an Atom but was " + op.getRight().getClass().getName());
     }
 
     @Test
@@ -154,6 +165,53 @@ public class ModelUnmarshallerTest {
         assertEquals("hasManufacturingCapacity", conditionAtom2.getTitleText(), "Condition Name");
         assertEquals("Manufacturer has capacity to build in-house", conditionAtom2.getDescription(), "Condition Description");
         assertEquals("false", condition2.getFormula().getFormula(), "Condition expression");
+    }
+
+    @Test
+    public void testUnmarshalGoals() {
+        List<Goal> goals = actor.getGoals();
+        Goal goal1 = goals.get(0);
+        Atom goalAtom1 = goal1.getAtom();
+
+        assertEquals("productManufactured", goalAtom1.getTitleText(), "goal Name");
+        assertEquals("Product Manufactured", goalAtom1.getDescription(), "goal Description");
+        assertEquals(4, goal1.getRuns(), "goal episodeLength/runs");
+        assertEquals(DecompType.AND, goal1.getDecompType(), "goal DecompType");
+        assertEquals("deliveredInTimeDom", goal1.getPreFormula().getFormula(), "goal pre");
+        Formula formula1 = goal1.getPreFormula();
+        assertTrue(formula1 instanceof Atom,
+                "Expected the formula to be a Atom but was " + formula1.getClass().getName());
+        assertEquals(2, goal1.getChildren().size(), "goal child size");
+        assertEquals("materialOrdered", goal1.getChildren().get(0).getName(), "goal child name 1");
+        assertEquals("manufacturingCompleted", goal1.getChildren().get(1).getName(), "goal child name 2");
+        assertNull(goal1.getNprFormula());
+
+        Goal goal2 = goals.get(1);
+        Atom goalAtom2 = goal2.getAtom();
+        assertEquals("materialOrdered", goalAtom2.getTitleText(), "root goal Name");
+        assertEquals("Material Ordered", goalAtom2.getDescription(), "root goal Description");
+        assertEquals(1, goal2.getRuns(), "root goal episodeLength/runs");
+        assertEquals(DecompType.OR, goal2.getDecompType(), "root goal DecompType");
+        assertEquals(2, goal2.getChildren().size(), "goal child size");
+        assertEquals("sourceDomestically", goal2.getChildren().get(0).getName(), "goal child name 1");
+        assertEquals("sourceFromAbroad", goal2.getChildren().get(1).getName(), "goal child name 2");
+        assertNull(goal2.getNprFormula());
+        assertNull(goal2.getPreFormula());
+
+        Goal goal3 = goals.get(2);
+        Atom goalAtom3 = goal3.getAtom();
+        assertEquals("manufacturingCompleted", goalAtom3.getTitleText(), "goal Name");
+        assertEquals("Manufacturing Completed", goalAtom3.getDescription(), "goal Description");
+        assertEquals(1, goal3.getRuns(), "goal episodeLength/runs");
+        assertEquals(DecompType.OR, goal3.getDecompType(), "goal DecompType");
+        assertEquals("materialOrdered", goal3.getPreFormula().getFormula(), "goal pre");
+        Formula formula3 = goal3.getPreFormula();
+        assertTrue(formula3 instanceof Atom,
+                "Expected the formula to be a Atom but was " + formula3.getClass().getName());
+        assertEquals(2, goal3.getChildren().size(), "goal child size");
+        assertEquals("buildInHouse", goal3.getChildren().get(0).getName(), "goal child name 1");
+        assertEquals("assignToSpecialists", goal3.getChildren().get(1).getName(), "goal child name 2");
+        assertNull(goal3.getNprFormula());
     }
 
 //    @Test
