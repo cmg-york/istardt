@@ -35,7 +35,6 @@ public class ReferenceProcessor {
             LOGGER.warning("Cannot process references for null model");
             return;
         }
-
         // Process each actor and its elements
         for (Actor actor : model.getActors()) {
             // Process goal hierarchies and refinements
@@ -52,18 +51,33 @@ public class ReferenceProcessor {
 
             // Process parent-child relationships in decomposition elements
             processDecompositionHierarchy(actor.getGoals());
+
+            // Process CrossRunSet references
+            processCrossRunSets(actor);
         }
         processAllFormulas(model);
         LOGGER.info("Reference processing completed successfully");
     }
 
     /**
-     * Helper method to add an element to the name lookup map
+     * Process CrossRunSet references to resolve them to actual elements.
      */
-    private void addElementByNameToMap(Element element, Map<String, Element> map) {
-        if (element != null && element.getAtom() != null && element.getAtom().getTitleText() != null) {
-            map.put(element.getAtom().getTitleText(), element);
+    private void processCrossRunSets(Actor actor) {
+        CrossRunSet crossRunSet = actor.getCrossRunSet();
+        if (crossRunSet == null || crossRunSet.getRefs().isEmpty()) {
+            return;
         }
+        LOGGER.info("Processing CrossRunSet references");
+        for (String ref : crossRunSet.getRefs()) {
+            Element element = ReferenceResolver.getInstance().getElementByName(ref);
+            if (element != null) {
+                crossRunSet.addElement(element);
+                LOGGER.info("Resolved CrossRunSet reference: " + ref + " to element: " + element.getName());
+            } else {
+                LOGGER.warning("Failed to resolve CrossRunSet reference: " + ref);
+            }
+        }
+        LOGGER.info("Processed " + crossRunSet.getElements().size() + " CrossRunSet elements");
     }
 
     /**

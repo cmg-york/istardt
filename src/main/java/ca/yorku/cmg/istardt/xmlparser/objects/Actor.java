@@ -95,8 +95,8 @@ public class Actor extends Element {
         this.variables = variables;
     }
 
-    public CrossRunSet getCrossRunSet() {
-        return crossRunSet;
+    public List<Element> getCrossRunSet() {
+        return crossRunSet.getElements();
     }
 
     public void setCrossRunSet(CrossRunSet crossRunSet) {

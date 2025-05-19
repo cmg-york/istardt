@@ -371,11 +371,6 @@ public class ModelUnmarshallerTest {
                 .map(effect -> effect.getName())
                 .collect(Collectors.toList());
         assertEquals(expectedEffects4, actualEffects4, "Task EffectGroup");
-
-
-//        assertEquals(2, goal1.getChildren().size(), "goal child size");
-//        assertEquals("materialOrdered", goal1.getChildren().get(0).getName(), "goal child name 1");
-//        assertEquals("manufacturingCompleted", goal1.getChildren().get(1).getName(), "goal child name 2");
     }
 
 //    @Test

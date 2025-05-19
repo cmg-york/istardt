@@ -33,6 +33,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode predicatesNode = node.get("predicates").get("predicate");
                 List<Predicate> predicates = DeserializerUtils.deserializeList(predicatesNode, p, ctxt, Predicate.class);
                 actor.setPredicates(predicates);
+                LOGGER.info("Processed predicates");
             }
 
             // Process variables
@@ -40,6 +41,22 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode variablesNode = node.get("variables").get("variable");
                 List<Variable> variables = DeserializerUtils.deserializeList(variablesNode, p, ctxt, Variable.class);
                 actor.setVariables(variables);
+                LOGGER.info("Processed variables");
+            }
+
+            // Process crossruns
+            if (node.has("crossRuns") && node.get("crossRuns").has("crossRun")) {
+                JsonNode crossRunNodes = node.get("crossRuns").get("crossRun");
+                CrossRunSet crossRunSet = new CrossRunSet();
+                actor.setCrossRunSet(crossRunSet);
+                if (crossRunNodes.isArray()) {
+                    for (JsonNode crossRunNode : crossRunNodes) {
+                        processCrossRunNode(crossRunNode, crossRunSet);
+                    }
+                } else {
+                    processCrossRunNode(crossRunNodes, crossRunSet);
+                }
+                LOGGER.info("Processed crossRuns");
             }
 
             // Process condBoxes
@@ -47,6 +64,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode preBoxesNode = node.get("condBoxes").get("condBox");
                 List<Condition> conditions = DeserializerUtils.deserializeList(preBoxesNode, p, ctxt, Condition.class);
                 actor.setConditions(conditions);
+                LOGGER.info("Processed condBoxes");
             }
 
             // Process qualities
@@ -54,6 +72,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode qualitiesNode = node.get("qualities").get("quality");
                 List<Quality> qualities = DeserializerUtils.deserializeList(qualitiesNode, p, ctxt, Quality.class);
                 actor.setQualities(qualities);
+                LOGGER.info("Processed condBoxes");
             }
 
             // Process goals
@@ -61,6 +80,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode goalsNode = node.get("goals").get("goal");
                 List<Goal> goals = DeserializerUtils.deserializeList(goalsNode, p, ctxt, Goal.class);
                 actor.setGoals(goals);
+                LOGGER.info("Processed goals");
             }
 
             // Process tasks
@@ -68,13 +88,32 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode tasksNode = node.get("tasks").get("task");
                 List<Task> tasks = DeserializerUtils.deserializeList(tasksNode, p, ctxt, Task.class);
                 actor.setTasks(tasks);
+                LOGGER.info("Processed tasks");
+
             }
         } catch (IOException e) {
             String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
             DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing actor " + name, e);
         }
-
         String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
         LOGGER.info("Deserialized actor: " + name);
+    }
+
+    private void processCrossRunNode(JsonNode crossRunNode, CrossRunSet crossRunSet) {
+        if (crossRunNode.has("qualID")) {
+            String qualID = crossRunNode.get("qualID").asText();
+            crossRunSet.addRefs(qualID);
+            LOGGER.info("Added quality reference to CrossRunSet: " + qualID);
+        } else if (crossRunNode.has("predicateID")) {
+            String predicateID = crossRunNode.get("predicateID").asText();
+            crossRunSet.addRefs(predicateID);
+            LOGGER.info("Added predicate reference to CrossRunSet: " + predicateID);
+        } else if (crossRunNode.has("variableID")) {
+            String variableID = crossRunNode.get("variableID").asText();
+            crossRunSet.addRefs(variableID);
+            LOGGER.info("Added variable reference to CrossRunSet: " + variableID);
+        } else {
+            LOGGER.warning("Unknown reference type in CrossRun: " + crossRunNode);
+        }
     }
 }
