@@ -16,6 +16,7 @@ public class IStarTApplication {
     private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v3.xsd";
     private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron3.sch";
     private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_fixed2.xml";
+    private static final String OUTPUT_FILE_PATH = "output";
 
     public static void main(String[] args) {
         try {
@@ -70,7 +71,7 @@ public class IStarTApplication {
 
             // Display model information
             //printModelInformation(model);
-            DTTranslator trans = new DTTranslator(model);
+            DTTranslator trans = new DTTranslator(model,OUTPUT_FILE_PATH);
             trans.translate();
             
             
