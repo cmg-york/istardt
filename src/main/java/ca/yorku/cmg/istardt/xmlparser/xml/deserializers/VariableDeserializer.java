@@ -1,7 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
-import ca.yorku.cmg.istardt.xmlparser.objects.Predicate;
 import ca.yorku.cmg.istardt.xmlparser.objects.Variable;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;

@@ -186,12 +186,8 @@ public class ReferenceProcessor {
         }
     }
 
-    /**
-     * Process all formulas after all elements are loaded and references established.
-     */
     private void processAllFormulas(Model model) {
         LOGGER.info("Processing formulas...");
-
         for (Actor actor : model.getActors()) {
             // Process goal formulas
             for (Goal goal : actor.getGoals()) {
@@ -230,12 +226,11 @@ public class ReferenceProcessor {
                 }
             }
         }
-
         LOGGER.info("Formula processing completed");
     }
 
     /**
-     * Process pre and npr formulas for decomposition elements and effects.
+     * Process pre and npr formulas for decomposition elements.
      */
     private void processElementFormulas(Object element) {
         JsonNode preNode = null;
@@ -246,10 +241,6 @@ public class ReferenceProcessor {
             DecompositionElement decompElement = (DecompositionElement) element;
             preNode = decompElement.getRawPreFormulaNode();
             nprNode = decompElement.getRawNprFormulaNode();
-        } else if (element instanceof Effect) {
-            Effect effect = (Effect) element;
-            preNode = effect.getRawPreFormulaNode();
-            nprNode = effect.getRawNprFormulaNode();
         }
 
         // Process pre formula
@@ -259,24 +250,17 @@ public class ReferenceProcessor {
                 if (element instanceof DecompositionElement) {
                     ((DecompositionElement) element).setPreFormula(preFormula);
                     LOGGER.info("Set pre formula for element: " + ((DecompositionElement) element).getId());
-                } else if (element instanceof Effect) {
-                    ((Effect) element).setPreFormula(preFormula);
-                    LOGGER.info("Set pre formula for effect: " + ((Effect) element).getId());
                 }
             }
         }
 
         // Process npr formula
-        // TODO make effect extends DecompositionElement
         if (nprNode != null) {
             Formula nprFormula = deserializeFormula(nprNode);
             if (nprFormula != null) {
                 if (element instanceof DecompositionElement) {
                     ((DecompositionElement) element).setNprFormula(nprFormula);
                     LOGGER.info("Set npr formula for element: " + ((DecompositionElement) element).getId());
-                } else if (element instanceof Effect) {
-                    ((Effect) element).setNprFormula(nprFormula);
-                    LOGGER.info("Set npr formula for effect: " + ((Effect) element).getId());
                 }
             }
         }
@@ -287,12 +271,9 @@ public class ReferenceProcessor {
      */
     private Formula deserializeFormula(JsonNode node) {
         try {
-            // Create ObjectMapper to create a parser
             ObjectMapper mapper = new ObjectMapper();
             JsonParser parser = mapper.treeAsTokens(node);
             DeserializationContext ctxt = mapper.getDeserializationContext();
-
-            // Use the existing FormulaDeserializer to deserialize formula
             FormulaDeserializer deserializer = new FormulaDeserializer();
             return deserializer.deserialize(parser, ctxt);
         } catch (Exception e) {

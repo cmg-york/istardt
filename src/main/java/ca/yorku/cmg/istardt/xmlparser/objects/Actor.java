@@ -101,12 +101,28 @@ public class Actor extends Element {
         return exportedSet;
     }
 
+    public List<Element> getExportedSetElements() {
+        List<Element> exportElements = new ArrayList<>();
+        for (Export e : exportedSet.getExports()){
+            exportElements.add(e.getElement());
+        }
+        return exportElements;
+    }
+
     public void setExportedSet(ExportedSet exportedSet) {
         this.exportedSet = exportedSet;
     }
 
     public InitializationSet getInitializationSet() {
         return initializationSet;
+    }
+
+    public List<Element> getInitializationSetElements() {
+        List<Element> initElements = new ArrayList<>();
+        for (Initialization e : initializationSet.getInitializations()){
+            initElements.add(e.getElement());
+        }
+        return initElements;
     }
 
     public void setInitializationSet(InitializationSet initializationSet) {

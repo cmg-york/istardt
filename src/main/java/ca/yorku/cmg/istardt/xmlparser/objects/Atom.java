@@ -86,7 +86,6 @@ public class Atom extends Formula {
                 ", description='" + description + '\'' +
                 '}';
     }
-
     @Override
     public String toString() {
         return "Atom{id=" + id +

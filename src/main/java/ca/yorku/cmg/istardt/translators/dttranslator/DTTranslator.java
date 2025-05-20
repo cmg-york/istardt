@@ -87,9 +87,9 @@ public class DTTranslator {
 					localPreFormula += formatter.toPreFluent(effectID) + "(S);";
 				}
 				
-				if (e.getFormula() != null) {
-					System.out.println("HELLLO:" + t.getPreFormula().toString());
-				}
+//				if (e.getFormula() != null) {
+//					System.out.println("HELLLO:" + t.getPreFormula().toString());
+//				}
 
 			}
 			localSatFormula = formatter.toSat(taskID) + "(S) :- " +  localSatFormula.substring(0, localSatFormula.length() - 1) + ".\n";

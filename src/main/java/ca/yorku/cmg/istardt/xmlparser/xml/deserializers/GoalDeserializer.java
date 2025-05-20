@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import ca.yorku.cmg.istardt.xmlparser.objects.DecompType;
-import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import ca.yorku.cmg.istardt.xmlparser.objects.Goal;
 
 import java.io.IOException;
@@ -45,12 +44,6 @@ public class GoalDeserializer extends BaseDeserializer<Goal> {
         processRefinement(goal, getChildNode(node, "refinement"));
     }
 
-    /**
-     * Process refinement information for the goal.
-     *
-     * @param goal The goal to process refinement for
-     * @param refinementNode The JSON node containing refinement information
-     */
     private void processRefinement(Goal goal, JsonNode refinementNode) {
         if (refinementNode == null) {
             return;

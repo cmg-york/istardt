@@ -2,7 +2,6 @@ package ca.yorku.cmg.istardt.xmlparser.xml.formula;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.ReferenceResolver;
-import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;

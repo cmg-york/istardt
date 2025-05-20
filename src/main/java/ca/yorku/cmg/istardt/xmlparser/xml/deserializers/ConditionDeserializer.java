@@ -1,8 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Condition;
-import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
-import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;

@@ -1,8 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
-import ca.yorku.cmg.istardt.xmlparser.objects.Condition;
-import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import ca.yorku.cmg.istardt.xmlparser.objects.Predicate;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 
@@ -50,5 +48,4 @@ public class PredicateDeserializer extends BaseDeserializer<Predicate> {
 
         return element;
     }
-
 }

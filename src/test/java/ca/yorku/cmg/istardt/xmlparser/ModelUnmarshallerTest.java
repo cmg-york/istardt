@@ -40,9 +40,6 @@ public class ModelUnmarshallerTest {
         assertEquals("path to xml file", header.getSource(), "header source");
         assertEquals("String date here", header.getLastUpdated(), "header date");
         assertEquals("notes here", header.getNotes(), "header notes");
-
-//        Actor actor = model.getActors().get(0);
-//        assertEquals("Manufacturer", actor.getName(), "Actor name should be 'Manufacturer'");
     }
 
     @Test
@@ -248,7 +245,6 @@ public class ModelUnmarshallerTest {
                 .collect(Collectors.toList());
         assertEquals(expectedSiblings2, actualSiblings2, "Goal getSiblings");
 
-
         // ========= GOAL 3 =========
         Goal goal3 = goals.get(2);
         Atom goalAtom3 = goal3.getAtom();
@@ -311,6 +307,11 @@ public class ModelUnmarshallerTest {
                 .collect(Collectors.toList());
         assertEquals(expectedEffects1, actualEffects1, "Task EffectGroup");
 
+        List<String> expectedSib1 = Arrays.asList("sourceFromAbroad");
+        List<String> actualSib1 = task1.getSiblings().stream()
+                .map(element -> element.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedSib1, actualSib1, "Task getSiblings names");
 
         // ========= TASK 2 =========
         Task task2 = tasks.get(1);
@@ -332,6 +333,11 @@ public class ModelUnmarshallerTest {
                 .collect(Collectors.toList());
         assertEquals(expectedEffects2, actualEffects2, "Task EffectGroup");
 
+        List<String> expectedSib2 = Arrays.asList("sourceDomestically");
+        List<String> actualSib2 = task2.getSiblings().stream()
+                .map(element -> element.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedSib2, actualSib2, "Task getSiblings names");
 
         // ========= TASK 3 =========
         Task task3 = tasks.get(2);
@@ -365,6 +371,12 @@ public class ModelUnmarshallerTest {
                 .collect(Collectors.toList());
         assertEquals(expectedEffects3, actualEffects3, "Task EffectGroup");
 
+        List<String> expectedSib3 = Arrays.asList("assignToSpecialists");
+        List<String> actualSib3 = task3.getSiblings().stream()
+                .map(element -> element.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedSib3, actualSib3, "Task getSiblings names");
+
 
         // ========= TASK 4 =========
         Task task4 = tasks.get(3);
@@ -397,17 +409,13 @@ public class ModelUnmarshallerTest {
                 .map(effect -> effect.getName())
                 .collect(Collectors.toList());
         assertEquals(expectedEffects4, actualEffects4, "Task EffectGroup");
-    }
 
-//    @Test
-//    public void testUnmarshalWithMissingFile() {
-//        File nonExistentFile = new File("non_existent_file.xml");
-//
-//        // Verify that attempting to unmarshal a non-existent file throws IOException
-//        assertThrows(IOException.class, () -> {
-//            unmarshaller.unmarshalToModel(nonExistentFile);
-//        });
-//    }
+        List<String> expectedSib4 = Arrays.asList("buildInHouse");
+        List<String> actualSib4 = task4.getSiblings().stream()
+                .map(element -> element.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedSib4, actualSib4, "Task getSiblings names");
+    }
 
     /**
      * Helper method to get a file from the resources directory.

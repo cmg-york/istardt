@@ -1,6 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
-import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import ca.yorku.cmg.istardt.xmlparser.objects.Quality;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
@@ -26,10 +25,6 @@ public class QualityDeserializer extends BaseDeserializer<Quality> {
     protected void handleSpecificAttributes(Quality quality, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
         boolean root = DeserializerUtils.getBooleanAttribute(node, "root", false);
         quality.setRoot(root);
-
         quality.setRawFormulaNode(node);
-        // Process formula
-//        quality.setFormula(DeserializerUtils.processDirectFormula(node, p, ctxt, LOGGER));
-
     }
 }

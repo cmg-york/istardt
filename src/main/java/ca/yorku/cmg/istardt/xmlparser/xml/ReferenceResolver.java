@@ -1,6 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.xml;
 
-import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
 import ca.yorku.cmg.istardt.xmlparser.objects.Element;
 
 import java.util.HashMap;
@@ -25,7 +24,6 @@ public class ReferenceResolver {
      * Private constructor for singleton pattern
      */
     private ReferenceResolver() {
-        // Private constructor to prevent instantiation
     }
 
     /**
@@ -64,11 +62,7 @@ public class ReferenceResolver {
     public Element getElementById(String id) {
         Element element = elementsById.get(id);
         if (element == null) {
-            // Try looking up by name as a fallback
-            element = elementsByName.get(id);
-            if (element == null) {
-                LOGGER.warning("Element with ID or name '" + id + "' not found in reference resolver");
-            }
+            LOGGER.warning("Element with ID or name '" + id + "' not found in reference resolver");
         }
         return element;
     }
