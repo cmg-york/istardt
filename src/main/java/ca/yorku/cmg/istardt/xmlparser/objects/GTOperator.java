@@ -1,7 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
 public class GTOperator extends OperatorDecorator {
-
     public GTOperator(Formula left, Formula right) {
         this.left = left;
         this.right = right;

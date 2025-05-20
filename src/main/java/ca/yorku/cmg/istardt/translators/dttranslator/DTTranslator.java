@@ -72,7 +72,7 @@ public class DTTranslator {
 		 */
 
 		// Number of Runs
-		numRuns = "getNumRuns(" + a.getRoot().getRuns() + ").\n\n";
+		numRuns = "getNumRuns(" + a.getGoalRoot().getRuns() + ").\n\n";
 		
 		// TODO
 		// Configure Reward style
@@ -147,9 +147,9 @@ public class DTTranslator {
 				
 
 				
-				if (e.getFormula() != null) {
-					System.out.println("HELLLO:" + t.getPreFormula().toString());
-				}
+//				if (e.getFormula() != null) {
+//					System.out.println("HELLLO:" + t.getPreFormula().toString());
+//				}
 
 			} // Next effect
 			localSatFormula = formatter.toSat(taskID) + "(S) :- " +  localSatFormula.substring(0, localSatFormula.length() - 1) + ".\n";

@@ -1,26 +1,35 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DecompositionElement class representing an element that can be decomposed into child elements.
- */
 public class DecompositionElement extends Element {
 
-    private List<DecompositionElement> children;
+    protected List<DecompositionElement> children;
+    protected DecompType decompType;
+    protected Formula preFormula;
+    protected Formula nprFormula;
+    protected DecompositionElement parent;
+    protected JsonNode rawPreFormulaNode;
+    protected JsonNode rawNprFormulaNode;
 
-    @JacksonXmlProperty(isAttribute = true)
-    private DecompType decompType;
+    public JsonNode getRawPreFormulaNode() {
+        return rawPreFormulaNode;
+    }
 
-    private Formula preFormula;
-    private Formula nprFormula;
+    public void setRawPreFormulaNode(JsonNode rawPreFormulaNode) {
+        this.rawPreFormulaNode = rawPreFormulaNode;
+    }
 
-    @JsonIgnore
-    private DecompositionElement parent;
+    public JsonNode getRawNprFormulaNode() {
+        return rawNprFormulaNode;
+    }
+
+    public void setRawNprFormulaNode(JsonNode rawNprFormulaNode) {
+        this.rawNprFormulaNode = rawNprFormulaNode;
+    }
 
     public DecompositionElement() {
         this.children = new ArrayList<>();
@@ -86,8 +95,12 @@ public class DecompositionElement extends Element {
      *
      * @return True if this element has siblings, false otherwise
      */
-    public boolean isSiblings() {
-        return !getSiblings().isEmpty();
+    public boolean isSibling(DecompositionElement e) {
+
+        if (parent == null || e == null || e.getParent() == null) {
+            return false;
+        }
+        return parent.equals(e.getParent());
     }
 
     /**
@@ -129,10 +142,6 @@ public class DecompositionElement extends Element {
         }
     }
 
-    /**
-     * Override toString to prevent infinite recursion from parent-child circular references.
-     * Only includes essential information without traversing the object graph.
-     */
     @Override
     public String toString() {
         return "DecompositionElement{id=" + getId() +

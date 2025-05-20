@@ -1,30 +1,16 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
 import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.GoalDeserializer;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonDeserialize(using = GoalDeserializer.class)
 public class Goal extends DecompositionElement {
-
-    @JacksonXmlProperty(isAttribute = true)
     private int runs;
-
-    @JacksonXmlProperty(isAttribute = true)
     private boolean root;
-
-    @JsonIgnore
     private List<String> childGoalRefs;
-
-    @JsonIgnore
     private List<String> childTaskRefs;
-
-    @JsonBackReference("actor-goals")
     private Actor actor;
 
     public Goal() {
@@ -87,10 +73,6 @@ public class Goal extends DecompositionElement {
         this.actor = actor;
     }
 
-    /**
-     * Override toString to prevent infinite recursion from parent-child circular references.
-     * Includes Goal-specific information while avoiding circular references.
-     */
     @Override
     public String toString() {
         return "Goal{id=" + getId() +

@@ -5,8 +5,7 @@ public class Atom extends Formula {
     private String titleText;
     private String titleHTMLText;
     private String description;
-    private boolean exported;
-    private boolean crossRun;
+    private Element element;
 
     /**
      * Get the ID of this atom
@@ -51,14 +50,14 @@ public class Atom extends Formula {
     }
 
     /**
-     * Get the description of this atom (from XML description attribute)
+     * Get the description of this atom
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Set the description of this atom (from XML description attribute)
+     * Set the description of this atom
      */
     public void setDescription(String description) {
         this.description = description;
@@ -66,7 +65,14 @@ public class Atom extends Formula {
 
     @Override
     public String getFormula() {
-        return id != null ? id : "";
+        return titleText;
+    }
+
+    public Element getElement() {
+        return element;
+    }
+    public void setElement(Element element) {
+        this.element = element;
     }
 
     /**
@@ -80,23 +86,6 @@ public class Atom extends Formula {
                 ", description='" + description + '\'' +
                 '}';
     }
-
-    public boolean isExported() {
-        return exported;
-    }
-
-    public void setExported(boolean exported) {
-        this.exported = exported;
-    }
-
-    public boolean isCrossRun() {
-        return crossRun;
-    }
-
-    public void setCrossRun(boolean crossRun) {
-        this.crossRun = crossRun;
-    }
-
     @Override
     public String toString() {
         return "Atom{id=" + id +

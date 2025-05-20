@@ -9,10 +9,15 @@ import java.io.IOException;
  * Visitor interface for processing formula JSON nodes.
  */
 public interface FormulaNodeVisitor {
-    Formula visitConstant(JsonNode node);
-    Formula visitNumAtom(JsonNode node);
+    Formula visitNumConst(JsonNode node);
     Formula visitBoolConst(JsonNode node);
-    Formula visitBoolAtom(JsonNode node);
+
+    Formula visitPredicateID(JsonNode node);
+    Formula visitGoalID(JsonNode node);
+    Formula visitTaskID(JsonNode node);
+    Formula visitVariableID(JsonNode node);
+    Formula visitQualID(JsonNode node);
+
     Formula visitAdd(JsonNode node) throws IOException;
     Formula visitSubtract(JsonNode node) throws IOException;
     Formula visitMultiply(JsonNode node) throws IOException;

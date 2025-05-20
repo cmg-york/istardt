@@ -1,47 +1,32 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.ActorDeserializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonRootName("actor")
 @JsonDeserialize(using = ActorDeserializer.class)
 public class Actor extends Element {
-
-    @JacksonXmlElementWrapper(localName = "goals")
-    @JacksonXmlProperty(localName = "goal")
-    @JsonManagedReference("actor-goals")
     private List<Goal> goals;
-
-    @JacksonXmlElementWrapper(localName = "tasks")
-    @JacksonXmlProperty(localName = "task")
-    @JsonManagedReference("actor-tasks")
     private List<Task> tasks;
-
-    @JsonIgnore
     private List<Effect> effects;
-
-    @JacksonXmlElementWrapper(localName = "qualities")
-    @JacksonXmlProperty(localName = "quality")
-    @JsonManagedReference("actor-qualities")
     private List<Quality> qualities;
-    private List<NonDecompositionElement> nonDecompElements;
-
+    private List<Condition> conditions;
+    private List<Predicate> predicates;
+    private List<Variable> variables;
+    private CrossRunSet crossRunSet;
+    private ExportedSet exportedSet;
+    private InitializationSet initializationSet;
 
     public Actor() {
         this.goals = new ArrayList<>();
         this.tasks = new ArrayList<>();
         this.qualities = new ArrayList<>();
         this.effects = new ArrayList<>();
-        this.nonDecompElements = new ArrayList<>();
-
+        this.conditions = new ArrayList<>();
+        this.predicates = new ArrayList<>();
+        this.variables = new ArrayList<>();
     }
 
     public void setGoals(List<Goal> goals) {
@@ -76,15 +61,83 @@ public class Actor extends Element {
         return qualities;
     }
 
+    public List<Condition> getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(List<Condition> conditions) {
+        this.conditions = conditions;
+    }
+
+    public List<Predicate> getPredicates() {
+        return predicates;
+    }
+
+    public void setPredicates(List<Predicate> predicates) {
+        this.predicates = predicates;
+    }
+
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(List<Variable> variables) {
+        this.variables = variables;
+    }
+
+    public CrossRunSet getCrossRunSet() {
+        return crossRunSet;
+    }
+
+    public List<Element> getCrossRunSetElements() {
+        return crossRunSet.getElements();
+    }
+
+    public void setCrossRunSet(CrossRunSet crossRunSet) {
+        this.crossRunSet = crossRunSet;
+    }
+
+    public ExportedSet getExportedSet() {
+        return exportedSet;
+    }
+
+    public List<Element> getExportedSetElements() {
+        List<Element> exportElements = new ArrayList<>();
+        for (Export e : exportedSet.getExports()){
+            exportElements.add(e.getElement());
+        }
+        return exportElements;
+    }
+
+    public void setExportedSet(ExportedSet exportedSet) {
+        this.exportedSet = exportedSet;
+    }
+
+    public InitializationSet getInitializationSet() {
+        return initializationSet;
+    }
+
+    public List<Element> getInitializationSetElements() {
+        List<Element> initElements = new ArrayList<>();
+        for (Initialization e : initializationSet.getInitializations()){
+            initElements.add(e.getElement());
+        }
+        return initElements;
+    }
+
+    public void setInitializationSet(InitializationSet initializationSet) {
+        this.initializationSet = initializationSet;
+    }
+
     /**
      * Gets the root element among the goals.
      *
      * @return The root element, or null if not found
      */
-    public Goal getRoot() {
+    public Goal getGoalRoot() {
         if (goals != null) {
             for (Goal goal : goals) {
-                if (goal instanceof DecompositionElement && ((DecompositionElement) goal).isRoot()) {
+                if (goal.isRoot()) {
                     return goal;
                 }
             }
@@ -92,19 +145,20 @@ public class Actor extends Element {
         return null;
     }
 
-    public List<NonDecompositionElement> getNonDecompElements() {
-        return nonDecompElements;
-    }
-
-    public void setNonDecompElements(List<NonDecompositionElement> nonDecompElements) {
-        this.nonDecompElements = nonDecompElements;
-    }
-
-    public void addNonDecompElement(NonDecompositionElement element) {
-        if (nonDecompElements == null) {
-            nonDecompElements = new ArrayList<>();
+    /**
+     * Gets the root element among the qualities.
+     *
+     * @return The root element, or null if not found
+     */
+    public Quality getQualityRoot() {
+        if (qualities != null) {
+            for (Quality quality : qualities) {
+                if (quality.isRoot()) {
+                    return quality;
+                }
+            }
         }
-        nonDecompElements.add(element);
+        return null;
     }
 
     @Override
@@ -114,6 +168,8 @@ public class Actor extends Element {
                 ", taskCount=" + (tasks != null ? tasks.size() : 0) +
                 ", qualityCount=" + (qualities != null ? qualities.size() : 0) +
                 ", goalCount=" + (goals != null ? goals.size() : 0) +
-                ", nonDecompElementsCount=" + (nonDecompElements != null ? nonDecompElements.size() : 0)  + "}";
+                ", conditionCount=" + (conditions != null ? conditions.size() : 0) +
+                ", variableCount=" + (variables != null ? variables.size() : 0) +
+                ", predicateCount=" + (predicates != null ? predicates.size() : 0) + "}";
     }
 }

@@ -2,11 +2,15 @@ package ca.yorku.cmg.istardt.xmlparser.xml.processing;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.ReferenceResolver;
+import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.FormulaDeserializer;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -29,25 +33,15 @@ public class ReferenceProcessor {
             LOGGER.warning("Cannot process references for null model");
             return;
         }
-
-        // Create a name-based lookup map for referencing by name instead of ID
-        Map<String, Element> elementsByName = buildNameLookupMap(model);
-
         // Process each actor and its elements
         for (Actor actor : model.getActors()) {
             // Process goal hierarchies and refinements
-            processGoalRefinements(actor.getGoals(), elementsByName);
+            processGoalRefinements(actor.getGoals());
 
-            // Process task-effect relationships and collect effects
+            // Collect effects
             List<Effect> allEffects = new ArrayList<>();
             for (Task task : actor.getTasks()) {
-                processTaskEffects(task);
-
-                // Collect effects
                 if (task.getEffects() != null) {
-                    for (Effect effect : task.getEffects()) {
-                        actor.addNonDecompElement(effect);
-                    }
                     allEffects.addAll(task.getEffects());
                 }
             }
@@ -56,66 +50,76 @@ public class ReferenceProcessor {
             // Process parent-child relationships in decomposition elements
             processDecompositionHierarchy(actor.getGoals());
 
+            processCrossRunSets(actor);
+            processExportedSet(actor);
+            processInitializationSet(actor);
         }
-
-
+        processAllFormulas(model);
         LOGGER.info("Reference processing completed successfully");
     }
 
     /**
-     * Builds a map of elements by their names (atom's titleText) for name-based lookup
-     * This allows looking up elements by their XML name attribute rather than UUID
-     *
-     * @param model The model to process
-     * @return A map of elements by name
+     * Process CrossRunSet references to resolve them to elements.
      */
-    private Map<String, Element> buildNameLookupMap(Model model) {
-        Map<String, Element> elementsByName = new HashMap<>();
-
-        for (Actor actor : model.getActors()) {
-            // Add actor
-            if (actor.getName() != null) {
-                elementsByName.put(actor.getName(), actor);
-            }
-
-            // Add goals
-            for (Goal goal : actor.getGoals()) {
-                addElementByNameToMap(goal, elementsByName);
-            }
-
-            // Add tasks
-            for (Task task : actor.getTasks()) {
-                addElementByNameToMap(task, elementsByName);
-
-                // Add effects
-                if (task.getEffects() != null) {
-                    for (Effect effect : task.getEffects()) {
-                        addElementByNameToMap(effect, elementsByName);
-                    }
-                }
-            }
-
-            // Add qualities
-            for (Quality quality : actor.getQualities()) {
-                addElementByNameToMap(quality, elementsByName);
+    private void processCrossRunSets(Actor actor) {
+        CrossRunSet crossRunSet = actor.getCrossRunSet();
+        if (crossRunSet == null || crossRunSet.getRefs().isEmpty()) {
+            return;
+        }
+        LOGGER.info("Processing CrossRunSet references");
+        for (String ref : crossRunSet.getRefs()) {
+            Element element = ReferenceResolver.getInstance().getElementByName(ref);
+            if (element != null) {
+                crossRunSet.addElement(element);
+                LOGGER.info("Resolved CrossRunSet reference: " + ref + " to element: " + element.getName());
+            } else {
+                LOGGER.warning("Failed to resolve CrossRunSet reference: " + ref);
             }
         }
+    }
 
-        // Add elements from the ReferenceResolver that might not be in actors
-        for (String id : ReferenceResolver.getInstance().getAllElementIds()) {
-            Element element = ReferenceResolver.getInstance().getElementById(id);
-            addElementByNameToMap(element, elementsByName);
+
+    /**
+     * Process ExportedSet references to resolve them to elements.
+     */
+    private void processExportedSet(Actor actor) {
+        ExportedSet exportedSet = actor.getExportedSet();
+        if (exportedSet == null || exportedSet.getExports().isEmpty()) {
+            return;
         }
-
-        return elementsByName;
+        LOGGER.info("Processing ExportedSet references for actor: " + actor.getId());
+        for (Export export : exportedSet.getExports()) {
+            String ref = export.getRef();
+            Element element = ReferenceResolver.getInstance().getElementByName(ref);
+            if (element != null) {
+                export.setElement(element);
+                LOGGER.info("Resolved export reference: " + ref + " to element: " + element.getId());
+            } else {
+                LOGGER.warning("Failed to resolve export reference: " + ref);
+            }
+        }
     }
 
     /**
-     * Helper method to add an element to the name lookup map
+     * Process InitializationSet references to resolve them to elements.
      */
-    private void addElementByNameToMap(Element element, Map<String, Element> map) {
-        if (element != null && element.getAtom() != null && element.getAtom().getTitleText() != null) {
-            map.put(element.getAtom().getTitleText(), element);
+    private void processInitializationSet(Actor actor) {
+        InitializationSet initializationSet = actor.getInitializationSet();
+        if (initializationSet == null || initializationSet.getInitializations().isEmpty()) {
+            return;
+        }
+        LOGGER.info("Processing InitializationSet references for actor: " + actor.getId());
+        for (Initialization init : initializationSet.getInitializations()) {
+            String ref = init.getRef();
+            Element element = ReferenceResolver.getInstance().getElementByName(ref);
+            if (element != null) {
+                init.setElement(element);
+                LOGGER.info("Resolved initialization reference: " + ref +
+                        " to element: " + element.getName() +
+                        " with value: " + init.getValue());
+            } else {
+                LOGGER.warning("Failed to resolve initialization reference: " + ref);
+            }
         }
     }
 
@@ -124,20 +128,19 @@ public class ReferenceProcessor {
      * Uses name-based lookup rather than ID-based lookup.
      *
      * @param goals The list of goals to process
-     * @param elementsByName The map of elements by name for lookup
      */
-    private void processGoalRefinements(List<Goal> goals, Map<String, Element> elementsByName) {
+    private void processGoalRefinements(List<Goal> goals) {
         if (goals == null) return;
 
         for (Goal goal : goals) {
-            // Look for refinement references
+            // Look for refinement ref
             List<String> childGoalRefs = goal.getChildGoalRefs();
             List<String> childTaskRefs = goal.getChildTaskRefs();
 
-            // Process child goal references
+            // Process child goal refs
             if (childGoalRefs != null) {
                 for (String ref : childGoalRefs) {
-                    Element element = elementsByName.get(ref);
+                    Element element = ReferenceResolver.getInstance().getElementByName(ref);
                     if (element instanceof Goal) {
                         if (goal.getDecompType() == DecompType.AND) {
                             goal.addANDChild((Goal) element);
@@ -148,10 +151,10 @@ public class ReferenceProcessor {
                 }
             }
 
-            // Process child task references
+            // Process child task refs
             if (childTaskRefs != null) {
                 for (String ref : childTaskRefs) {
-                    Element element = elementsByName.get(ref);
+                    Element element = ReferenceResolver.getInstance().getElementByName(ref);
                     if (element instanceof Task) {
                         if (goal.getDecompType() == DecompType.AND) {
                             goal.addANDChild((Task) element);
@@ -161,20 +164,6 @@ public class ReferenceProcessor {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Process task effects to establish the two-way relationship between tasks and effects.
-     *
-     * @param task The task to process
-     */
-    private void processTaskEffects(Task task) {
-        if (task == null || task.getEffects() == null) return;
-
-        for (Effect effect : task.getEffects()) {
-            // Set the task as the parent of the effect
-            effect.setTask(task);
         }
     }
 
@@ -194,6 +183,102 @@ public class ReferenceProcessor {
                     child.setParent(goal);
                 }
             }
+        }
+    }
+
+    private void processAllFormulas(Model model) {
+        LOGGER.info("Processing formulas...");
+        for (Actor actor : model.getActors()) {
+            // Process goal formulas
+            for (Goal goal : actor.getGoals()) {
+                processElementFormulas(goal);
+            }
+
+            // Process task formulas
+            for (Task task : actor.getTasks()) {
+                processElementFormulas(task);
+
+                // Process effect formulas
+                for (Effect effect : task.getEffects()) {
+                    processElementFormulas(effect);
+                }
+            }
+
+            // Process quality formulas
+            for (Quality quality : actor.getQualities()) {
+                if (quality.getRawFormulaNode() != null) {
+                    Formula formula = deserializeFormula(quality.getRawFormulaNode());
+                    if (formula != null) {
+                        quality.setFormula(formula);
+                        LOGGER.info("Set formula for quality: " + quality.getId());
+                    }
+                }
+            }
+
+            // Process condition formulas
+            for (Condition condition : actor.getConditions()) {
+                if (condition.getRawFormulaNode() != null) {
+                    Formula formula = deserializeFormula(condition.getRawFormulaNode());
+                    if (formula != null) {
+                        condition.setFormula(formula);
+                        LOGGER.info("Set formula for condition: " + condition.getId());
+                    }
+                }
+            }
+        }
+        LOGGER.info("Formula processing completed");
+    }
+
+    /**
+     * Process pre and npr formulas for decomposition elements.
+     */
+    private void processElementFormulas(Object element) {
+        JsonNode preNode = null;
+        JsonNode nprNode = null;
+
+        // Extract raw formula nodes based on element type
+        if (element instanceof DecompositionElement) {
+            DecompositionElement decompElement = (DecompositionElement) element;
+            preNode = decompElement.getRawPreFormulaNode();
+            nprNode = decompElement.getRawNprFormulaNode();
+        }
+
+        // Process pre formula
+        if (preNode != null) {
+            Formula preFormula = deserializeFormula(preNode);
+            if (preFormula != null) {
+                if (element instanceof DecompositionElement) {
+                    ((DecompositionElement) element).setPreFormula(preFormula);
+                    LOGGER.info("Set pre formula for element: " + ((DecompositionElement) element).getId());
+                }
+            }
+        }
+
+        // Process npr formula
+        if (nprNode != null) {
+            Formula nprFormula = deserializeFormula(nprNode);
+            if (nprFormula != null) {
+                if (element instanceof DecompositionElement) {
+                    ((DecompositionElement) element).setNprFormula(nprFormula);
+                    LOGGER.info("Set npr formula for element: " + ((DecompositionElement) element).getId());
+                }
+            }
+        }
+    }
+
+    /**
+     * Deserialize a formula from a JSON node.
+     */
+    private Formula deserializeFormula(JsonNode node) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonParser parser = mapper.treeAsTokens(node);
+            DeserializationContext ctxt = mapper.getDeserializationContext();
+            FormulaDeserializer deserializer = new FormulaDeserializer();
+            return deserializer.deserialize(parser, ctxt);
+        } catch (Exception e) {
+            LOGGER.warning("Error deserializing formula: " + e.getMessage());
+            return null;
         }
     }
 }

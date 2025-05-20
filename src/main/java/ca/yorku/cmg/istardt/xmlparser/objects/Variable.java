@@ -1,4 +1,4 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-public class TaskId extends Atom {
+public class Variable extends StateDescriptor {
 }

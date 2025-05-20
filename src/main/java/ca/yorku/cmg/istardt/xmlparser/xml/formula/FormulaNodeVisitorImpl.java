@@ -1,6 +1,7 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.formula;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
+import ca.yorku.cmg.istardt.xmlparser.xml.ReferenceResolver;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,15 +21,17 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private static final Logger LOGGER = Logger.getLogger(FormulaNodeVisitorImpl.class.getName());
 
     private static final String[] NUMERIC_OPERAND_TYPES = {
-            "const", "numAtom", "add", "subtract", "multiply", "divide", "negate", "previous"
+            "numConst", "variableID", "qualID", "predicateID", "goalID", "taskID",
+            "add", "subtract", "multiply", "divide", "negate", "previous"
     };
 
     private static final String[] BOOLEAN_OPERAND_TYPES = {
-            "boolConst", "boolAtom", "and", "or", "not", "gt", "gte", "lt", "lte", "eq", "neq", "previous"
+            "boolConst", "predicateID", "goalID", "taskID",
+            "and", "or", "not", "gt", "gte", "lt", "lte", "eq", "neq", "previous"
     };
-
     private final JsonParser parser;
     private final DeserializationContext context;
+    private final ReferenceResolver referenceResolver = ReferenceResolver.getInstance();
 
     // Maps to match node types to visitor methods
     private final Map<String, OperandVisitor> operandVisitors = new HashMap<>();
@@ -43,10 +46,15 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
      * Initialize the map of operand visitors
      */
     private void initializeOperandVisitors() {
-        operandVisitors.put("const", this::visitConstant);
-        operandVisitors.put("numAtom", this::visitNumAtom);
+        operandVisitors.put("numConst", this::visitNumConst);
         operandVisitors.put("boolConst", this::visitBoolConst);
-        operandVisitors.put("boolAtom", this::visitBoolAtom);
+
+        operandVisitors.put("predicateID", this::visitPredicateID);
+        operandVisitors.put("goalID", this::visitGoalID);
+        operandVisitors.put("taskID", this::visitTaskID);
+        operandVisitors.put("variableID", this::visitVariableID);
+        operandVisitors.put("qualID", this::visitQualID);
+
         operandVisitors.put("add", this::visitAdd);
         operandVisitors.put("subtract", this::visitSubtract);
         operandVisitors.put("multiply", this::visitMultiply);
@@ -65,12 +73,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     }
 
     @Override
-    public Formula visitConstant(JsonNode node) {
-        return Formula.createConstantFormula(node.asText());
-    }
-
-    @Override
-    public Formula visitNumAtom(JsonNode node) {
+    public Formula visitNumConst(JsonNode node) {
         return Formula.createConstantFormula(node.asText());
     }
 
@@ -80,8 +83,68 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     }
 
     @Override
-    public Formula visitBoolAtom(JsonNode node) {
-        return Formula.createConstantFormula(node.asText());
+    public Formula visitPredicateID(JsonNode node) {
+        String name = node.asText();
+        Element element = referenceResolver.getElementByName(name);
+        if (element != null && element instanceof Predicate) {
+            LOGGER.info("Found predicate with ID: " + name);
+            return element.getAtom();
+        } else {
+            LOGGER.warning("Predicate with ID not found: " + name);
+            return Formula.createConstantFormula(name);
+        }
+    }
+
+    @Override
+    public Formula visitGoalID(JsonNode node) {
+        String name = node.asText();
+        Element element = referenceResolver.getElementByName(name);
+        if (element != null && element instanceof Goal) {
+            LOGGER.info("Found goal with ID: " + name);
+            return element.getAtom();
+        } else {
+            LOGGER.warning("Goal with ID not found: " + name);
+            return Formula.createConstantFormula(name);
+        }
+    }
+
+    @Override
+    public Formula visitTaskID(JsonNode node) {
+        String name = node.asText();
+        Element element = referenceResolver.getElementByName(name);
+        if (element != null && element instanceof Task) {
+            LOGGER.info("Found task with ID: " + name);
+            return element.getAtom();
+        } else {
+            LOGGER.warning("Task with ID not found: " + name);
+            return Formula.createConstantFormula(name);
+        }
+    }
+
+    @Override
+    public Formula visitVariableID(JsonNode node) {
+        String name = node.asText();
+        Element element = referenceResolver.getElementByName(name);
+        if (element != null && element instanceof Variable) {
+            LOGGER.info("Found variable with ID: " + name);
+            return element.getAtom();
+        } else {
+            LOGGER.warning("Variable with ID not found: " + name);
+            return Formula.createConstantFormula(name);
+        }
+    }
+
+    @Override
+    public Formula visitQualID(JsonNode node) {
+        String name = node.asText();
+        Element element = referenceResolver.getElementByName(name);
+        if (element != null && element instanceof Quality) {
+            LOGGER.info("Found quality with ID: " + name);
+            return element.getAtom();
+        } else {
+            LOGGER.warning("Quality with ID not found: " + name);
+            return Formula.createConstantFormula(name);
+        }
     }
 
     @Override
@@ -107,19 +170,33 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     }
 
     @Override
-    public Formula visitPrevious(JsonNode node) {
-        // Handle both boolean and numeric previous references
-        if (node.has("boolAtom")) {
-            Formula formula = visitBoolAtom(node.get("boolAtom"));
-            return new PreviousOperator(formula);
-        } else if (node.has("numAtom")) {
-            Formula formula = visitNumAtom(node.get("numAtom"));
-            return new PreviousOperator(formula);
+    public Formula visitPrevious(JsonNode node) throws IOException {
+        LOGGER.info("Visiting Previous node: " + node);
+
+        // TODO Check if need to have NumConst here in previous and if need to have Atom instances for NumConst/BoolConst
+        String[] ids = {"predicateID", "goalID", "taskID", "variableID", "qualID"};
+
+        // Check if any ID fields exist directly in the node
+        for (String type : ids) {
+            if (node.has(type)) {
+                LOGGER.info("Found " + type + " in Previous node");
+                String name = node.get(type).asText();
+                Element element = referenceResolver.getElementByName(name);
+                if (element != null) {
+                    LOGGER.info("Creating PreviousOperator with Atom for: " + name);
+                    return new PreviousOperator(element.getAtom());
+                } else {
+                    LOGGER.warning("Element not found for " + type + ": " + name);
+//                    return new PreviousOperator(Formula.createConstantFormula(name));
+                }
+            }
         }
 
-        LOGGER.warning("Previous node has neither boolAtom nor numAtom");
+        // If we get here, none of the expected ID fields were found
+        LOGGER.warning("Previous node has no valid ID fields: " + node);
         return Formula.createConstantFormula("Unknown Previous");
     }
+
 
     @Override
     public Formula visitNegate(JsonNode node) throws IOException {
@@ -183,8 +260,11 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
         for (String type : operandTypes) {
             if (node.has(type)) {
-                if (type.equals("const") || type.equals("numAtom") ||
-                        type.equals("boolConst") || type.equals("boolAtom")) {
+                if (type.equals("numConst") ||
+                        type.equals("boolConst") ||
+                        type.equals("predicateID") || type.equals("goalID") ||
+                        type.equals("taskID") || type.equals("variableID") ||
+                        type.equals("qualID")) {
                     addNodeToOperands(node.get(type), operands,
                             n -> {
                                 try {
@@ -199,7 +279,6 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                 }
             }
         }
-
         return operands;
     }
 

@@ -19,16 +19,6 @@ public class DeserializerUtils {
     private static final Logger LOGGER = Logger.getLogger(DeserializerUtils.class.getName());
 
     /**
-     * Centralized logging with appropriate level checking.
-     * Logs at INFO level for normal processing information.
-     */
-    public static void logInfo(Logger logger, String message) {
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(message);
-        }
-    }
-
-    /**
      * Deserializes a node or array of nodes into a list of objects.
      * Handles both single items and arrays transparently.
      */
@@ -57,51 +47,6 @@ public class DeserializerUtils {
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error deserializing list of " + type.getSimpleName(), e);
             throw e;
-        }
-
-        return result;
-    }
-
-    public static Formula processFormula(String elementName, JsonNode node, JsonParser p, DeserializationContext ctxt, Logger logger) throws IOException {
-        if (node.has(elementName)) {
-            JsonNode formulaNode = node.get(elementName);
-            if (formulaNode.has("formula")) {
-                try {
-                    return ctxt.readValue(formulaNode.get("formula").traverse(p.getCodec()), Formula.class);
-                } catch (Exception e) {
-                    logger.warning("Error processing " + elementName + " formula: " + e.getMessage());
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Deserializes a list of nodes using a custom converter function.
-     *
-     * @param nodes The JSON nodes to deserialize
-     * @param converter The function to convert each node
-     * @return A list of converted objects
-     */
-    public static <T> List<T> deserializeWithConverter(JsonNode nodes, Function<JsonNode, T> converter) {
-        List<T> result = new ArrayList<>();
-
-        if (nodes == null) {
-            return result;
-        }
-
-        if (nodes.isArray()) {
-            for (JsonNode node : nodes) {
-                T item = converter.apply(node);
-                if (item != null) {
-                    result.add(item);
-                }
-            }
-        } else {
-            T item = converter.apply(nodes);
-            if (item != null) {
-                result.add(item);
-            }
         }
 
         return result;
@@ -156,14 +101,6 @@ public class DeserializerUtils {
     }
 
     /**
-     * Standardized error handling for deserialization with retry suggestion.
-     * Logs the error but doesn't throw, allowing recovery with defaults.
-     */
-    public static void handleDeserializationErrorWithRecovery(Logger logger, String message, Exception e) {
-        logger.log(Level.WARNING, message + " (continuing with default values)", e);
-    }
-
-    /**
      * Safely extracts a list of string values from child nodes with a specific name.
      */
     public static List<String> getStringList(JsonNode node, String childName) {
@@ -183,79 +120,5 @@ public class DeserializerUtils {
         }
 
         return result;
-    }
-
-    /**
-     * Checks if a node has a specific field.
-     */
-    public static boolean hasField(JsonNode node, String fieldName) {
-        return node != null && node.has(fieldName);
-    }
-
-    /**
-     * Gets a child node if it exists, or null if it doesn't.
-     */
-    public static JsonNode getChildNode(JsonNode node, String fieldName) {
-        if (node != null && node.has(fieldName)) {
-            return node.get(fieldName);
-        }
-        return null;
-    }
-
-    /**
-     * Extracts references from nodes that may contain "ref" attributes.
-     *
-     * @param node The node containing references
-     * @return List of reference strings
-     */
-    public static List<String> extractReferences(JsonNode node) {
-        List<String> refs = new ArrayList<>();
-
-        if (node == null) {
-            return refs;
-        }
-
-        if (node.isArray()) {
-            for (JsonNode childNode : node) {
-                if (childNode.has("ref")) {
-                    refs.add(childNode.get("ref").asText());
-                }
-            }
-        } else if (node.has("ref")) {
-            refs.add(node.get("ref").asText());
-        }
-
-        return refs;
-    }
-
-    /**
-     * Processes a node that may contain an array of items or a single item.
-     *
-     * @param node The node to process
-     * @param processor The function to process each item
-     * @return List of processed items
-     */
-    public static <T> List<T> processNodeItems(JsonNode node, Function<JsonNode, T> processor) {
-        List<T> results = new ArrayList<>();
-
-        if (node == null) {
-            return results;
-        }
-
-        if (node.isArray()) {
-            for (JsonNode item : node) {
-                T result = processor.apply(item);
-                if (result != null) {
-                    results.add(result);
-                }
-            }
-        } else {
-            T result = processor.apply(node);
-            if (result != null) {
-                results.add(result);
-            }
-        }
-
-        return results;
     }
 }

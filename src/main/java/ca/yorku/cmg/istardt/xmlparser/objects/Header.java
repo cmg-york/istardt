@@ -1,9 +1,10 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
-public class ModelHeader {
+public class Header {
+    private String title;
     private String author;
-    private String version;
     private String lastUpdated;
+    private String source;
     private String notes;
 
     public String getAuthor() {
@@ -12,14 +13,6 @@ public class ModelHeader {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     public String getLastUpdated() {
@@ -36,5 +29,21 @@ public class ModelHeader {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

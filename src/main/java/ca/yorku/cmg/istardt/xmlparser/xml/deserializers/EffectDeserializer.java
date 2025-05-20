@@ -1,7 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Effect;
-import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -14,12 +13,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
-/**
- * Deserializer for Effect objects with support for formula-based pre/npr.
- */
 public class EffectDeserializer extends BaseDeserializer<Effect> {
     private static final Logger LOGGER = Logger.getLogger(EffectDeserializer.class.getName());
-
     public EffectDeserializer() {
         super(Effect.class);
     }
@@ -36,6 +31,13 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
         effect.setSatisfying(satisfying);
         effect.setProbability(probability);
 
+        if (node.has("pre")) {
+            effect.setRawPreFormulaNode(node.get("pre"));
+        }
+        if (node.has("npr")) {
+            effect.setRawNprFormulaNode(node.get("npr"));
+        }
+
         // Process string list properties for turnsTrue and turnsFalse
         Map<String, BiConsumer<Effect, List<String>>> listSetters = new HashMap<>();
         listSetters.put("turnsTrue", Effect::setTurnsTrue);
@@ -45,44 +47,6 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
         for (Map.Entry<String, BiConsumer<Effect, List<String>>> entry : listSetters.entrySet()) {
             List<String> values = DeserializerUtils.getStringList(node, entry.getKey());
             entry.getValue().accept(effect, values);
-        }
-
-        // Process pre formula
-        processPreFormula(effect, node, p, ctxt);
-
-        // Process npr formula
-        processNprFormula(effect, node, p, ctxt);
-    }
-
-    /**
-     * Process the pre formula element for an effect.
-     *
-     * @param effect The effect to set the pre formula on
-     * @param node The parent JSON node
-     * @param p The JSON parser
-     * @param ctxt The deserialization context
-     */
-    private void processPreFormula(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        Formula formula = DeserializerUtils.processFormula("pre", node, p, ctxt, LOGGER);
-        if (formula != null) {
-            effect.setPreFormula(formula);
-            DeserializerUtils.logInfo(LOGGER, "Set pre formula for effect: " + effect.getId());
-        }
-    }
-
-    /**
-     * Process the npr formula element for an effect.
-     *
-     * @param effect The effect to set the npr formula on
-     * @param node The parent JSON node
-     * @param p The JSON parser
-     * @param ctxt The deserialization context
-     */
-    private void processNprFormula(Effect effect, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException {
-        Formula formula = DeserializerUtils.processFormula("npr", node, p, ctxt, LOGGER);
-        if (formula != null) {
-            effect.setNprFormula(formula);
-            DeserializerUtils.logInfo(LOGGER, "Set npr formula for effect: " + effect.getId());
         }
     }
 }

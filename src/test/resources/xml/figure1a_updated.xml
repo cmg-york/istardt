@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iStarDT  xmlns="https://example.org/istar-dt-x"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="https://example.org/istar-dt-x ../xsd/istar-rl-schema_v4.xsd">
+
+    <header title="title"
+            author="first last"
+            source="path to xml file"
+            lastUpdated="String date here">
+        notes here
+    </header>
+
+    <options continuous="true" infeasibleActionPenalty="1.0"></options>
+
+    <actors>
+        <actor name="Manufacturer" description="A Manufacturer actor">
+            <!--     [ [goals] ] [ [tasks] ] [ [qualities] ] [ [predicates] ]
+        [ [condBoxes] ] [ [cross-set] ] [ [exported-set] ]  [ [initializations] ]   -->
+
+            <crossRuns>
+                <crossRun><predicateID>deliveredLateDom</predicateID></crossRun>
+                <crossRun><variableID>test1</variableID></crossRun>
+                <crossRun><qualID>reputation</qualID></crossRun>
+            </crossRuns>
+
+            <exportedSet>
+                <export continuous="true" minVal="1.0" maxVal="2.0">
+                    <qualID>reputation</qualID>
+                </export>
+            </exportedSet>
+
+<!--            <initializations>-->
+<!--                <initialization element="[b-const-id]">true</initialization>-->
+<!--                <initialization element="[predicate-id]">true</initialization>-->
+
+<!--                <initialization element="n-const-id]">1.0</initialization>-->
+<!--                <initialization element="[variable-id]">1.0</initialization>-->
+<!--                <initialization element="[qual-id]">1.0</initialization>-->
+<!--            </initializations>-->
+
+            <predicates>
+                <predicate description="Materials delivered on time (domestic)">deliveredInTimeDom</predicate>
+                <predicate description="Materials delivered late (domestic)">deliveredLateDom</predicate>
+                <predicate description="Materials never delivered (domestic)">neverDeliveredDom</predicate>
+            </predicates>
+
+            <variables>
+                <variable description="description1">test1</variable>
+                <variable description="description2">test2</variable>
+            </variables>
+
+            <condBoxes>
+                <condBox name="materialAvailable" description="Material availability in stock">
+                    <!--  TODO double check [boolean-expression] -->
+                    <previous>
+                        <predicateID>deliveredLateDom</predicateID>
+                    </previous>
+                </condBox>
+                <condBox name="hasManufacturingCapacity" description="Manufacturer has capacity to build in-house">
+                    <boolConst>false</boolConst>
+                </condBox>
+            </condBoxes>
+
+            <qualities>
+                <quality name="reputation" description="Reputation of the Manufacturer">
+                    <negate>
+                        <numConst>5</numConst>
+                    </negate>
+                </quality>
+
+                <quality name="financialGain" description="Financial Gain">
+                    <!--  TODO check [numeric-expression] -->
+                    <!--   TODO no exported, has init decimal -->
+                    <negate>
+                        <add>
+                            <numConst>2</numConst>
+                            <numConst>5</numConst>
+                            <numConst>10</numConst>
+                        </add>
+                    </negate>
+                </quality>
+
+                <quality name="totalValue" root="true" description="Overall Value">
+                    <add>
+                        <qualID>reputation</qualID>
+                        <qualID>financialGain</qualID>
+                    </add>
+                </quality>
+            </qualities>
+
+            <goals>
+                <goal name="productManufactured" terminal="false" root="true" description="Product Manufactured"
+                      episodeLength="4">
+                    <pre>
+                        <predicateID>deliveredInTimeDom</predicateID>
+                    </pre>
+                    <refinement type="AND">
+                        <childGoal ref="materialOrdered"/>
+                        <childGoal ref="manufacturingCompleted"/>
+                    </refinement>
+                </goal>
+
+                <goal name="materialOrdered" terminal="false"  description="Material Ordered">
+                    <refinement type="OR">
+                        <childTask ref="sourceDomestically"/>
+                        <childTask ref="sourceFromAbroad"/>
+                    </refinement>
+                </goal>
+
+                <goal name="manufacturingCompleted" terminal="false"  description="Manufacturing Completed">
+                    <pre>
+                        <goalID>materialOrdered</goalID>
+                    </pre>
+                    <refinement type="OR">
+                        <childTask ref="buildInHouse"/>
+                        <childTask ref="assignToSpecialists"/>
+                    </refinement>
+                </goal>
+            </goals>
+
+            <tasks>
+                <task name="sourceDomestically" description="Source materials from a domestic supplier">
+                    <pre>
+                        <goalID>manufacturingCompleted</goalID>
+                    </pre>
+                    <effectGroup>
+                        <effect name="successDeliveredInTimeDom" satisfying="true" probability="0.75"
+                                description="Successful">
+                            <turnsTrue>deliveredInTimeDom</turnsTrue>
+                            <pre>
+                                <taskID>sourceDomestically</taskID>
+                            </pre>
+                        </effect>
+                        <effect name="successDeliveredLateDom" satisfying="true" probability="0.20"
+                                description="Successful">
+                            <turnsTrue>deliveredLateDom</turnsTrue>
+                        </effect>
+                        <effect name="failureDeliveredDom" satisfying="false" probability="0.05"
+                                description="Failure">
+                            <turnsTrue>neverDeliveredDom</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
+
+                <task name="sourceFromAbroad" description="Source materials from a foreign supplier">
+                    <effectGroup>
+                        <effect name="successDeliveredInTimeFrgn" satisfying="true" probability="1"
+                                description="Successful">
+                            <turnsTrue>deliveredInTimeFrgn</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
+
+                <task name="buildInHouse" description="Build the product in-house">
+                    <npr>
+                        <taskID>sourceFromAbroad</taskID>
+                    </npr>
+                    <effectGroup>
+                        <effect name="successInHGood" satisfying="true" probability="1.0"
+                                description="Successful">
+                            <turnsTrue>deliveredGoodQualityInH</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
+
+                <task name="assignToSpecialists" description="Assign product manufacturing to specialists">
+                    <npr>
+                        <taskID>sourceFromAbroad</taskID>
+                    </npr>
+                    <effectGroup>
+                        <effect name="successSpecGood" satisfying="true" probability="0.7"
+                                description="Successful">
+                            <turnsTrue>deliveredGoodQualitySpec</turnsTrue>
+                        </effect>
+                        <effect name="successSpecBad" satisfying="true" probability="0.3"
+                                description="Successful">
+                            <turnsTrue>deliveredBadQualitySpec</turnsTrue>
+                        </effect>
+                    </effectGroup>
+                </task>
+            </tasks>
+        </actor>
+
+    </actors>
+</iStarDT>
