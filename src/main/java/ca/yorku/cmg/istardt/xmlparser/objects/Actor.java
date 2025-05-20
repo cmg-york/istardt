@@ -81,7 +81,7 @@ public class Actor extends Element {
      *
      * @return The root element, or null if not found
      */
-    public Element getRoot() {
+    public Goal getRoot() {
         if (goals != null) {
             for (Goal goal : goals) {
                 if (goal instanceof DecompositionElement && ((DecompositionElement) goal).isRoot()) {
