@@ -5,6 +5,11 @@ public class Export {
     private float minVal;
     private float maxVal;
     private boolean continuous;
+    private Element element;
+
+    public Element getElement() { return element; }
+    public void setElement(Element e) { this.element = e; }
+
     public boolean isContinuous() {
         return continuous;
     }

@@ -50,15 +50,16 @@ public class ReferenceProcessor {
             // Process parent-child relationships in decomposition elements
             processDecompositionHierarchy(actor.getGoals());
 
-            // Process CrossRunSet references
             processCrossRunSets(actor);
+            processExportedSet(actor);
+            processInitializationSet(actor);
         }
         processAllFormulas(model);
         LOGGER.info("Reference processing completed successfully");
     }
 
     /**
-     * Process CrossRunSet references to resolve them to actual elements.
+     * Process CrossRunSet references to resolve them to elements.
      */
     private void processCrossRunSets(Actor actor) {
         CrossRunSet crossRunSet = actor.getCrossRunSet();
@@ -75,7 +76,51 @@ public class ReferenceProcessor {
                 LOGGER.warning("Failed to resolve CrossRunSet reference: " + ref);
             }
         }
-        LOGGER.info("Processed " + crossRunSet.getElements().size() + " CrossRunSet elements");
+    }
+
+
+    /**
+     * Process ExportedSet references to resolve them to elements.
+     */
+    private void processExportedSet(Actor actor) {
+        ExportedSet exportedSet = actor.getExportedSet();
+        if (exportedSet == null || exportedSet.getExports().isEmpty()) {
+            return;
+        }
+        LOGGER.info("Processing ExportedSet references for actor: " + actor.getId());
+        for (Export export : exportedSet.getExports()) {
+            String ref = export.getRef();
+            Element element = ReferenceResolver.getInstance().getElementByName(ref);
+            if (element != null) {
+                export.setElement(element);
+                LOGGER.info("Resolved export reference: " + ref + " to element: " + element.getId());
+            } else {
+                LOGGER.warning("Failed to resolve export reference: " + ref);
+            }
+        }
+    }
+
+    /**
+     * Process InitializationSet references to resolve them to elements.
+     */
+    private void processInitializationSet(Actor actor) {
+        InitializationSet initializationSet = actor.getInitializationSet();
+        if (initializationSet == null || initializationSet.getInitializations().isEmpty()) {
+            return;
+        }
+        LOGGER.info("Processing InitializationSet references for actor: " + actor.getId());
+        for (Initialization init : initializationSet.getInitializations()) {
+            String ref = init.getRef();
+            Element element = ReferenceResolver.getInstance().getElementByName(ref);
+            if (element != null) {
+                init.setElement(element);
+                LOGGER.info("Resolved initialization reference: " + ref +
+                        " to element: " + element.getName() +
+                        " with value: " + init.getValue());
+            } else {
+                LOGGER.warning("Failed to resolve initialization reference: " + ref);
+            }
+        }
     }
 
     /**

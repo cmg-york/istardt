@@ -9,7 +9,7 @@ public class ExportedSet {
     public List<Export> getExports() {
         return exports;
     }
-    public void setExports(Export export) {
+    public void addExport(Export export) {
         exports.add(export);
     }
     public void setExports(List<Export> exports) {

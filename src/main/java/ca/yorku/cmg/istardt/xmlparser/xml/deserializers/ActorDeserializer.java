@@ -59,6 +59,36 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 LOGGER.info("Processed crossRuns");
             }
 
+            // Process exports
+            if (node.has("exportedSet") && node.get("exportedSet").has("export")) {
+                JsonNode exportNodes = node.get("exportedSet").get("export");
+                ExportedSet exportedSet = new ExportedSet();
+                actor.setExportedSet(exportedSet);
+                if (exportNodes.isArray()) {
+                    for (JsonNode exportNode : exportNodes) {
+                        processExportNode(exportNode, exportedSet);
+                    }
+                } else {
+                    processExportNode(exportNodes, exportedSet);
+                }
+                LOGGER.info("Processed ExportedSet");
+            }
+
+            // Process initializations
+            if (node.has("initializations") && node.get("initializations").has("initialization")) {
+                JsonNode initNodes = node.get("initializations").get("initialization");
+                InitializationSet initializationSet = new InitializationSet();
+                actor.setInitializationSet(initializationSet);
+                if (initNodes.isArray()) {
+                    for (JsonNode initNode : initNodes) {
+                        processInitializationNode(initNode, initializationSet);
+                    }
+                } else {
+                    processInitializationNode(initNodes, initializationSet);
+                }
+                LOGGER.info("Processed Initializations");
+            }
+
             // Process condBoxes
             if (node.has("condBoxes") && node.get("condBoxes").has("condBox")) {
                 JsonNode preBoxesNode = node.get("condBoxes").get("condBox");
@@ -114,6 +144,56 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
             LOGGER.info("Added variable reference to CrossRunSet: " + variableID);
         } else {
             LOGGER.warning("Unknown reference type in CrossRun: " + crossRunNode);
+        }
+    }
+
+    private void processExportNode(JsonNode exportNode, ExportedSet exportedSet) {
+        Export export = new Export();
+        boolean continuous = DeserializerUtils.getBooleanAttribute(exportNode, "continuous", false);
+        export.setContinuous(continuous);
+        if (continuous) {
+            float minVal = DeserializerUtils.getFloatAttribute(exportNode, "minVal", 0.0f);
+            float maxVal = DeserializerUtils.getFloatAttribute(exportNode, "maxVal", 0.0f);
+            export.setMinVal(minVal);
+            export.setMaxVal(maxVal);
+        }
+
+        String refValue = null;
+        if (exportNode.has("goalID")) {
+            refValue = exportNode.get("goalID").asText();
+        } else if (exportNode.has("taskID")) {
+            refValue = exportNode.get("taskID").asText();
+        } else if (exportNode.has("predicateID")) {
+            refValue = exportNode.get("predicateID").asText();
+        } else if (exportNode.has("variableID")) {
+            refValue = exportNode.get("variableID").asText();
+        } else if (exportNode.has("qualID")) {
+            refValue = exportNode.get("qualID").asText();
+        }
+
+        if (refValue != null) {
+            export.setRef(refValue);
+            exportedSet.addExport(export);
+            LOGGER.info("Added export with reference: " + refValue);
+        } else {
+            LOGGER.warning("Export node without a valid reference: " + exportNode);
+        }
+    }
+    private void processInitializationNode(JsonNode initNode, InitializationSet initializationSet) {
+        Initialization initialization = new Initialization();
+        String element = DeserializerUtils.getStringAttribute(initNode, "element", null);
+        if (element != null) {
+            initialization.setRef(element);
+            if (initNode.has("")) {
+                initialization.setValue(initNode.get("").asText().trim());
+            } else {
+                LOGGER.warning("Initialization node without a value: " + initNode);
+                return; // skip
+            }
+            initializationSet.addInitialization(initialization);
+            LOGGER.info("Added initialization for element: " + element + " with value: " + initialization.getValue());
+        } else {
+            LOGGER.warning("Initialization node without an element attribute: " + initNode);
         }
     }
 }
