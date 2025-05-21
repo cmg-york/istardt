@@ -111,16 +111,16 @@
             *** Q U A L I T I E S ***
             -->
             <qualities>
-                <quality name = "avoidMoneyLoss" description = "Avoid Money Loss" root = "PROBLEM">
+                <quality name = "avoidMoneyLoss" description = "Avoid Money Loss" root = "false">
                     <multiply><numConst>1.0</numConst><predicateID>refTixSucc</predicateID></multiply>
                 </quality>
-                <quality name = "privacy" description = "Privacy" root = "PROBLEM">
+                <quality name = "privacy" description = "Privacy" root = "false">
                     <add>
                         <multiply><numConst>0.8</numConst><taskID>headAuthorizes</taskID></multiply>
                         <multiply><numConst>0.3</numConst><taskID>committeeAuthorizes</taskID></multiply>
                     </add>
                 </quality>
-                <quality name = "overallQuality" description = "Overall Quality" root = "PROBLEM">
+                <quality name = "overallQuality" description = "Overall Quality" root = "true">
                     <add>
                         <multiply><numConst>0.7</numConst><qualID>avoidMoneyLoss</qualID></multiply>
                         <multiply><numConst>0.3</numConst><qualID>privacy</qualID></multiply>
