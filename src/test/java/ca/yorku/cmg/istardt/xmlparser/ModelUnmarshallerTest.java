@@ -63,7 +63,10 @@ public class ModelUnmarshallerTest {
         assertEquals(2, actor.getConditions().size(), "actor getConditions size");
         assertEquals(3, actor.getPredicates().size(), "actor getPredicates size");
         assertEquals(2, actor.getVariables().size(), "actor getVariables size");
+
         assertEquals(3, actor.getCrossRunSetElements().size(), "actor getCrossRunSet size");
+        assertEquals(1, actor.getExportedSetElements().size(), "actor getExportedSetElements size");
+        assertEquals(3, actor.getInitializationSetElements().size(), "actor getInitializationSetElements size");
 
         // ========= QUALITY ROOT =========
         Quality rootQuality = actor.getQualityRoot();
@@ -142,6 +145,32 @@ public class ModelUnmarshallerTest {
                 "Expected the element to be a Quality but was " + crossRuns.get(2).getClass().getName());
         assertEquals("reputation", crossRunAtom3.getTitleText(), "crossRun element Name");
         assertEquals("Reputation of the Manufacturer", crossRunAtom3.getDescription(), "crossRun element Description");
+    }
+
+    @Test
+    public void testUnmarshalInitializations() {
+        List<Initialization> set = actor.getInitializationSet().getInitializations();
+
+        List<String> expectedElements = Arrays.asList("deliveredInTimeDom", "test1", "reputation");
+        List<String> actualElements = actor.getInitializationSetElements().stream()
+                .map(element -> element.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedElements, actualElements, "Initialization Elements getName");
+
+        // ========= INIT 1 =========
+        Initialization init1 = set.get(0);
+        assertEquals("deliveredInTimeDom", init1.getRef(), "Initialization ref");
+        assertEquals("true", init1.getValue(), "Initialization value");
+
+        // ========= INIT 2 =========
+        Initialization init2 = set.get(1);
+        assertEquals("test1", init2.getRef(), "Initialization ref");
+        assertEquals("1.0", init2.getValue(), "Initialization value");
+
+        // ========= INIT 3 =========
+        Initialization init3 = set.get(2);
+        assertEquals("reputation", init3.getRef(), "Initialization ref");
+        assertEquals("1.0", init3.getValue(), "Initialization value");
     }
 
     @Test

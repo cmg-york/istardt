@@ -29,6 +29,12 @@
                 </export>
             </exportedSet>
 
+            <initializations>
+                <initialization element="deliveredInTimeDom">true</initialization>
+                <initialization element="test1">1.0</initialization>
+                <initialization element="reputation">1.0</initialization>
+            </initializations>
+
             <predicates>
                 <predicate description="Materials delivered on time (domestic)">deliveredInTimeDom</predicate>
                 <predicate description="Materials delivered late (domestic)">deliveredLateDom</predicate>
