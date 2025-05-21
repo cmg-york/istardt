@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -55,6 +56,332 @@ public class DTTranslator {
 	public Actor getActor() {
 		return model.getActors().get(0);
 	}
+	
+	
+	public void exportedSetTest() {
+		/** 
+		 * CREATE FIXTURE 
+		 */
+		// Create fixture
+		ExportedSet exp = new ExportedSet();
+		Export x = new Export();
+		Element g = new Goal();
+		Element o = new Quality();
+		Element p = new Predicate();
+		Atom a = new Atom();
+		
+		// 
+		// GOAL
+		//
+		a.setId("ticketsBooked-Atom");
+		a.setTitleText("ticketsBooked");;
+		g.setId("ticketsBooked-Element");
+		g.setRepresentation(a);
+		x.setElement(g);
+		x.setContinuous(false);
+		exp.addExport(x);
+		
+		
+		// 
+		// QUALITY
+		//
+		x = new Export();
+		a = new Atom();
+		
+		a.setId("overalQuality-Atom");
+		a.setTitleText("overalQuality");;
+		o.setId("overallQuality-Element");
+		o.setRepresentation(a);
+		x.setElement(o);
+		x.setContinuous(true);
+		exp.addExport(x);
+		
+
+		// 
+		// QUALITY
+		//
+		x = new Export();
+		a = new Atom();
+		
+		a.setId("cmtGranted-Atom");
+		a.setTitleText("cmtGranted");;
+		p.setId("cmtGranted-Element");
+		p.setRepresentation(a);
+		x.setElement(p);
+		x.setContinuous(false);
+		exp.addExport(x);
+		
+		
+		// 
+		// QUALITY
+		//
+		x = new Export();
+		a = new Atom();
+		o = new Quality();
+		
+		a.setId("privacy-Atom");
+		a.setTitleText("privacy");;
+		o.setId("privacy-Element");
+		o.setRepresentation(a);
+		x.setElement(o);
+		x.setContinuous(true);
+		x.setMinVal(0);
+		x.setMaxVal(1);	;
+		exp.addExport(x);
+		
+
+		/** 
+		 * TRANSLATION - START 
+		 */
+		
+		Boolean continuous = false;
+		String discreteExport = "%\n% D I S C R E T E   E X P O R T S\n%\n";
+		discreteExport += "discreteExportedSet([";
+		String continuousExport = "%\n% C O N T I N U O U S   E X P O R T S\n%\n";
+		continuousExport += "continuousExportedSet([";
+		
+		for (Export rt: exp.getExports()) {
+			String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
+			if ((rt.getElement() instanceof Goal) || (rt.getElement() instanceof Task))  {
+				descr += "_Sat";
+				discreteExport += descr + ",";
+			} else if (rt.getElement() instanceof Predicate) {
+				descr += "_fl";
+				discreteExport += descr + ",";
+			} else if (rt.getElement() instanceof Quality)  {
+				descr += "_fl()," + rt.getMinVal() + "," + rt.getMaxVal();
+				continuous = true;
+				continuousExport += "[" + descr + "], ";
+			}
+		}
+
+		discreteExport = discreteExport.substring(0, discreteExport.length() - 1) + "]).\n";
+		continuousExport = continuousExport.substring(0, continuousExport.length() - 1) + "]).\n";
+		
+		/** 
+		 * TRANSLATION - END 
+		 */
+		System.out.println(discreteExport);
+		System.out.println(continuousExport);
+		/** 
+		 * TRANSLATION - END 
+		 */
+		
+		
+	}
+
+	
+	public void initializationTest() {
+		/** 
+		 * CREATE FIXTURE 
+		 */
+		// Create fixture
+		InitializationSet init = new InitializationSet();
+		Initialization in = new Initialization();
+		Element p = new Predicate();
+		Element v = new Variable();
+		Element o = new Quality();
+		Atom a = new Atom();
+		
+		// 
+		// PREDICATES
+		//
+		a.setTitleText("flightsExist");
+		p.setRepresentation(a);
+		in.setElement(p);
+		in.setValue("true");
+		init.addInitialization(in);
+		
+		a = new Atom();
+		p = new Predicate();
+		in = new Initialization();
+		a.setTitleText("headaAvailable");
+		p.setRepresentation(a);
+		in.setElement(p);
+		in.setValue("true");
+		init.addInitialization(in);
+
+		
+		// 
+		// VARIABLE
+		//
+		a = new Atom();
+		v = new Variable();
+		in = new Initialization();
+		a.setTitleText("cost");
+		v.setRepresentation(a);
+		in.setElement(v);
+		in.setValue("70");
+		init.addInitialization(in);
+		
+		
+		/** 
+		 * TRANSLATION - START 
+		 */
+		
+		
+		String initializations = "%\n% I N I T I A L I Z A T I O N S\n%\n";
+		
+		for (Initialization it: init.getInitializations()) {
+			String descr = it.getElement().getName(); //CAUTION: maybe this is getRef
+			if ((it.getElement() instanceof Predicate))  {
+				initializations += descr + "_fl(s0).\n";
+			} else if (it.getElement() instanceof Variable) {
+				initializations += descr + "_fl(" + it.getValue() + ",s0).\n";
+			} else {
+				System.err.println("ERROR: initialization should be either a predicate or a variable");
+			}
+		}
+		
+		/** 
+		 * TRANSLATION - END 
+		 */
+		
+		System.out.println(initializations);
+		
+		
+	}
+
+	
+	public void crossRunTest() {
+		/** 
+		 * CREATE FIXTURE 
+		 */
+		// Create fixture
+		CrossRunSet crs = new CrossRunSet();
+		Quality o = new Quality();
+		Variable v = new Variable();
+		Predicate p = new Predicate();
+		
+		
+		// 
+		// QUALITIES
+		//
+		Atom a = new Atom();
+		a.setTitleText("avoidMoneyLoss");
+		o.setRepresentation(a);
+		crs.addElement(o);
+
+		a = new Atom();
+		o = new Quality();
+		a.setTitleText("privacy");
+		o.setRepresentation(a);
+		crs.addElement(o);
+
+		
+		// 
+		// VARIABLE
+		//
+		a = new Atom();
+		v = new Variable();
+		a.setTitleText("cost");
+		v.setRepresentation(a);
+		crs.addElement(v);
+		
+		
+		// 
+		// PREDICATE
+		//
+		a = new Atom();
+		p = new Predicate();
+		a.setTitleText("headGranted");
+		p.setRepresentation(a);
+		crs.addElement(p);
+		
+		
+		/** 
+		 * TRANSLATION - START 
+		 */
+		
+		
+		String crossState = "%\n% C R O S S   S T A T E \n%\n";
+		crossState += "transStateStructure([";
+		for (Element cr: crs.getElements()) {
+			String descr = cr.getName(); //CAUTION: maybe this is getRef
+			if ((cr instanceof Predicate))  {
+				crossState += descr + "_fl,";
+			} else if ((cr instanceof Variable) || (cr instanceof Quality)) {
+				crossState += descr + "_fl(_),";
+			} else {
+				System.err.println("ERROR: initialization should be either a predicate, variable, or quality");
+			}
+		}
+		
+		crossState  = crossState .substring(0, crossState .length() - 1) + "]).\n";
+		
+		/** 
+		 * TRANSLATION - END 
+		 */
+		
+		
+		System.out.println(crossState);
+		
+		
+	}
+
+
+	public void conditionExpressionTest() {
+		/** 
+		 * CREATE FIXTURE 
+		 */
+		
+		/**
+		 *  
+		bookRefundableTickets 
+		OR 
+		PREV(nonRefTixFailed) AND (cost GT 50) AND (privacy LT 0.5) AND headAvailable
+		OR 
+		flightsExist
+		
+		*/
+		
+		//Create Atoms
+		Atom bookRefundableTickets = new Atom();
+		bookRefundableTickets.setTitleText("bookRefundableTickets");
+		Atom flightsExist = new Atom();
+		flightsExist.setTitleText("flightsExist");
+		Atom nonRefTixFailed = new Atom();
+		nonRefTixFailed.setTitleText("nonRefTixFailed");
+		Atom cost = new Atom();
+		cost.setTitleText("cost");
+		Atom privacy = new Atom();
+		privacy.setTitleText("privacy");
+		Atom headAvailable = new Atom();
+		headAvailable.setTitleText("headAvailable");
+		Atom five = new Atom();
+		five.setTitleText("5");
+		Atom ten = new Atom();
+		ten.setTitleText("10");
+		
+		
+		
+		Formula f0 = new PreviousOperator(nonRefTixFailed);
+		Formula f1 = new GTOperator(cost, five);
+		Formula f2 = new LTOperator(ten, privacy);
+		
+		Formula conj = new ANDOperator(f0, new ANDOperator(f1, new ANDOperator(f2,headAvailable)));
+		
+		Formula f = new OROperator(bookRefundableTickets,new OROperator(conj, flightsExist));
+		
+		/** 
+		 * TRANSLATION - START 
+		 */
+		
+		FormulaParser pars = new FormulaParser();
+		
+		String out = pars.parseConditionExpression(f);
+		pars.parseSimpleQualityExpressionTest();
+		
+		/** 
+		 * TRANSLATION - END 
+		 */
+		
+		System.out.println(out);
+		
+	}
+
+
+
 
 	public void translate() {
 

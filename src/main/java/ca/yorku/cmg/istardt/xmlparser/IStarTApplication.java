@@ -62,17 +62,31 @@ public class IStarTApplication {
                 System.exit(1);
             }
 
+            
+            
+            
             // Create unmarshaller
             System.out.println("Unmarshalling XML...");
             IStarUnmarshaller unmarshaller = new IStarUnmarshaller();
 
             // Unmarshal XML to model
-            Model model = unmarshaller.unmarshalToModel(xmlFile);
-
+            //Model model = unmarshaller.unmarshalToModel(xmlFile);
+            Model model = null;
+            
+ 
+            
             // Display model information
             //printModelInformation(model);
+
+            /** 
+             * SOTIRIOS added tests
+             */
             DTTranslator trans = new DTTranslator(model,OUTPUT_FILE_PATH);
-            trans.translate();
+            trans.exportedSetTest();
+            trans.initializationTest();
+            trans.crossRunTest();
+            trans.conditionExpressionTest();
+            //trans.translate();
             
             
         } catch (Exception e) {
