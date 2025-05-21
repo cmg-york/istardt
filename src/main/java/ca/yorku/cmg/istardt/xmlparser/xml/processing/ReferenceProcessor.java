@@ -71,7 +71,7 @@ public class ReferenceProcessor {
             Element element = ReferenceResolver.getInstance().getElementByName(ref);
             if (element != null) {
                 crossRunSet.addElement(element);
-                LOGGER.info("Resolved CrossRunSet reference: " + ref + " to element: " + element.getName());
+                LOGGER.info("Resolved CrossRunSet reference: " + ref + " to element: " + element.getClass().getSimpleName());
             } else {
                 LOGGER.warning("Failed to resolve CrossRunSet reference: " + ref);
             }

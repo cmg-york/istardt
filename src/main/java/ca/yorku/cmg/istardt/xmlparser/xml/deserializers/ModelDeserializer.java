@@ -73,6 +73,8 @@ public class ModelDeserializer extends StdDeserializer<Model> {
         // Get mixed content text
         if (headerNode.has("")) {
             header.setNotes(headerNode.get("").asText().trim());
+        } else {
+            header.setNotes("");
         }
 
         return header;
