@@ -174,6 +174,24 @@ public class ModelUnmarshallerTest {
     }
 
     @Test
+    public void testUnmarshalExports() {
+        List<Export> set = actor.getExportedSet().getExports();
+
+        List<String> expectedElements = Arrays.asList("reputation");
+        List<String> actualElements = actor.getExportedSetElements().stream()
+                .map(element -> element.getName())
+                .collect(Collectors.toList());
+        assertEquals(expectedElements, actualElements, "ExportedSet Elements getName");
+
+        // ========= EXPORT 1 =========
+        Export export = set.get(0);
+        assertEquals("reputation", export.getRef(), "Export ref");
+        assertEquals(true, export.isContinuous(), "Export isContinuous");
+        assertEquals(2.0, export.getMaxVal(), "Export max value");
+        assertEquals(1.0, export.getMinVal(), "Export min value");
+    }
+
+    @Test
     public void testUnmarshalQualities() {
         List<Quality> qualities = actor.getQualities();
 
