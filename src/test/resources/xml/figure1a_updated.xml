@@ -29,15 +29,6 @@
                 </export>
             </exportedSet>
 
-<!--            <initializations>-->
-<!--                <initialization element="[b-const-id]">true</initialization>-->
-<!--                <initialization element="[predicate-id]">true</initialization>-->
-
-<!--                <initialization element="n-const-id]">1.0</initialization>-->
-<!--                <initialization element="[variable-id]">1.0</initialization>-->
-<!--                <initialization element="[qual-id]">1.0</initialization>-->
-<!--            </initializations>-->
-
             <predicates>
                 <predicate description="Materials delivered on time (domestic)">deliveredInTimeDom</predicate>
                 <predicate description="Materials delivered late (domestic)">deliveredLateDom</predicate>
@@ -51,7 +42,6 @@
 
             <condBoxes>
                 <condBox name="materialAvailable" description="Material availability in stock">
-                    <!--  TODO double check [boolean-expression] -->
                     <previous>
                         <predicateID>deliveredLateDom</predicateID>
                     </previous>
@@ -69,8 +59,6 @@
                 </quality>
 
                 <quality name="financialGain" description="Financial Gain">
-                    <!--  TODO check [numeric-expression] -->
-                    <!--   TODO no exported, has init decimal -->
                     <negate>
                         <add>
                             <numConst>2</numConst>
@@ -180,6 +168,5 @@
                 </task>
             </tasks>
         </actor>
-
     </actors>
 </iStarDT>

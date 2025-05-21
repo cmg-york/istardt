@@ -30,12 +30,9 @@
             </exportedSet>
 
         <initializations>
-            <initialization element="[b-const-id]">true</initialization>
-            <initialization element="[predicate-id]">true</initialization>
-
-            <initialization element="n-const-id]">1.0</initialization>
-            <initialization element="[variable-id]">1.0</initialization>
-            <initialization element="[qual-id]">1.0</initialization>
+            <initialization element="predicateID">true</initialization>
+            <initialization element="variableID">1.0</initialization>
+            <initialization element="qualID">1.0</initialization>
         </initializations>
 
             <predicates>
@@ -51,14 +48,12 @@
                 <predicate description="Specialists produce bad quality">deliveredBadQualitySpec</predicate>
             </predicates>
 
-        <!-- TODO complete variables section in XSD/XML -->
             <variables>
                 <variable description="description">hello</variable>
             </variables>
 
             <condBoxes>
                 <condBox name="materialAvailable" description="Material availability in stock">
-                    <!--  TODO double check [boolean-expression] -->
                     <previous>
                         <predicateID>deliveredBadQualitySpec</predicateID>
                     </previous>
@@ -76,8 +71,6 @@
                 </quality>
 
                 <quality name="financialGain" description="Financial Gain">
-                    <!--  TODO check [numeric-expression] -->
-                    <!--   TODO no exported, has init decimal -->
                     <negate>
                         <add>
                             <numConst>2</numConst>
