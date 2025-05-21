@@ -7,9 +7,7 @@ public class BooleanConstant extends Formula {
         this.content = content;
     }
 
-    public boolean isContent() {
-        return content;
-    }
+    public boolean getContent() { return content; }
 
     public void setContent(boolean content) {
         this.content = content;
