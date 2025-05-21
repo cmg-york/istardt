@@ -65,10 +65,12 @@ public class ModelUnmarshallerTest {
         assertEquals(2, actor.getVariables().size(), "actor getVariables size");
         assertEquals(3, actor.getCrossRunSetElements().size(), "actor getCrossRunSet size");
 
+        // ========= QUALITY ROOT =========
         Quality rootQuality = actor.getQualityRoot();
         assertEquals("totalValue", rootQuality.getName(), "root quality Name");
         assertEquals("Overall Value", rootQuality.getAtom().getDescription(), "root quality Description");
 
+        // ========= GOAL ROOT =========
         Goal rootGoal = actor.getGoalRoot();
         assertEquals("productManufactured", rootGoal.getName(), "root goal Name");
         assertEquals("Product Manufactured", rootGoal.getAtom().getDescription(), "root goal Description");
@@ -84,14 +86,18 @@ public class ModelUnmarshallerTest {
     @Test
     public void testUnmarshalPredicates() {
         List<Predicate> predicates = actor.getPredicates();
+
+        // ========= PREDICATE 1 =========
         Atom predicateAtom1 = predicates.get(0).getAtom();
         assertEquals("deliveredInTimeDom", predicateAtom1.getTitleText(), "predicate Name");
         assertEquals("Materials delivered on time (domestic)", predicateAtom1.getDescription(), "predicate Description");
 
+        // ========= PREDICATE 2 =========
         Atom predicateAtom2 = predicates.get(1).getAtom();
         assertEquals("deliveredLateDom", predicateAtom2.getTitleText(), "predicate Name");
         assertEquals("Materials delivered late (domestic)", predicateAtom2.getDescription(), "predicate Description");
 
+        // ========= PREDICATE 3 =========
         Atom predicateAtom3 = predicates.get(2).getAtom();
         assertEquals("neverDeliveredDom", predicateAtom3.getTitleText(), "predicate Name");
         assertEquals("Materials never delivered (domestic)", predicateAtom3.getDescription(), "predicate Description");
@@ -100,10 +106,13 @@ public class ModelUnmarshallerTest {
     @Test
     public void testUnmarshalVariables() {
         List<Variable> variables = actor.getVariables();
+
+        // ========= VARIABLE 1 =========
         Atom variableAtom1 = variables.get(0).getAtom();
         assertEquals("test1", variableAtom1.getTitleText(), "variable Name");
         assertEquals("description1", variableAtom1.getDescription(), "variable Description");
 
+        // ========= VARIABLE 2 =========
         Atom variableAtom2 = variables.get(1).getAtom();
         assertEquals("test2", variableAtom2.getTitleText(), "variable Name");
         assertEquals("description2", variableAtom2.getDescription(), "variable Description");
@@ -138,21 +147,33 @@ public class ModelUnmarshallerTest {
     @Test
     public void testUnmarshalQualities() {
         List<Quality> qualities = actor.getQualities();
+
+        // ========= QUALITY 1 =========
         Quality quality1 = qualities.get(0);
         Atom qualityAtom1 = quality1.getAtom();
         assertEquals("reputation", qualityAtom1.getTitleText(), "quality Name");
         assertEquals("Reputation of the Manufacturer", qualityAtom1.getDescription(), "quality Description");
         assertEquals(false, quality1.isRoot(), "quality is root");
-        // TODO should const be Atom objects?
-        assertEquals("-(5)", quality1.getFormula().getFormula(), "quality expression");
+        assertEquals("-(5.0)", quality1.getFormula().getFormula(), "quality expression");
+        Formula formula1 = quality1.getFormula();
+        // Check if it is a NegateOperator
+        assertTrue(formula1 instanceof NegateOperator,
+                "Expected the formula to be a NegateOperator but was " + formula1.getClass().getName());
+        NegateOperator op1 = (NegateOperator) formula1;
+        // Check operands
+        assertTrue(op1.getLeft() instanceof NumericConstant,
+                "Expected the left operand to be an NumericConstant but was " + op1.getLeft().getClass().getName());
+        assertNull(op1.getRight());
 
+        // ========= QUALITY 2 =========
         Quality quality2 = qualities.get(1);
         Atom qualityAtom2 = quality2.getAtom();
         assertEquals("financialGain", qualityAtom2.getTitleText(), "quality Name");
         assertEquals("Financial Gain", qualityAtom2.getDescription(), "quality Description");
         assertEquals(false, quality2.isRoot(), "quality is root");
-        assertEquals("-(((2 + 5) + 10))", quality2.getFormula().getFormula(), "quality expression");
+        assertEquals("-(((2.0 + 5.0) + 10.0))", quality2.getFormula().getFormula(), "quality expression");
 
+        // ========= QUALITY 3 =========
         Quality quality3 = qualities.get(2);
         Atom qualityAtom3 = quality3.getAtom();
         assertEquals("totalValue", qualityAtom3.getTitleText(), "quality Name");
@@ -175,17 +196,19 @@ public class ModelUnmarshallerTest {
     @Test
     public void testUnmarshalConditions() {
         List<Condition> conditions = actor.getConditions();
+
+        // ========= CONDITION 1 =========
         Condition condition1 = conditions.get(0);
         Atom conditionAtom1 = condition1.getAtom();
         assertEquals("materialAvailable", conditionAtom1.getTitleText(), "Condition Name");
         assertEquals("Material availability in stock", conditionAtom1.getDescription(), "Condition Description");
         assertEquals("PREVIOUS(deliveredLateDom)", condition1.getFormula().getFormula(), "Condition expression");
 
-        Formula formula = condition1.getFormula();
+        Formula formula1 = condition1.getFormula();
         // Check if it is a PreviousOperator
-        assertTrue(formula instanceof PreviousOperator,
-                "Expected the formula to be a PreviousOperator but was " + formula.getClass().getName());
-        PreviousOperator op = (PreviousOperator) formula;
+        assertTrue(formula1 instanceof PreviousOperator,
+                "Expected the formula to be a PreviousOperator but was " + formula1.getClass().getName());
+        PreviousOperator op = (PreviousOperator) formula1;
 
         // Check the left operand
         assertTrue(op.getLeft() instanceof Atom,
@@ -193,11 +216,14 @@ public class ModelUnmarshallerTest {
         // Atom leftAtom = (Atom) op.getLeft();
         assertNull(op.getRight());
 
+        // ========= CONDITION 2 =========
         Condition condition2 = conditions.get(1);
         Atom conditionAtom2 = condition2.getAtom();
         assertEquals("hasManufacturingCapacity", conditionAtom2.getTitleText(), "Condition Name");
         assertEquals("Manufacturer has capacity to build in-house", conditionAtom2.getDescription(), "Condition Description");
         assertEquals("false", condition2.getFormula().getFormula(), "Condition expression");
+        assertTrue(condition2.getFormula() instanceof BooleanConstant,
+                "Expected the formula to be a BooleanConstant but was " + condition2.getFormula().getClass().getName());
     }
 
     @Test
