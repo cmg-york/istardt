@@ -14,9 +14,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
-/**
- * Refactored implementation of FormulaNodeVisitor for deserializing formulas.
- */
 public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private static final Logger LOGGER = Logger.getLogger(FormulaNodeVisitorImpl.class.getName());
 
@@ -74,12 +71,12 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     @Override
     public Formula visitNumConst(JsonNode node) {
-        return Formula.createConstantFormula(node.asText());
+        return new NumericConstant(Float.valueOf(node.asText()));
     }
 
     @Override
     public Formula visitBoolConst(JsonNode node) {
-        return Formula.createBooleanFormula(Boolean.parseBoolean(node.asText()));
+        return new BooleanConstant(Boolean.parseBoolean(node.asText()));
     }
 
     @Override
@@ -173,10 +170,9 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     public Formula visitPrevious(JsonNode node) throws IOException {
         LOGGER.info("Visiting Previous node: " + node);
 
-        // TODO Check if need to have NumConst here in previous and if need to have Atom instances for NumConst/BoolConst
         String[] ids = {"predicateID", "goalID", "taskID", "variableID", "qualID"};
 
-        // Check if any ID fields exist directly in the node
+        // Check if any ID fields exist in the node
         for (String type : ids) {
             if (node.has(type)) {
                 LOGGER.info("Found " + type + " in Previous node");
@@ -187,12 +183,10 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                     return new PreviousOperator(element.getAtom());
                 } else {
                     LOGGER.warning("Element not found for " + type + ": " + name);
-//                    return new PreviousOperator(Formula.createConstantFormula(name));
+                    return new PreviousOperator(Formula.createConstantFormula(name));
                 }
             }
         }
-
-        // If we get here, none of the expected ID fields were found
         LOGGER.warning("Previous node has no valid ID fields: " + node);
         return Formula.createConstantFormula("Unknown Previous");
     }
@@ -208,7 +202,6 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                 return new NegateOperator(formula);
             }
         }
-
         LOGGER.warning("No valid operand found in negate operation");
         return Formula.createConstantFormula("0");
     }
