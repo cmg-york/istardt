@@ -46,7 +46,7 @@ public class ModelUnmarshallerTest {
     public void testUnmarshalOptions() {
         Options options = model.getOptions();
         assertTrue(options.isContinuous());
-        assertEquals(1.0, options.getInfActionPenalty(), "getInfActionPenalty");
+        assertEquals(1.0, options.getInfActionPenalty(), 1e-6, "getInfActionPenalty");
     }
 
     @Test
@@ -187,8 +187,56 @@ public class ModelUnmarshallerTest {
         Export export = set.get(0);
         assertEquals("reputation", export.getRef(), "Export ref");
         assertEquals(true, export.isContinuous(), "Export isContinuous");
-        assertEquals(2.0, export.getMaxVal(), "Export max value");
-        assertEquals(1.0, export.getMinVal(), "Export min value");
+        assertEquals(2.0, export.getMaxVal(),1e-6,"Export max value");
+        assertEquals(1.0, export.getMinVal(),1e-6,"Export min value");
+    }
+
+    @Test
+    public void testUnmarshalEffects() {
+        List<Effect> effects = actor.getEffects();
+
+        // ========= EFFECT 1 =========
+        Effect effect1 = effects.get(0);
+        Atom effectAtom1 = effect1.getAtom();
+        assertEquals("successDeliveredInTimeDom", effect1.getName(), "Effect's name");
+        assertEquals("Successful", effectAtom1.getDescription(), "Effect's description");
+        assertEquals(true, effect1.isSatisfying(), "Effect isSatisfying");
+        assertEquals(0.75, effect1.getProbability(), 1e-6, "Effect's Probability");
+        assertEquals("sourceDomestically", effect1.getPreFormula().getFormula(), "Effect's pre");
+        assertNull(effect1.getNprFormula(), "Effect's npr");
+
+        List<String> expectedElements1 = Arrays.asList("deliveredInTimeDom");
+        List<String> actualElements1 = effect1.getTurnsTrue();
+        assertEquals(expectedElements1, actualElements1, "Effect turnsTrue");
+        assertTrue(effect1.getTurnsFalse().isEmpty());
+
+        // ========= EFFECT 2 =========
+        Effect effect2 = effects.get(1);
+        Atom effectAtom2 = effect2.getAtom();
+        assertEquals("successDeliveredLateDom", effect2.getName(), "Effect's name");
+        assertEquals("Successful", effectAtom2.getDescription(), "Effect's description");
+        assertEquals(true, effect2.isSatisfying(), "Effect isSatisfying");
+        assertEquals(0.20, effect2.getProbability(),1e-6, "Effect's Probability");
+        assertNull(effect2.getPreFormula(), "Effect's pre");
+        assertNull(effect2.getNprFormula(), "Effect's npr");
+        assertTrue(effect2.getTurnsFalse().isEmpty());
+        List<String> expectedElements2 = Arrays.asList("deliveredLateDom");
+        List<String> actualElements2 = effect2.getTurnsTrue();
+        assertEquals(expectedElements2, actualElements2, "Effect turnsTrue");
+
+        // ========= EFFECT 3 =========
+        Effect effect3 = effects.get(2);
+        Atom effectAtom3 = effect3.getAtom();
+        assertEquals("failureDeliveredDom", effect3.getName(), "Effect's name");
+        assertEquals("Failure", effectAtom3.getDescription(), "Effect's description");
+        assertEquals(false, effect3.isSatisfying(), "Effect isSatisfying");
+        assertEquals(0.05, effect3.getProbability(),1e-6, "Effect's Probability");
+        assertNull(effect3.getPreFormula(), "Effect's pre");
+        assertNull(effect3.getNprFormula(), "Effect's npr");
+        assertTrue(effect3.getTurnsFalse().isEmpty());
+        List<String> expectedElements3 = Arrays.asList("neverDeliveredDom");
+        List<String> actualElements3 = effect3.getTurnsTrue();
+        assertEquals(expectedElements3, actualElements3, "Effect turnsTrue");
     }
 
     @Test
