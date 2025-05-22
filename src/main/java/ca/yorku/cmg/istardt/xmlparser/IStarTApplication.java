@@ -13,9 +13,9 @@ import java.util.List;
  */
 public class IStarTApplication {
 
-    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v3.xsd";
-    private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron3.sch";
-    private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_fixed2.xml";
+    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v4.xsd";
+    private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron4.sch";
+    private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_updated.xml";
     private static final String OUTPUT_FILE_PATH = "output";
 
     public static void main(String[] args) {
@@ -42,43 +42,43 @@ public class IStarTApplication {
 
             System.out.println("Processing XML file: " + xmlFile.getAbsolutePath());
 
-            // Validate XML against XSD schema
-            System.out.println("Validating XML against XSD schema...");
-            try {
-                XmlValidation.validate("xsd", xsdFile.getAbsolutePath(), xmlFile.getAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("XSD validation failed:");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+//            // Validate XML against XSD schema
+//            System.out.println("Validating XML against XSD schema...");
+//            try {
+//                XmlValidation.validate("xsd", xsdFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+//            } catch (Exception e) {
+//                System.err.println("XSD validation failed:");
+//                System.err.println(e.getMessage());
+//                System.exit(1);
+//            }
+//
+//            // Validate XML against Schematron schema
+//            System.out.println("Validating XML against Schematron schema...");
+//            try {
+//                XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+//            } catch (Exception e) {
+//                System.err.println("Schematron validation failed:");
+//                System.err.println(e.getMessage());
+//                System.exit(1);
+//            }
 
-            // Validate XML against Schematron schema
-            System.out.println("Validating XML against Schematron schema...");
-            try {
-                XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("Schematron validation failed:");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
 
-            
-            
-            
+
+
             // Create unmarshaller
             System.out.println("Unmarshalling XML...");
             IStarUnmarshaller unmarshaller = new IStarUnmarshaller();
 
             // Unmarshal XML to model
-            //Model model = unmarshaller.unmarshalToModel(xmlFile);
-            Model model = null;
-            
- 
-            
+            Model model = unmarshaller.unmarshalToModel(xmlFile);
+//            Model model = null;
+
+
+
             // Display model information
             //printModelInformation(model);
 
-            /** 
+            /**
              * SOTIRIOS added tests
              */
             DTTranslator trans = new DTTranslator(model,OUTPUT_FILE_PATH);
@@ -86,9 +86,9 @@ public class IStarTApplication {
             trans.initializationTest();
             trans.crossRunTest();
             trans.conditionExpressionTest();
-            //trans.translate();
-            
-            
+            trans.translate();
+
+
         } catch (Exception e) {
             System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();

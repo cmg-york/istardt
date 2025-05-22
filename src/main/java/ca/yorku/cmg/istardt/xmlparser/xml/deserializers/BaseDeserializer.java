@@ -74,8 +74,8 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
         element.setId(id);
 
         // Get the attributes from XML
-        String name = DeserializerUtils.getStringAttribute(node, "name", null);
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        String name = DeserializerUtils.getStringAttribute(node, "name", "");
+        String description = DeserializerUtils.getStringAttribute(node, "description", "");
 
         // Create atom and add bidirectional relationship
         Atom atom = createAtom(name, description);
@@ -102,7 +102,7 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
         atom.setTitleText(name);
         atom.setTitleHTMLText("<h>" + name + "</h>");
 
-        if (description != null && !description.isEmpty()) {
+        if (description != null) {
             atom.setDescription(description);
         }
         return atom;

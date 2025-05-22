@@ -59,7 +59,7 @@ public class DeserializerUtils {
         if (node == null || !node.has(attributeName)) {
             return defaultValue;
         }
-        return node.get(attributeName).asText(defaultValue);
+        return node.get(attributeName).asText(defaultValue).trim();
     }
 
     /**
