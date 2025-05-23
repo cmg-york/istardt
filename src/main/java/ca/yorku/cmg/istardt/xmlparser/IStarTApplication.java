@@ -5,7 +5,6 @@ import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,8 +14,8 @@ public class IStarTApplication {
 
     private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v4.xsd";
     private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron4.sch";
-    private static final String XML_FILE_PATH = "src/main/resources/xml/figure1a_updated.xml";
-    private static final String OUTPUT_FILE_PATH = "output";
+    private static final String XML_FILE_PATH = "src/main/resources/xml/Order.istardt";
+    private static final String OUTPUT_FILE_PATH = "F:/Dropbox/Private/Others/Software/gReason-2025/Nina/dtg2sim-new/src";
 
     public static void main(String[] args) {
         try {
@@ -71,9 +70,6 @@ public class IStarTApplication {
 
             // Unmarshal XML to model
             Model model = unmarshaller.unmarshalToModel(xmlFile);
-//            Model model = null;
-
-
 
             // Display model information
             //printModelInformation(model);
@@ -82,10 +78,10 @@ public class IStarTApplication {
              * SOTIRIOS added tests
              */
             DTTranslator trans = new DTTranslator(model,OUTPUT_FILE_PATH);
-            trans.exportedSetTest();
-            trans.initializationTest();
-            trans.crossRunTest();
-            trans.conditionExpressionTest();
+            //trans.exportedSetTest();
+            //trans.initializationTest();
+            //trans.crossRunTest();
+            //trans.conditionExpressionTest();
             trans.translate();
 
 

@@ -48,9 +48,9 @@ public class FormulaParser {
 	
 	
 	public String parseSimpleQualityExpression(Formula f) {
-		return prepareSimpleQualityExpression(
-						parseSimpleQualityExpressionToMap(f,new HashMap<String,String>())
-				);
+		Map<String,String> m = parseSimpleQualityExpressionToMap(f,new HashMap<String,String>());
+		System.out.println("Reward constitutents: " + m.toString());
+		return prepareSimpleQualityExpression(m);
 	}
 	
 	
@@ -131,7 +131,9 @@ public class FormulaParser {
 		} else if (f instanceof PlusOperator) {
 			parseSimpleQualityExpressionToMap(((PlusOperator) f).getLeft(),structure);
 			parseSimpleQualityExpressionToMap(((PlusOperator) f).getRight(),structure);
-		} 
+		} else {
+			System.err.println("Parser warning: type is: " + f.getClass().toGenericString());
+		}
 		return structure;
 	}
 	
