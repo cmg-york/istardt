@@ -22,7 +22,7 @@ public class IStarUnmarshaller {
      */
     public IStarUnmarshaller() {
         this.xmlMapper = createXmlMapper();
-        this.referenceProcessor = new ReferenceProcessor();
+        this.referenceProcessor = new ReferenceProcessor(this.xmlMapper);
     }
 
     /**
@@ -32,13 +32,10 @@ public class IStarUnmarshaller {
      */
     private XmlMapper createXmlMapper() {
         XmlMapper mapper = new XmlMapper();
-
-        // Configure mapper to be tolerant of schema changes
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         // Register custom module with deserializers for iStar-DT-X specific types
         mapper.registerModule(new IStarDTXModule());
-
         return mapper;
     }
 
@@ -58,7 +55,6 @@ public class IStarUnmarshaller {
 
         // Process references to link objects
         referenceProcessor.processReferences(model);
-
         return model;
     }
 
@@ -78,7 +74,6 @@ public class IStarUnmarshaller {
 
         // Process references to link objects
         referenceProcessor.processReferences(model);
-
         return model;
     }
 }

@@ -2,12 +2,8 @@ package ca.yorku.cmg.istardt.xmlparser.xml.processing;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.ReferenceResolver;
-import ca.yorku.cmg.istardt.xmlparser.xml.deserializers.FormulaDeserializer;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +16,11 @@ import java.util.logging.Logger;
  */
 public class ReferenceProcessor {
     private static final Logger LOGGER = Logger.getLogger(ReferenceProcessor.class.getName());
+    private final XmlMapper xmlMapper;
+
+    public ReferenceProcessor(XmlMapper xmlMapper) {
+        this.xmlMapper = xmlMapper;
+    }
 
     /**
      * Process the model to resolve all references between objects.
@@ -271,11 +272,7 @@ public class ReferenceProcessor {
      */
     private Formula deserializeFormula(JsonNode node) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonParser parser = mapper.treeAsTokens(node);
-            DeserializationContext ctxt = mapper.getDeserializationContext();
-            FormulaDeserializer deserializer = new FormulaDeserializer();
-            return deserializer.deserialize(parser, ctxt);
+            return xmlMapper.convertValue(node, Formula.class);
         } catch (Exception e) {
             LOGGER.warning("Error deserializing formula: " + e.getMessage());
             return null;
