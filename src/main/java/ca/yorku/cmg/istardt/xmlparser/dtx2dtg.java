@@ -10,25 +10,94 @@ import java.util.List;
 /**
  * Main application entry point demonstrating the use of the Jackson XML-based unmarshaller with validation.
  */
-public class IStarTApplication {
+public class dtx2dtg {
 
     private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v4.xsd";
     private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron4.sch";
     private static final String XML_FILE_PATH = "src/main/resources/xml/Order.istardt";
     private static final String OUTPUT_FILE_PATH = "F:/Dropbox/Private/Others/Software/gReason-2025/Nina/dtg2sim-new/src";
 
+	static String inputFile = "";
+	static String outputFile ="";
+	static boolean printUsage = false;
+    
+	
+	private static String printUsage() {
+		String s = "";
+		s = "Usage: dtx2dtg [-options]\n" + 
+				"where options are:\n" + 
+				"    -f filename \t iStarDT-X XML file \n" + 
+				"    -o filename \t DT-Golog PL file \n" + 
+				"    -h \t\t\t prints this help \n";
+		return(s);
+	}
+	
+	private static void processArgs(String[] args) throws Exception {
+	       for (int i = 0; i < args.length; i++) {
+	            String arg = args[i];
+	            if (arg.startsWith("-")) {
+	                char option = arg.charAt(1);
+	                switch (option) {
+		                case 'f':
+		                    if (i + 1 < args.length) {
+		                        inputFile = args[i + 1];
+		                        i++;
+		                    } else {
+		                    	printUsage = true;
+			                	throw new Exception("Option -f requires a file name.");
+		                    }
+		                	break;
+		            	case 'o':
+		                    if (i + 1 < args.length) {
+		                        outputFile = args[i + 1];
+		                        i++;
+		                    } else {
+		                    	printUsage = true;
+			                	throw new Exception("Option -o requires a file name.");
+		                    }
+		                    break;
+		            	case 'h':
+		                    System.out.println(printUsage());
+		                    System.exit(0);
+		                default:
+	                    	printUsage = true;
+		                	throw new Exception("Unknown option: " + option);
+	                }
+	            } else {
+	            	printUsage = true;
+	                throw new Exception("Invalid argument: " + arg);
+	            }
+	        }
+	       
+	       if (args.length == 0) {
+	       		printUsage = true;
+	       		throw new Exception("No arguments provided. Use -h for help.");
+	       }
+
+	       if (inputFile.isEmpty()) {
+	    	   printUsage = true;
+	    	   throw new Exception("No input file specified. Use -f to specify input file.");
+	       }
+	       
+	       File inpF = new File(inputFile);
+	       if (!inpF.exists()) {
+	           throw new Exception("Input file does not exist: " + inputFile);
+	       }
+		}
+		
+		
+
+    
+    
     public static void main(String[] args) {
+    	
+    	
         try {
-            File xmlFile = new File(XML_FILE_PATH);
+        	processArgs(args);
+        	File xmlFile = new File(inputFile);
             File xsdFile = new File(XSD_SCHEMA_PATH);
             File schematronFile = new File(SCHEMATRON_SCHEMA_PATH);
-
-            // Verify the files exist
-            if (!xmlFile.exists()) {
-                System.err.println("Error: XML file not found: " + XML_FILE_PATH);
-                System.exit(1);
-            }
-
+            
             if (!xsdFile.exists()) {
                 System.err.println("Error: XSD schema file not found: " + XSD_SCHEMA_PATH);
                 System.exit(1);
@@ -39,7 +108,6 @@ public class IStarTApplication {
                 System.exit(1);
             }
 
-            System.out.println("Processing XML file: " + xmlFile.getAbsolutePath());
 
 //            // Validate XML against XSD schema
 //            System.out.println("Validating XML against XSD schema...");
@@ -62,8 +130,6 @@ public class IStarTApplication {
 //            }
 
 
-
-
             // Create unmarshaller
             System.out.println("Unmarshalling XML...");
             IStarUnmarshaller unmarshaller = new IStarUnmarshaller();
@@ -77,7 +143,7 @@ public class IStarTApplication {
             /**
              * SOTIRIOS added tests
              */
-            DTTranslator trans = new DTTranslator(model,OUTPUT_FILE_PATH);
+            DTTranslator trans = new DTTranslator(model,outputFile);
             //trans.exportedSetTest();
             //trans.initializationTest();
             //trans.crossRunTest();

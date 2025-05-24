@@ -55,8 +55,7 @@ public class DTTranslator {
 		this.model = m;
 		this.formatter = new Formatter();
 		this.parser = new FormulaParser();
-		// outputFile = path + m.getModelHeader().getNote();
-		outputFile = path + "/" + this.modelName + ".pl";
+		outputFile = path;
 	}
 
 	public Actor getActor() {
@@ -293,9 +292,9 @@ public class DTTranslator {
 
 			if (!taskPrecond.equals("")) {
 				taskPrecond = taskPrecond.substring(0, taskPrecond.length() - 1);
-				taskPrecond = taskID + "_Sat(S) :- (" + taskPrecond + ").\n";
+				taskPrecond = "poss(" + taskID + ",S) :- (" + taskPrecond + ").\n";
 			} else {
-				taskPrecond = taskID + "_Sat(S).\n";
+				taskPrecond = "poss(" + taskID + ",S).\n";
 			}
 			preconditionAxiomsTasks += taskPrecond; 
 			
@@ -381,7 +380,11 @@ public class DTTranslator {
 		}
 		rewardFormulae += "\n" + rewardTotal + "\n";
 		
-		printToFile(getSpecFromVars());
+		if (outputFile.equals("")) {
+			printToStdOut(getSpecFromVars());
+		} else {
+			printToFile(getSpecFromVars());
+		}
 	}
 
 	
@@ -526,7 +529,9 @@ public class DTTranslator {
 	    }
 	}
 
-	
+	private void printToStdOut(String s) {
+		System.out.println(s);
+	}
 
 	
 	private String parseBooleanFormula(Formula f) {
