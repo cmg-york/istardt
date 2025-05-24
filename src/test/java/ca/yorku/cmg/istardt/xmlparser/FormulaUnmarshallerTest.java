@@ -190,45 +190,6 @@ public class FormulaUnmarshallerTest {
         Element p18 = ((Atom) p17.getLeft()).getElement();
         assertTrue(p18 instanceof Goal);
         assertEquals("orderMaterial", p18.getName(), "goalID");
-
-
-
-//        Formula formula1 = quality1.getFormula();
-//        // Check if it is a NegateOperator
-//        assertTrue(formula1 instanceof NegateOperator,
-//                "Expected the formula to be a NegateOperator but was " + formula1.getClass().getName());
-//        NegateOperator op1 = (NegateOperator) formula1;
-//        // Check operands
-//        assertTrue(op1.getLeft() instanceof NumericConstant,
-//                "Expected the left operand to be an NumericConstant but was " + op1.getLeft().getClass().getName());
-//        assertNull(op1.getRight());
-//
-//        // ========= QUALITY 2 =========
-//        Quality quality2 = qualities.get(1);
-//        Atom qualityAtom2 = quality2.getAtom();
-//        assertEquals("financialGain", qualityAtom2.getTitleText(), "quality Name");
-//        assertEquals("Financial Gain", qualityAtom2.getDescription(), "quality Description");
-//        assertEquals(false, quality2.isRoot(), "quality is root");
-//        assertEquals("-(((2.0 + 5.0) + 10.0))", quality2.getFormula().getFormula(), "quality expression");
-//
-//        // ========= QUALITY 3 =========
-//        Quality quality3 = qualities.get(2);
-//        Atom qualityAtom3 = quality3.getAtom();
-//        assertEquals("totalValue", qualityAtom3.getTitleText(), "quality Name");
-//        assertEquals("Overall Value", qualityAtom3.getDescription(), "quality Description");
-//        assertEquals(true, quality3.isRoot(), "quality is root");
-//        assertEquals("(reputation + financialGain)", quality3.getFormula().getFormula(), "quality expression");
-//        Formula formula = quality3.getFormula();
-//        // Check if it is a PlusOperator
-//        assertTrue(formula instanceof PlusOperator,
-//                "Expected the formula to be a PlusOperator but was " + formula.getClass().getName());
-//        PlusOperator op = (PlusOperator) formula;
-//
-//        // Check operands
-//        assertTrue(op.getLeft() instanceof Atom,
-//                "Expected the left operand to be an Atom but was " + op.getLeft().getClass().getName());
-//        assertTrue(op.getRight() instanceof Atom,
-//                "Expected the right operand to be an Atom but was " + op.getRight().getClass().getName());
     }
 
     /**
