@@ -88,7 +88,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             return element.getAtom();
         } else {
             LOGGER.warning("Predicate with ID not found: " + name);
-            return Formula.createConstantFormula(name);
+            return Formula.createConstantFormula("Unknown PredicateID");
         }
     }
 
@@ -101,7 +101,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             return element.getAtom();
         } else {
             LOGGER.warning("Goal with ID not found: " + name);
-            return Formula.createConstantFormula(name);
+            return Formula.createConstantFormula("Unknown GoalID");
         }
     }
 
@@ -114,7 +114,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             return element.getAtom();
         } else {
             LOGGER.warning("Task with ID not found: " + name);
-            return Formula.createConstantFormula(name);
+            return Formula.createConstantFormula("Unknown TaskID");
         }
     }
 
@@ -127,7 +127,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             return element.getAtom();
         } else {
             LOGGER.warning("Variable with ID not found: " + name);
-            return Formula.createConstantFormula(name);
+            return Formula.createConstantFormula("Unknown VariableID");
         }
     }
 
@@ -140,7 +140,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             return element.getAtom();
         } else {
             LOGGER.warning("Quality with ID not found: " + name);
-            return Formula.createConstantFormula(name);
+            return Formula.createConstantFormula("Unknown QualityID");
         }
     }
 
@@ -250,26 +250,17 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     private List<Formula> collectOperands(JsonNode node, String[] operandTypes) throws IOException {
         List<Formula> operands = new ArrayList<>();
-
         for (String type : operandTypes) {
             if (node.has(type)) {
-                if (type.equals("numConst") ||
-                        type.equals("boolConst") ||
-                        type.equals("predicateID") || type.equals("goalID") ||
-                        type.equals("taskID") || type.equals("variableID") ||
-                        type.equals("qualID")) {
-                    addNodeToOperands(node.get(type), operands,
-                            n -> {
-                                try {
-                                    return visitOperandByType(type, n);
-                                } catch (IOException e) {
-                                    LOGGER.severe("Error processing operand: " + e.getMessage());
-                                    return null;
-                                }
-                            });
-                } else {
-                    operands.add(visitOperandByType(type, node.get(type)));
-                }
+                addNodeToOperands(node.get(type), operands,
+                        n -> {
+                            try {
+                                return visitOperandByType(type, n);
+                            } catch (IOException e) {
+                                LOGGER.severe("Error processing operand: " + e.getMessage());
+                                return null;
+                            }
+                        });
             }
         }
         return operands;
@@ -385,7 +376,6 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                 return visitOperandByType(type, node.get(type));
             }
         }
-
         return Formula.createConstantFormula("Unknown");
     }
 
