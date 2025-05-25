@@ -78,7 +78,7 @@ public class DTTranslator {
 		String discreteExport = "%\n% D I S C R E T E   E X P O R T S\n%\n";
 		discreteExport += "discreteExportedSet([";
 		Boolean empty = true;
-		System.out.println("I have " + exp.getExports().size() + " exports");
+
 		for (Export rt: exp.getExports()) {
 			String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
 			if ((rt.getElement() instanceof Goal) || (rt.getElement() instanceof Task))  {
@@ -101,8 +101,6 @@ public class DTTranslator {
 		return(discreteExport);
 	}
 	
-	
-
 	public String getContinuousExportedSet(ExportedSet exp) {
 		
 		String continuousExport = "%\n% C O N T I N U O U S   E X P O R T S\n%\n";
@@ -126,8 +124,7 @@ public class DTTranslator {
 		
 		return(continuousExport);
 	}
-	
-	
+
 	public String getCrossRunState(CrossRunSet crs) {
 		String crossState = "%\n% C R O S S   S T A T E \n%\n";
 		crossState += "transStateStructure([";
@@ -147,7 +144,31 @@ public class DTTranslator {
 		return(crossState);
 	}
 	
+	public String getInitializations (InitializationSet init) {
+		String initializations = "";
+		String initLine = "init([";
+		
+		for (Initialization it: init.getInitializations()) {
+			String descr = it.getRef(); //CAUTION: maybe this is getRef
 
+			if ((it.getElement() instanceof Predicate))  {
+				initializations += descr + "_fl(s0).\n";
+				initLine += descr + "_fl,";
+			} else if (it.getElement() instanceof Variable) {
+				initializations += descr + "_fl(" + it.getValue() + ",s0).\n";
+				initLine += descr + "_fl(" + it.getValue() +  "),";
+			} else if (it.getElement() instanceof Quality) {
+				initializations += descr + "(" + it.getValue() + ",s0).\n";
+				initLine += descr + "(" + it.getValue() +  "),";
+			} else {
+				System.err.println("ERROR: initialization should be a predicate, a variable or a quality");
+			}
+		}
+		initLine = initLine.substring(0, initLine.length() - 1) + "]).\n";
+		return (initLine);
+	}
+	
+	
 	private ArrayList<DecompositionElement> getORSiblings(DecompositionElement e, ArrayList<DecompositionElement> l) {
 		if (e.isRoot()) {
 			return(l);
@@ -189,10 +210,6 @@ public class DTTranslator {
 		// Configure Reward style
 		// Configure infeasible penalty
 		
-		// TODO
-		// Initializations
-
-	
 		// DISCRETE EXPORTED SET
 		this.discreteExportedSet = getDiscreteExportedSet(a.getExportedSet());
 		
@@ -201,6 +218,10 @@ public class DTTranslator {
 
 		// CROSS RUN SET
 		this.crossRunSet = getCrossRunState(a.getCrossRunSet());
+
+		// INITIALIZATIONS
+		this.initList = getInitializations(a.getInitializationSet());
+
 		
 		/* 
 		 *  Process Tasks
@@ -327,8 +348,7 @@ public class DTTranslator {
 			String formOp = "";
 			String goalID =  formatter.toCamelCase(g.getName());
 			
-			System.out.println("Processing goal:" + goalID + " with " + g.getChildren().size() + " children");
-			
+		
 			if (g.getDecompType() == DecompType.AND) { // AND Decomposed
 				procOp = " : ";
 				formOp = ",";
@@ -454,6 +474,10 @@ public class DTTranslator {
 		"\n\n%\n% EXPORTED STATE ELEMENTS \n% \n\n" +
 		discreteExportedSet + "\n\n" +
 		continuousExportedSet + "\n\n" +
+		
+		"\n\n%\n% INITIALIZATIONS \n% \n\n" +
+		initList + "\n\n" +
+		
 		
 		"\n\n%\n% ACTION LISTS \n% \n\n" +
 		agentActionList + "\n" +
