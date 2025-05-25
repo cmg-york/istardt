@@ -8,11 +8,18 @@ import ca.yorku.cmg.istardt.xmlparser.objects.ANDOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
 import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import ca.yorku.cmg.istardt.xmlparser.objects.GTOperator;
+import ca.yorku.cmg.istardt.xmlparser.objects.Goal;
 import ca.yorku.cmg.istardt.xmlparser.objects.LTOperator;
+import ca.yorku.cmg.istardt.xmlparser.objects.MinusOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.MultiplyOperator;
+import ca.yorku.cmg.istardt.xmlparser.objects.NumericConstant;
 import ca.yorku.cmg.istardt.xmlparser.objects.OROperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.PlusOperator;
+import ca.yorku.cmg.istardt.xmlparser.objects.Predicate;
 import ca.yorku.cmg.istardt.xmlparser.objects.PreviousOperator;
+import ca.yorku.cmg.istardt.xmlparser.objects.Quality;
+import ca.yorku.cmg.istardt.xmlparser.objects.Task;
+import ca.yorku.cmg.istardt.xmlparser.objects.Variable;
 
 public class FormulaParser {
 	
@@ -121,12 +128,12 @@ public class FormulaParser {
 	
 	private Map<String,String> parseSimpleQualityExpressionToMap(Formula f, Map<String,String> structure) {
 		if (f instanceof MultiplyOperator) {
-			Atom l = (Atom) ((MultiplyOperator) f).getLeft();
-			Atom r = (Atom) ((MultiplyOperator) f).getRight();
-			if (isNumeric(l.getTitleText())) { //coefficient is left
-				structure.put(r.getTitleText(), l.getTitleText());
-			} else if (isNumeric(r.getTitleText())) { //coefficient is right
-				structure.put(l.getTitleText(), r.getTitleText());
+			Formula l = ((MultiplyOperator) f).getLeft();
+			Formula r = ((MultiplyOperator) f).getRight();
+			if (l instanceof NumericConstant) { //coefficient is left
+				structure.put(((Atom) r).getTitleText(), String.valueOf(((NumericConstant) l).getContent()));
+			} else if (l instanceof NumericConstant) { //coefficient is right
+				structure.put(((Atom) l).getTitleText(), String.valueOf(((NumericConstant) r).getContent()));
 			}
 		} else if (f instanceof PlusOperator) {
 			parseSimpleQualityExpressionToMap(((PlusOperator) f).getLeft(),structure);
@@ -138,7 +145,103 @@ public class FormulaParser {
 	}
 	
 	
+	public String getAtomExpressionForRewardFormulaPart1(Formula f) {
+		Atom m;
+		boolean hasPrev = false;
+		if ((f instanceof PreviousOperator)) {
+			m = (Atom) ((PreviousOperator) f).getLeft();
+			hasPrev = true;
+		} else {
+			m = (Atom) f;
+		}
+		if ((m.getElement() instanceof Predicate) || (m.getElement() instanceof Goal) || (m.getElement() instanceof Task)) {
+			return(
+					"val(R_" + m.getTitleText() + "_fl," +  m.getTitleText() + "_fl(" + (hasPrev ? "s0" : "S") + ")),\n"  
+				);
+		} else if ((m.getElement() instanceof Goal) || (m.getElement() instanceof Task)) {
+			return(
+					"val(R_" + m.getTitleText() + "_Sat," +  m.getTitleText() + "_Sat(" + (hasPrev ? "s0" : "S") + ")),\n"  
+				);
+		} else if ((m.getElement() instanceof Quality) || (m.getElement() instanceof Variable)) {
+			return(
+					m.getTitleText() + "(R_" +  m.getTitleText() + "," + (hasPrev ? "s0" : "S") + "),\n"  
+				);
+		} else {
+			System.err.println("Uknown type of :" + m.getTitleText() + " is " + m.getClass());
+		}
+		return("");
+	}
+	
+	
+	public String parseSimpleQualityExpressionPart1(Formula f,String indent) {
 
+		if (f instanceof MultiplyOperator) {
+			Formula l = ((MultiplyOperator) f).getLeft();
+			Formula r = ((MultiplyOperator) f).getRight();
+			if (l instanceof NumericConstant) { //coefficient is left
+				return( indent + getAtomExpressionForRewardFormulaPart1((Atom) r));
+			} else if (l instanceof NumericConstant) { //coefficient is right
+				return( indent + getAtomExpressionForRewardFormulaPart1((Atom) l));
+			} else {
+				return "ERROR in parseSimpleQUalityExpressionPart1";	
+			}
+		} else if (f instanceof PlusOperator) {
+			return parseSimpleQualityExpressionPart1(((PlusOperator) f).getLeft(),indent) +  
+					parseSimpleQualityExpressionPart1(((PlusOperator) f).getRight(),indent);
+		} else if (f instanceof PlusOperator) {
+			return parseSimpleQualityExpressionPart1(((PlusOperator) f).getLeft(),indent) +  
+					parseSimpleQualityExpressionPart1(((PlusOperator) f).getRight(),indent);
+		} else {
+			System.err.println("Parser warning: type is: " + f.getClass().toGenericString());
+			return "ERROR in parseSimpleQUalityExpressionPart1";
+		}
+	}
+	
+	
+	public String getAtomExpressionForRewardFormulaPart2(Formula f) {
+		Atom m;
+		if ((f instanceof PreviousOperator)) {
+			m = (Atom) ((PreviousOperator) f).getLeft();
+		} else {
+			m = (Atom) f;
+		}
+		if ((m.getElement() instanceof Predicate) || (m.getElement() instanceof Goal) || (m.getElement() instanceof Task)) {
+			return("R_" + m.getTitleText() + "_fl");
+		} else if ((m.getElement() instanceof Quality) || (m.getElement() instanceof Variable)) {
+			return("R_" + m.getTitleText());
+		} else {
+			System.err.println("Uknown type of :" + m.getTitleText() + " is " + m.getClass());
+		}
+		return("");
+	}
+	
+	public String parseSimpleQualityExpressionPart2(Formula f,String indent) {
+
+		if (f instanceof MultiplyOperator) {
+			Formula l = ((MultiplyOperator) f).getLeft();
+			Formula r = ((MultiplyOperator) f).getRight();
+			if (l instanceof NumericConstant) { //coefficient is left
+				return(indent + getAtomExpressionForRewardFormulaPart2((Atom) r) + "*" + String.valueOf(((NumericConstant) l).getContent()) );
+			} else if (l instanceof NumericConstant) { //coefficient is right
+				return(indent + getAtomExpressionForRewardFormulaPart2((Atom) l) + "*" + String.valueOf(((NumericConstant) r).getContent()) );
+			} else {
+				return "ERROR in parseSimpleQUalityExpressionPart2";	
+			}
+		} else if (f instanceof PlusOperator) {
+			return parseSimpleQualityExpressionPart2(((PlusOperator) f).getLeft(),indent) + " + \n" + 
+					parseSimpleQualityExpressionPart2(((PlusOperator) f).getRight(),indent);
+		} else if (f instanceof MinusOperator) {
+			return parseSimpleQualityExpressionPart2(((PlusOperator) f).getLeft(),indent) + " - \n" + 
+					parseSimpleQualityExpressionPart2(((PlusOperator) f).getRight(),indent);
+		} else {
+			System.err.println("Parser warning: type is: " + f.getClass().toGenericString());
+			return "ERROR in parseSimpleQUalityExpressionPart2";
+		}
+	}
+	
+
+	
+	
 	
 	public void parseSimpleQualityExpressionTest() {
 		Atom c1 = new Atom();

@@ -391,7 +391,21 @@ public class DTTranslator {
 		 */
 		String rewardTotal = "";
 		for (Quality o:a.getQualities()) {
-			rewardFormulae += o.getName() + "(V,S) :- " + parser.parseSimpleQualityExpression(o.getFormula()) + "\n";
+			String header =
+					o.getName() + "(V,s0):-current_predicate(init/1),init(L),member(" + o.getName() + "(V), L),!.\n" +
+							o.getName() + "(0,s) :- !.\n";
+			String indent = " ".repeat((o.getName() + "(0,s) :- ").length());
+
+			String part1 = o.getName() + "(V,S) :-" + o.getName() + "(R_" + o.getName() + "_init,s0),\n" +
+					parser.parseSimpleQualityExpressionPart1(o.getFormula(),indent);
+			String part2 = indent + "V is R_" + o.getName() + "_init +\n" + parser.parseSimpleQualityExpressionPart2(o.getFormula(),indent) + ".\n";
+			
+			
+			//System.out.println(header + part1 + part2);
+
+			rewardFormulae +=  header + part1 + part2 + "\n\n";
+					
+			//rewardFormulae += o.getName() + "(V,S) :- " + parser.parseSimpleQualityExpression(o.getFormula()) + "\n";
 			restoreSitArg += "restoreSitArg(" + o.getName() + "(X),S," + o.getName() + "(X,S)).\n";
 			
 			if (o.isRoot()) {
@@ -582,8 +596,6 @@ public class DTTranslator {
 			return f.getFormula();
 		}
 	}
-	
-	
 	
 	
 	/** 
