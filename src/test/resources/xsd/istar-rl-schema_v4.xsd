@@ -349,7 +349,6 @@
 
     <xsd:group name="NumAtomElements">
         <xsd:choice>
-            <xsd:element name="numConst" type="xsd:float"/>
             <xsd:element name="variableID" type="IdentifierType"/>
             <xsd:element name="qualID" type="IdentifierType"/>
 

@@ -118,8 +118,7 @@ public class DecompositionElement extends Element {
      * @param child The child element to add
      */
     public void addANDChild(DecompositionElement child) {
-        if (decompType == null || decompType == DecompType.AND) {
-            decompType = DecompType.AND;
+        if (decompType == DecompType.AND) {
             children.add(child);
             child.setParent(this);
         } else {
@@ -133,8 +132,7 @@ public class DecompositionElement extends Element {
      * @param child The child element to add
      */
     public void addORChild(DecompositionElement child) {
-        if (decompType == null || decompType == DecompType.OR) {
-            decompType = DecompType.OR;
+        if (decompType == DecompType.OR) {
             children.add(child);
             child.setParent(this);
         } else {
