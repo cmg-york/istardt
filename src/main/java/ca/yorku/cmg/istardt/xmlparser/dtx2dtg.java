@@ -143,12 +143,12 @@ public class dtx2dtg {
             /**
              * SOTIRIOS added tests
              */
-            //DTTranslator trans = new DTTranslator(model,outputFile);
+            DTTranslator trans = new DTTranslator(model,outputFile);
             //trans.exportedSetTest();
             //trans.initializationTest();
             //trans.crossRunTest();
             //trans.conditionExpressionTest();
-            //trans.translate();
+            trans.translate();
 
 
         } catch (Exception e) {

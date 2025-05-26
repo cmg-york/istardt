@@ -11,7 +11,7 @@
 <header title = ""
     author = ""
     source = ""
-    lastUpdated = "2025-05-26 12:49:22">
+    lastUpdated = "2025-05-26 13:52:35">
 </header>
 
 
@@ -90,10 +90,7 @@
   <qualID>roomTemperature</qualID>
   <numConst>23</numConst>
  </subtract>
- <subtract>
-  <numConst>0</numConst>
-  <numConst>0.1</numConst>
- </subtract>
+ <numConst>-0.1</numConst>
 </multiply>
    </quality>
    <quality name = "overallQuality" description = "Overall Quality" root = "false">

@@ -398,6 +398,7 @@ public class DTTranslator {
 
 			String part1 = o.getName() + "(V,S) :-" + o.getName() + "(R_" + o.getName() + "_init,s0),\n" +
 					parser.parseSimpleQualityExpressionPart1(o.getFormula(),indent);
+			//System.out.println(part1);
 			String part2 = indent + "V is R_" + o.getName() + "_init +\n" + parser.parseSimpleQualityExpressionPart2(o.getFormula(),indent) + ".\n";
 			
 			

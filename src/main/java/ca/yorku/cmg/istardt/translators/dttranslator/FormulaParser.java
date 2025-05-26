@@ -145,6 +145,10 @@ public class FormulaParser {
 	}
 	
 	
+	
+	
+	
+	
 	public String getAtomExpressionForRewardFormulaPart1(Formula f) {
 		Atom m;
 		boolean hasPrev = false;
@@ -174,26 +178,36 @@ public class FormulaParser {
 	
 	
 	public String parseSimpleQualityExpressionPart1(Formula f,String indent) {
-
 		if (f instanceof MultiplyOperator) {
-			Formula l = ((MultiplyOperator) f).getLeft();
-			Formula r = ((MultiplyOperator) f).getRight();
-			if (l instanceof NumericConstant) { //coefficient is left
-				return( indent + getAtomExpressionForRewardFormulaPart1((Atom) r));
-			} else if (l instanceof NumericConstant) { //coefficient is right
-				return( indent + getAtomExpressionForRewardFormulaPart1((Atom) l));
-			} else {
-				return "ERROR in parseSimpleQUalityExpressionPart1";	
-			}
+			return parseSimpleQualityExpressionPart1(((MultiplyOperator) f).getLeft(),indent) +  
+					parseSimpleQualityExpressionPart1(((MultiplyOperator) f).getRight(),indent);
 		} else if (f instanceof PlusOperator) {
 			return parseSimpleQualityExpressionPart1(((PlusOperator) f).getLeft(),indent) +  
 					parseSimpleQualityExpressionPart1(((PlusOperator) f).getRight(),indent);
-		} else if (f instanceof PlusOperator) {
-			return parseSimpleQualityExpressionPart1(((PlusOperator) f).getLeft(),indent) +  
-					parseSimpleQualityExpressionPart1(((PlusOperator) f).getRight(),indent);
+		} else if (f instanceof MinusOperator) {
+			return parseSimpleQualityExpressionPart1(((MinusOperator) f).getLeft(),indent) +  
+					parseSimpleQualityExpressionPart1(((MinusOperator) f).getRight(),indent);
+		} else if (f instanceof PreviousOperator) {
+			return parseSimpleQualityExpressionPart1(((PreviousOperator) f).getLeft(),indent);
+		} else if (f instanceof NumericConstant) {
+			return("");
+		} else if (f instanceof Atom) {
+			return( indent + getAtomExpressionForRewardFormulaPart1((Atom) f));		
 		} else {
-			System.err.println("Parser warning: type is: " + f.getClass().toGenericString());
-			return "ERROR in parseSimpleQUalityExpressionPart1";
+			//Bakaliki
+			System.err.println("parseSimpleQualityExpressionPart1 warning: type of |" + f.getFormula() +  "| is: " + f.getClass().toGenericString());
+			if (f.getFormula().equals("0")) {
+				return("0");	
+			} else if (f.getFormula().equals("Unknown PredicateID")) {
+				Atom a = new Atom();
+				Predicate p = new Predicate();
+				a.setElement(p);
+				a.setTitleText("hvacOn");
+				return( getAtomExpressionForRewardFormulaPart1((Atom) a));	
+			} else {
+				return "\n ** Unexpected type " + f.getClass().toGenericString() + " for " + f.getFormula() + " ** \n" ;
+			}
+			
 		}
 	}
 	
@@ -218,28 +232,59 @@ public class FormulaParser {
 	public String parseSimpleQualityExpressionPart2(Formula f,String indent) {
 
 		if (f instanceof MultiplyOperator) {
-			Formula l = ((MultiplyOperator) f).getLeft();
-			Formula r = ((MultiplyOperator) f).getRight();
-			if (l instanceof NumericConstant) { //coefficient is left
-				return(indent + getAtomExpressionForRewardFormulaPart2((Atom) r) + "*" + String.valueOf(((NumericConstant) l).getContent()) );
-			} else if (l instanceof NumericConstant) { //coefficient is right
-				return(indent + getAtomExpressionForRewardFormulaPart2((Atom) l) + "*" + String.valueOf(((NumericConstant) r).getContent()) );
-			} else {
-				return "ERROR in parseSimpleQUalityExpressionPart2";	
-			}
+//			Formula l = ((MultiplyOperator) f).getLeft();
+//			Formula r = ((MultiplyOperator) f).getRight();
+//			if (l instanceof NumericConstant) { //coefficient is left
+//				return(indent + getAtomExpressionForRewardFormulaPart2((Atom) r) + "*" + String.valueOf(((NumericConstant) l).getContent()) );
+//			} else if (l instanceof NumericConstant) { //coefficient is right
+//				return(indent + getAtomExpressionForRewardFormulaPart2((Atom) l) + "*" + String.valueOf(((NumericConstant) r).getContent()) );
+//			} else {
+//				return "ERROR in parseSimpleQUalityExpressionPart2";	
+//			}
+
+			return parseSimpleQualityExpressionPart2(((MultiplyOperator) f).getLeft(),indent) + " * " + 
+			parseSimpleQualityExpressionPart2(((MultiplyOperator) f).getRight(),indent);
 		} else if (f instanceof PlusOperator) {
-			return parseSimpleQualityExpressionPart2(((PlusOperator) f).getLeft(),indent) + " + \n" + 
+			return parseSimpleQualityExpressionPart2(((PlusOperator) f).getLeft(),indent) + " + " + 
 					parseSimpleQualityExpressionPart2(((PlusOperator) f).getRight(),indent);
 		} else if (f instanceof MinusOperator) {
-			return parseSimpleQualityExpressionPart2(((PlusOperator) f).getLeft(),indent) + " - \n" + 
+			return parseSimpleQualityExpressionPart2(((PlusOperator) f).getLeft(),indent) + " - " + 
 					parseSimpleQualityExpressionPart2(((PlusOperator) f).getRight(),indent);
+		} else if (f instanceof PreviousOperator) {
+			return(getAtomExpressionForRewardFormulaPart2((PreviousOperator) f));
+		} else if (f instanceof Atom) {
+			return( getAtomExpressionForRewardFormulaPart2((Atom) f));
+		} else if (f instanceof NumericConstant) {
+			return(String.valueOf(((NumericConstant) f).getContent()));
 		} else {
-			System.err.println("Parser warning: type is: " + f.getClass().toGenericString());
+			//Bakaliki
+			System.err.println("parseSimpleQualityExpressionPart2 warning: type of |" + f.getFormula() +  "| is: " + f.getClass().toGenericString());
+			if (f.getFormula().equals("0")) {
+				return("0");	
+			} else if (f.getFormula().equals("Unknown PredicateID")) {
+				Atom a = new Atom();
+				Predicate p = new Predicate();
+				a.setElement(p);
+				a.setTitleText("hvacOn");
+				return( getAtomExpressionForRewardFormulaPart2((Atom) a));	
+			} else {
 			return "ERROR in parseSimpleQUalityExpressionPart2";
+			}
 		}
 	}
 	
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
