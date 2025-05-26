@@ -1,6 +1,7 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -8,10 +9,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class ActorDeserializer extends BaseDeserializer<Actor> {
-    private static final Logger LOGGER = Logger.getLogger(ActorDeserializer.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
 
     public ActorDeserializer() {
         super(Actor.class);
@@ -33,7 +33,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode predicatesNode = node.get("predicates").get("predicate");
                 List<Predicate> predicates = DeserializerUtils.deserializeList(predicatesNode, p, ctxt, Predicate.class);
                 actor.setPredicates(predicates);
-                LOGGER.info("Processed predicates");
+                LOGGER.info(getClass(), "Processed " + predicates.size() + " predicates");
             }
 
             // Process variables
@@ -41,7 +41,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode variablesNode = node.get("variables").get("variable");
                 List<Variable> variables = DeserializerUtils.deserializeList(variablesNode, p, ctxt, Variable.class);
                 actor.setVariables(variables);
-                LOGGER.info("Processed variables");
+                LOGGER.info(getClass(), "Processed " + variables.size() + " variables");
             }
 
             // Process crossruns
@@ -56,7 +56,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 } else {
                     processCrossRunNode(crossRunNodes, crossRunSet);
                 }
-                LOGGER.info("Processed crossRuns");
+                LOGGER.info(getClass(), "Processed crossRuns");
             }
 
             // Process exports
@@ -71,7 +71,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 } else {
                     processExportNode(exportNodes, exportedSet);
                 }
-                LOGGER.info("Processed ExportedSet");
+                LOGGER.info(getClass(), "Processed ExportedSet");
             }
 
             // Process initializations
@@ -86,7 +86,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 } else {
                     processInitializationNode(initNodes, initializationSet);
                 }
-                LOGGER.info("Processed Initializations");
+                LOGGER.info(getClass(), "Processed Initializations");
             }
 
             // Process condBoxes
@@ -94,7 +94,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode preBoxesNode = node.get("condBoxes").get("condBox");
                 List<Condition> conditions = DeserializerUtils.deserializeList(preBoxesNode, p, ctxt, Condition.class);
                 actor.setConditions(conditions);
-                LOGGER.info("Processed condBoxes");
+                LOGGER.info(getClass(), "Processed " + conditions.size() + " condBoxes");
             }
 
             // Process qualities
@@ -102,7 +102,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode qualitiesNode = node.get("qualities").get("quality");
                 List<Quality> qualities = DeserializerUtils.deserializeList(qualitiesNode, p, ctxt, Quality.class);
                 actor.setQualities(qualities);
-                LOGGER.info("Processed condBoxes");
+                LOGGER.info(getClass(), "Processed " + qualities.size() + " qualities");
             }
 
             // Process goals
@@ -110,7 +110,7 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode goalsNode = node.get("goals").get("goal");
                 List<Goal> goals = DeserializerUtils.deserializeList(goalsNode, p, ctxt, Goal.class);
                 actor.setGoals(goals);
-                LOGGER.info("Processed goals");
+                LOGGER.info(getClass(), "Processed " + goals.size() + " goals");
             }
 
             // Process tasks
@@ -118,32 +118,32 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
                 JsonNode tasksNode = node.get("tasks").get("task");
                 List<Task> tasks = DeserializerUtils.deserializeList(tasksNode, p, ctxt, Task.class);
                 actor.setTasks(tasks);
-                LOGGER.info("Processed tasks");
+                LOGGER.info(getClass(), "Processed " + tasks.size() + " tasks");
 
             }
         } catch (IOException e) {
             String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
-            DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing actor " + name, e);
+            LOGGER.error(getClass(), "Error deserializing actor " + name, e);
         }
         String name = actor.getAtom() != null ? actor.getAtom().getTitleText() : actor.getId();
-        LOGGER.info("Deserialized actor: " + name);
+        LOGGER.info(getClass(), "Deserialized actor: " + name);
     }
 
     private void processCrossRunNode(JsonNode crossRunNode, CrossRunSet crossRunSet) {
         if (crossRunNode.has("qualID")) {
             String qualID = crossRunNode.get("qualID").asText();
             crossRunSet.addRefs(qualID);
-            LOGGER.info("Added quality reference to CrossRunSet: " + qualID);
+            LOGGER.info(getClass(), "Added quality reference to CrossRunSet: " + qualID);
         } else if (crossRunNode.has("predicateID")) {
             String predicateID = crossRunNode.get("predicateID").asText();
             crossRunSet.addRefs(predicateID);
-            LOGGER.info("Added predicate reference to CrossRunSet: " + predicateID);
+            LOGGER.info(getClass(), "Added predicate reference to CrossRunSet: " + predicateID);
         } else if (crossRunNode.has("variableID")) {
             String variableID = crossRunNode.get("variableID").asText();
             crossRunSet.addRefs(variableID);
-            LOGGER.info("Added variable reference to CrossRunSet: " + variableID);
+            LOGGER.info(getClass(), "Added variable reference to CrossRunSet: " + variableID);
         } else {
-            LOGGER.warning("Unknown reference type in CrossRun: " + crossRunNode);
+            LOGGER.warning(getClass(), "Unknown reference type in CrossRun: " + crossRunNode);
         }
     }
 
@@ -174,9 +174,9 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
         if (refValue != null) {
             export.setRef(refValue);
             exportedSet.addExport(export);
-            LOGGER.info("Added export with reference: " + refValue);
+            LOGGER.info(getClass(), "Added export with reference: " + refValue);
         } else {
-            LOGGER.warning("Export node without a valid reference: " + exportNode);
+            LOGGER.warning(getClass(), "Export node without a valid reference: " + exportNode);
         }
     }
     private void processInitializationNode(JsonNode initNode, InitializationSet initializationSet) {
@@ -187,13 +187,13 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
             if (initNode.has("")) {
                 initialization.setValue(initNode.get("").asText().trim());
             } else {
-                LOGGER.warning("Initialization node without a value: " + initNode);
+                LOGGER.warning(getClass(), "Initialization node without a value: " + initNode);
                 return; // skip
             }
             initializationSet.addInitialization(initialization);
-            LOGGER.info("Added initialization for element: " + element + " with value: " + initialization.getValue());
+            LOGGER.info(getClass(), "Added initialization for element: " + element + " with value: " + initialization.getValue());
         } else {
-            LOGGER.warning("Initialization node without an element attribute: " + initNode);
+            LOGGER.error(getClass(), "Initialization node without an element attribute: " + initNode);
         }
     }
 }

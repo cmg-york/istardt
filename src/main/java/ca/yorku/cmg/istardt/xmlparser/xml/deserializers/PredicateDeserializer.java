@@ -6,15 +6,12 @@ import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class PredicateDeserializer extends BaseDeserializer<Predicate> {
-    private static final Logger LOGGER = Logger.getLogger(PredicateDeserializer.class.getName());
-
     public PredicateDeserializer() {
         super(Predicate.class);
     }

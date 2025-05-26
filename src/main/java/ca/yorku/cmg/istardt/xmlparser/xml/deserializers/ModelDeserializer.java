@@ -4,6 +4,7 @@ import ca.yorku.cmg.istardt.xmlparser.objects.Actor;
 import ca.yorku.cmg.istardt.xmlparser.objects.Header;
 import ca.yorku.cmg.istardt.xmlparser.objects.Model;
 import ca.yorku.cmg.istardt.xmlparser.objects.Options;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class ModelDeserializer extends StdDeserializer<Model> {
-    private static final Logger LOGGER = Logger.getLogger(ModelDeserializer.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
 
     public ModelDeserializer() {
         super(Model.class);
@@ -33,7 +34,7 @@ public class ModelDeserializer extends StdDeserializer<Model> {
                 model.setHeader(header);
             } else {
                 model.setHeader(new Header());
-                LOGGER.info("No header found, using default");
+                LOGGER.info(getClass(),"No header found, using default");
             }
 
             if (node.has("options")) {
@@ -41,7 +42,7 @@ public class ModelDeserializer extends StdDeserializer<Model> {
                 model.setOptions(options);
             } else {
                 model.setOptions(new Options());
-                LOGGER.info("No options found, using default");
+                LOGGER.info(getClass(),"No options found, using default");
             }
 
             List<Actor> actors = new ArrayList<>();
@@ -50,16 +51,16 @@ public class ModelDeserializer extends StdDeserializer<Model> {
                 if (actorsNode.has("actor")) {
                     JsonNode actorNodes = actorsNode.get("actor");
                     actors = DeserializerUtils.deserializeList(actorNodes, p, ctxt, Actor.class);
-                    LOGGER.info("Deserialized " + actors.size() + " actors");
+                    LOGGER.info(getClass(),"Deserialized " + actors.size() + " actors");
                 } else {
-                    LOGGER.warning("No actors found within actors tag");
+                    LOGGER.warning(getClass(),"No actors found within actors tag");
                 }
             } else {
-                LOGGER.warning("No actors tag found");
+                LOGGER.warning(getClass(),"No actors tag found");
             }
             model.setActors(actors);
         } catch (IOException e) {
-            DeserializerUtils.handleDeserializationError(LOGGER, "Error deserializing model", e);
+            LOGGER.error(getClass(),  "Error deserializing model", e);
         }
         return model;
     }
@@ -77,6 +78,7 @@ public class ModelDeserializer extends StdDeserializer<Model> {
             header.setNotes("");
         }
 
+        LOGGER.info(getClass(),"Deserialized Header");
         return header;
     }
 
@@ -84,6 +86,8 @@ public class ModelDeserializer extends StdDeserializer<Model> {
         Options options = new Options();
         options.setContinuous(DeserializerUtils.getBooleanAttribute(optionsNode, "continuous", false));
         options.setInfActionPenalty(DeserializerUtils.getFloatAttribute(optionsNode, "infeasibleActionPenalty", 0.0f));
+
+        LOGGER.info(getClass(),"Deserialized Options");
         return options;
     }
 }
