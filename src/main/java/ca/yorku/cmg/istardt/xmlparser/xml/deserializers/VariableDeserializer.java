@@ -35,7 +35,7 @@ public class VariableDeserializer extends BaseDeserializer<Variable> {
         if (node.has("")) {
             name = node.get("").asText().trim();
         }
-        String description = DeserializerUtils.getStringAttribute(node, "description", null);
+        String description = DeserializerUtils.getStringAttribute(node, "description", "");
 
         // Create atom and add bidirectional relationship
         Atom atom = createAtom(name, description);
