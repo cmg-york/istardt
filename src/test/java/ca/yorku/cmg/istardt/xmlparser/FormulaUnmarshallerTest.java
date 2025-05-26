@@ -58,7 +58,7 @@ public class FormulaUnmarshallerTest {
         assertEquals(2, actor.getTasks().size(), "actor getTasks size");
         assertEquals(6, actor.getEffects().size(), "actor getEffects size");
         assertEquals(8, actor.getQualities().size(), "actor getQualities size");
-        assertEquals(0, actor.getConditions().size(), "actor getConditions size");
+        assertEquals(1, actor.getConditions().size(), "actor getConditions size");
         assertEquals(6, actor.getPredicates().size(), "actor getPredicates size");
         assertEquals(0, actor.getVariables().size(), "actor getVariables size");
 
@@ -144,8 +144,10 @@ public class FormulaUnmarshallerTest {
         assertTrue(p9.getLeft() instanceof MultiplyOperator);
         MultiplyOperator p10 = (MultiplyOperator) p9.getLeft();
         assertTrue(p10.getLeft() instanceof NumericConstant);
-        assertTrue(p10.getRight() instanceof Atom); // deliveredInTimeA
+        NumericConstant numConstNeg = (NumericConstant) p10.getLeft();
+        assertEquals(-1.0, numConstNeg.getContent(), "numConstNeg content");
 
+        assertTrue(p10.getRight() instanceof Atom); // deliveredInTimeA
 
         // ========= QUALITY 5  =========
         Quality quality5 = qualities.get(4);
@@ -192,9 +194,23 @@ public class FormulaUnmarshallerTest {
         assertEquals("orderMaterial", p18.getName(), "goalID");
     }
 
-    /**
-     * Helper method to get a file from the resources directory.
-     */
+    @Test
+    public void testUnmarshalConditions() {
+        Condition condition = actor.getConditions().get(0);
+
+        assertEquals("((PREVIOUS(neverDeliveredB) AND NOT(deliveredInTimeB)) OR deliveredLateB)", condition.getFormula().getFormula(), "condition expression");
+        assertTrue(condition.getFormula() instanceof OROperator);
+        OROperator p1 = (OROperator) condition.getFormula();
+        assertTrue(p1.getLeft() instanceof ANDOperator);
+        assertTrue(p1.getRight() instanceof Atom);
+
+        Atom deliveredLateB = (Atom) p1.getRight();
+        assertTrue(deliveredLateB.getElement() instanceof Predicate);
+    }
+
+        /**
+         * Helper method to get a file from the resources directory.
+         */
     private File getResourceFile(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(classLoader.getResource(fileName).getFile());

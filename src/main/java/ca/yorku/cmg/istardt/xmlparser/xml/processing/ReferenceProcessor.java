@@ -222,7 +222,7 @@ public class ReferenceProcessor {
                     Formula formula = deserializeFormula(condition.getRawFormulaNode());
                     if (formula != null) {
                         condition.setFormula(formula);
-                        LOGGER.info("Set formula for condition: " + condition.getId());
+                        LOGGER.info("Set formula for condition: " + condition.getName());
                     }
                 }
             }

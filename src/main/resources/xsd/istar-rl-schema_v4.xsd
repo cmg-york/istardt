@@ -98,11 +98,11 @@
     <xsd:simpleType name="IdentifierType">
         <xsd:annotation>
             <xsd:documentation>
-                Must start with a lowercase letter, then letters or digits.
+                Must start with a lowercase letter, then letters, digits, or underscores.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:restriction base="xsd:string">
-            <xsd:pattern value="[a-z][a-zA-Z0-9]*"/>
+            <xsd:pattern value="[a-z][a-zA-Z0-9_]*"/>
         </xsd:restriction>
     </xsd:simpleType>
 
@@ -157,7 +157,7 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[Complex type defining an cross-run.]]></xsd:documentation>
         </xsd:annotation>
-        <xsd:choice maxOccurs="1" minOccurs="1">
+        <xsd:choice>
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="variableID" type="IdentifierType"/>
             <xsd:element name="qualID" type="IdentifierType"/>
@@ -349,7 +349,6 @@
 
     <xsd:group name="NumAtomElements">
         <xsd:choice>
-            <xsd:element name="numConst" type="xsd:float"/>
             <xsd:element name="variableID" type="IdentifierType"/>
             <xsd:element name="qualID" type="IdentifierType"/>
 
