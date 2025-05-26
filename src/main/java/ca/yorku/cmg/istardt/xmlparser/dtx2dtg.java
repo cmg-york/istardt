@@ -109,25 +109,25 @@ public class dtx2dtg {
             }
 
 
-//            // Validate XML against XSD schema
-//            System.out.println("Validating XML against XSD schema...");
-//            try {
-//                XmlValidation.validate("xsd", xsdFile.getAbsolutePath(), xmlFile.getAbsolutePath());
-//            } catch (Exception e) {
-//                System.err.println("XSD validation failed:");
-//                System.err.println(e.getMessage());
-//                System.exit(1);
-//            }
-//
-//            // Validate XML against Schematron schema
-//            System.out.println("Validating XML against Schematron schema...");
-//            try {
-//                XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
-//            } catch (Exception e) {
-//                System.err.println("Schematron validation failed:");
-//                System.err.println(e.getMessage());
-//                System.exit(1);
-//            }
+            // Validate XML against XSD schema
+            System.out.println("Validating XML against XSD schema...");
+            try {
+                XmlValidation.validate("xsd", xsdFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+            } catch (Exception e) {
+                System.err.println("XSD validation failed:");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+
+            // Validate XML against Schematron schema
+            System.out.println("Validating XML against Schematron schema...");
+            try {
+                XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+            } catch (Exception e) {
+                System.err.println("Schematron validation failed:");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
 
 
             // Create unmarshaller

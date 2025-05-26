@@ -11,7 +11,7 @@
 <header title = ""
     author = ""
     source = ""
-    lastUpdated = "2025-05-26 13:52:35">
+    lastUpdated = "2025-05-26 16:15:56">
 </header>
 
 
@@ -93,7 +93,7 @@
  <numConst>-0.1</numConst>
 </multiply>
    </quality>
-   <quality name = "overallQuality" description = "Overall Quality" root = "false">
+   <quality name = "overallQuality" description = "Overall Quality" root = "true">
       <add>
          <multiply><numConst>0.3</numConst><qualID>cost</qualID></multiply>
          <multiply><numConst>0.7</numConst><qualID>comfort</qualID></multiply>
@@ -122,7 +122,7 @@
  </multiply>
 </add>
    </quality>
-   <quality name = "runningTime" description = "Running Time" root = "true">
+   <quality name = "runningTime" description = "Running Time" root = "false">
 <multiply>
  <numConst>10</numConst>
  <predicateID>hvacOn</predicateID>
