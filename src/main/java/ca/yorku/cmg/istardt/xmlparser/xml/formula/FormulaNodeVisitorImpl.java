@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
@@ -250,9 +247,19 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     private List<Formula> collectOperands(JsonNode node, String[] operandTypes) throws IOException {
         List<Formula> operands = new ArrayList<>();
-        for (String type : operandTypes) {
-            if (node.has(type)) {
-                addNodeToOperands(node.get(type), operands,
+
+        // Create a set of valid types for quick lookup
+        Set<String> validTypes = new HashSet<>(Arrays.asList(operandTypes));
+
+        // Iterate through the child nodes in the order they appear in the XML
+        Iterator<Map.Entry<String, JsonNode>> fields = node.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> field = fields.next();
+            String type = field.getKey();
+            JsonNode childNode = field.getValue();
+
+            if (validTypes.contains(type)) {
+                addNodeToOperands(childNode, operands,
                         n -> {
                             try {
                                 return visitOperandByType(type, n);

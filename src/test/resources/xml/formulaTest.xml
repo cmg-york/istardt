@@ -149,6 +149,17 @@
             *** CO N D I T I O N   B O X E S ***
             -->
             <condBoxes>
+                <condBox name = "deliveredLateB"><or>
+                    <and>
+                        <previous>
+                            <predicateID>neverDeliveredB</predicateID>
+                        </previous>
+                        <not>
+                            <predicateID>deliveredInTimeB</predicateID>
+                        </not>
+                    </and>
+                    <predicateID>deliveredLateB</predicateID>
+                </or></condBox>
             </condBoxes>
 
             <!--
