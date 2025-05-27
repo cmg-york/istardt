@@ -11,7 +11,6 @@ import java.io.IOException;
 public interface FormulaNodeVisitor {
     Formula visitNumConst(JsonNode node);
     Formula visitBoolConst(JsonNode node);
-
     Formula visitPredicateID(JsonNode node);
     Formula visitGoalID(JsonNode node);
     Formula visitTaskID(JsonNode node);

@@ -3,6 +3,7 @@ package ca.yorku.cmg.istardt.xmlparser;
 import ca.yorku.cmg.istardt.translators.dttranslator.DTTranslator;
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +18,10 @@ public class dtx2dtg {
     private static final String XML_FILE_PATH = "src/main/resources/xml/Order.istardt";
     private static final String OUTPUT_FILE_PATH = "F:/Dropbox/Private/Others/Software/gReason-2025/Nina/dtg2sim-new/src";
 
-	static String inputFile = "";
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
+    static boolean debugMode = false;
+
+    static String inputFile = "";
 	static String outputFile ="";
 	static boolean printUsage = false;
     
@@ -90,8 +94,9 @@ public class dtx2dtg {
     
     
     public static void main(String[] args) {
-    	
-    	
+
+        LOGGER.setDebugEnabled(debugMode);
+
         try {
         	processArgs(args);
         	File xmlFile = new File(inputFile);

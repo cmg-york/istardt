@@ -3,6 +3,7 @@ package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
 import ca.yorku.cmg.istardt.xmlparser.objects.Element;
 import ca.yorku.cmg.istardt.xmlparser.xml.ReferenceResolver;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Enhanced base deserializer with expanded common functionality for all iStar-DT-X elements.
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @param <T> The type of element being deserialized, must extend Element
  */
 public abstract class BaseDeserializer<T extends Element> extends StdDeserializer<T> {
-    private static final Logger LOGGER = Logger.getLogger(BaseDeserializer.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
 
     protected BaseDeserializer(Class<T> vc) {
         super(vc);
@@ -45,18 +45,17 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
         // Handle specific attributes based on element type
         handleSpecificAttributes(element, node, p, ctxt);
 
+        LOGGER.info(getClass(), "Deserialized " + handledType().getSimpleName() + " with name: " + element.getName());
         return element;
     }
 
     /**
      * Create a new instance of the element being deserialized.
-     * Subclasses must implement this to provide their specific element type.
      */
     protected abstract T createNewElement();
 
     /**
      * Handle specific attributes for each element type.
-     * Subclasses should override this to add element-specific logic.
      */
     protected abstract void handleSpecificAttributes(T element, JsonNode node, JsonParser p, DeserializationContext ctxt) throws IOException;
 
@@ -117,26 +116,6 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
         if (element != null && element.getId() != null) {
             ReferenceResolver.getInstance().registerElement(element.getId(), element);
         }
-    }
-
-    /**
-     * Gets all child nodes with a specific field name.
-     *
-     * @param node The parent JSON node
-     * @param fieldName The field name to look for
-     * @return A list of matching child nodes
-     */
-    protected List<JsonNode> getChildNodes(JsonNode node, String fieldName) {
-        List<JsonNode> result = new ArrayList<>();
-        if (node.has(fieldName)) {
-            JsonNode fieldNode = node.get(fieldName);
-            if (fieldNode.isArray()) {
-                fieldNode.forEach(result::add);
-            } else {
-                result.add(fieldNode);
-            }
-        }
-        return result;
     }
 
     /**

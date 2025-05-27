@@ -1,5 +1,6 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -13,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TaskDeserializer extends BaseDeserializer<Task> {
-    private static final Logger LOGGER = Logger.getLogger(TaskDeserializer.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
 
     public TaskDeserializer() {
         super(Task.class);
@@ -38,13 +39,13 @@ public class TaskDeserializer extends BaseDeserializer<Task> {
             if (node.has("effectGroup") && node.get("effectGroup").has("effect")) {
                 JsonNode effectGroupNode = node.get("effectGroup");
                 JsonNode effectNodes = effectGroupNode.get("effect");
-                LOGGER.info("Processing effect group for task " + task.getName());
+                LOGGER.info(getClass(),"Processing effect group for task " + task.getName());
                 List<Effect> effects = DeserializerUtils.deserializeList(effectNodes, p, ctxt, Effect.class);
                 task.setEffects(effects); // bidirectional relationship
-                LOGGER.info("Successfully processed " + effects.size() + " effects for task " + task.getName());
+                LOGGER.info(getClass(), "Successfully processed " + effects.size() + " effects for task " + task.getName());
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error processing effects for task " + task.getName() + ": " + e.getMessage(), e);
+            LOGGER.error(getClass(), "Error processing effects for task " + task.getName() + ": " + e.getMessage(), e);
         }
     }
 }

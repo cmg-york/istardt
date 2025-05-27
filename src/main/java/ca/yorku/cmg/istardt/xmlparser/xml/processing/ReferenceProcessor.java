@@ -2,12 +2,12 @@ package ca.yorku.cmg.istardt.xmlparser.xml.processing;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.ReferenceResolver;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Post-processor for resolving references after deserialization.
@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * that were unmarshalled from XML.
  */
 public class ReferenceProcessor {
-    private static final Logger LOGGER = Logger.getLogger(ReferenceProcessor.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
     private final XmlMapper xmlMapper;
 
     public ReferenceProcessor(XmlMapper xmlMapper) {
@@ -31,7 +31,7 @@ public class ReferenceProcessor {
      */
     public void processReferences(Model model) {
         if (model == null) {
-            LOGGER.warning("Cannot process references for null model");
+            LOGGER.warning(getClass(),"Cannot process references for null model");
             return;
         }
         // Process each actor and its elements
@@ -56,7 +56,7 @@ public class ReferenceProcessor {
             processInitializationSet(actor);
         }
         processAllFormulas(model);
-        LOGGER.info("Reference processing completed successfully");
+        LOGGER.info(getClass(),"Reference processing completed successfully");
     }
 
     /**
@@ -67,14 +67,14 @@ public class ReferenceProcessor {
         if (crossRunSet == null || crossRunSet.getRefs().isEmpty()) {
             return;
         }
-        LOGGER.info("Processing CrossRunSet references");
+        LOGGER.info(getClass(),"Processing CrossRunSet references");
         for (String ref : crossRunSet.getRefs()) {
             Element element = ReferenceResolver.getInstance().getElementByName(ref);
             if (element != null) {
                 crossRunSet.addElement(element);
-                LOGGER.info("Resolved CrossRunSet reference: " + ref + " to element: " + element.getClass().getSimpleName());
+                LOGGER.info(getClass(), "Resolved CrossRunSet reference: " + ref + " to element: " + element.getClass().getSimpleName());
             } else {
-                LOGGER.warning("Failed to resolve CrossRunSet reference: " + ref);
+                LOGGER.warning(getClass(), "Failed to resolve CrossRunSet reference: " + ref);
             }
         }
     }
@@ -88,15 +88,15 @@ public class ReferenceProcessor {
         if (exportedSet == null || exportedSet.getExports().isEmpty()) {
             return;
         }
-        LOGGER.info("Processing ExportedSet references for actor: " + actor.getId());
+        LOGGER.info(getClass(), "Processing ExportedSet references for actor: " + actor.getId());
         for (Export export : exportedSet.getExports()) {
             String ref = export.getRef();
             Element element = ReferenceResolver.getInstance().getElementByName(ref);
             if (element != null) {
                 export.setElement(element);
-                LOGGER.info("Resolved export reference: " + ref + " to element: " + element.getId());
+                LOGGER.info(getClass(),"Resolved export reference: " + ref + " to element: " + element.getId());
             } else {
-                LOGGER.warning("Failed to resolve export reference: " + ref);
+                LOGGER.warning(getClass(),"Failed to resolve export reference: " + ref);
             }
         }
     }
@@ -109,17 +109,17 @@ public class ReferenceProcessor {
         if (initializationSet == null || initializationSet.getInitializations().isEmpty()) {
             return;
         }
-        LOGGER.info("Processing InitializationSet references for actor: " + actor.getId());
+        LOGGER.info(getClass(),"Processing InitializationSet references for actor: " + actor.getId());
         for (Initialization init : initializationSet.getInitializations()) {
             String ref = init.getRef();
             Element element = ReferenceResolver.getInstance().getElementByName(ref);
             if (element != null) {
                 init.setElement(element);
-                LOGGER.info("Resolved initialization reference: " + ref +
+                LOGGER.info(getClass(),"Resolved initialization reference: " + ref +
                         " to element: " + element.getName() +
                         " with value: " + init.getValue());
             } else {
-                LOGGER.warning("Failed to resolve initialization reference: " + ref);
+                LOGGER.warning(getClass(),"Failed to resolve initialization reference: " + ref);
             }
         }
     }
@@ -188,7 +188,7 @@ public class ReferenceProcessor {
     }
 
     private void processAllFormulas(Model model) {
-        LOGGER.info("Processing formulas...");
+        LOGGER.info(getClass(),"Processing formulas...");
         for (Actor actor : model.getActors()) {
             // Process goal formulas
             for (Goal goal : actor.getGoals()) {
@@ -211,7 +211,7 @@ public class ReferenceProcessor {
                     Formula formula = deserializeFormula(quality.getRawFormulaNode());
                     if (formula != null) {
                         quality.setFormula(formula);
-                        LOGGER.info("Set formula for quality: " + quality.getId());
+                        LOGGER.info(getClass(),"Set formula for quality: " + quality.getId());
                     }
                 }
             }
@@ -222,12 +222,12 @@ public class ReferenceProcessor {
                     Formula formula = deserializeFormula(condition.getRawFormulaNode());
                     if (formula != null) {
                         condition.setFormula(formula);
-                        LOGGER.info("Set formula for condition: " + condition.getName());
+                        LOGGER.info(getClass(),"Set formula for condition: " + condition.getName());
                     }
                 }
             }
         }
-        LOGGER.info("Formula processing completed");
+        LOGGER.info(getClass(),"Formula processing completed");
     }
 
     /**
@@ -250,7 +250,7 @@ public class ReferenceProcessor {
             if (preFormula != null) {
                 if (element instanceof DecompositionElement) {
                     ((DecompositionElement) element).setPreFormula(preFormula);
-                    LOGGER.info("Set pre formula for element: " + ((DecompositionElement) element).getId());
+                    LOGGER.info(getClass(),"Set pre formula for element: " + ((DecompositionElement) element).getId());
                 }
             }
         }
@@ -261,7 +261,7 @@ public class ReferenceProcessor {
             if (nprFormula != null) {
                 if (element instanceof DecompositionElement) {
                     ((DecompositionElement) element).setNprFormula(nprFormula);
-                    LOGGER.info("Set npr formula for element: " + ((DecompositionElement) element).getId());
+                    LOGGER.info(getClass(),"Set npr formula for element: " + ((DecompositionElement) element).getId());
                 }
             }
         }
@@ -274,7 +274,7 @@ public class ReferenceProcessor {
         try {
             return xmlMapper.convertValue(node, Formula.class);
         } catch (Exception e) {
-            LOGGER.warning("Error deserializing formula: " + e.getMessage());
+            LOGGER.error(getClass(),"Error deserializing formula: " + e.getMessage(), e);
             return null;
         }
     }

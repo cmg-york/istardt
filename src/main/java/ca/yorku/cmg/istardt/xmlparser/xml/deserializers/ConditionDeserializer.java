@@ -2,7 +2,7 @@ package ca.yorku.cmg.istardt.xmlparser.xml.deserializers;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
 import ca.yorku.cmg.istardt.xmlparser.objects.Condition;
-import ca.yorku.cmg.istardt.xmlparser.objects.Variable;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.DeserializerUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -10,11 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public class ConditionDeserializer extends BaseDeserializer<Condition> {
-    private static final Logger LOGGER = Logger.getLogger(ConditionDeserializer.class.getName());
-
     public ConditionDeserializer() {
         super(Condition.class);
     }
@@ -38,7 +35,6 @@ public class ConditionDeserializer extends BaseDeserializer<Condition> {
         atom.setElement(element);
 
         // Do not add condition to elementsByName map
-
         return element;
     }
 

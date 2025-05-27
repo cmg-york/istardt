@@ -9,11 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public class VariableDeserializer extends BaseDeserializer<Variable> {
-    private static final Logger LOGGER = Logger.getLogger(VariableDeserializer.class.getName());
-
     public VariableDeserializer() {
         super(Variable.class);
     }
