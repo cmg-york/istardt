@@ -84,7 +84,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             LOGGER.info(getClass(), "Found predicate with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning(getClass(), "Predicate with name not found: " + name);
+            LOGGER.error(getClass(), "Predicate with name not found: " + name);
             return Formula.createConstantFormula("Unknown PredicateID");
         }
     }
@@ -97,7 +97,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             LOGGER.info(getClass(), "Found goal with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning(getClass(), "Goal with name not found: " + name);
+            LOGGER.error(getClass(), "Goal with name not found: " + name);
             return Formula.createConstantFormula("Unknown GoalID");
         }
     }
@@ -110,7 +110,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             LOGGER.info(getClass(), "Found task with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning(getClass(), "Task with name not found: " + name);
+            LOGGER.error(getClass(), "Task with name not found: " + name);
             return Formula.createConstantFormula("Unknown TaskID");
         }
     }
@@ -123,7 +123,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             LOGGER.info(getClass(), "Found variable with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning(getClass(), "Variable with name not found: " + name);
+            LOGGER.error(getClass(), "Variable with name not found: " + name);
             return Formula.createConstantFormula("Unknown VariableID");
         }
     }
@@ -136,7 +136,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
             LOGGER.info(getClass(), "Found quality with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning(getClass(), "Quality with name not found: " + name);
+            LOGGER.error(getClass(), "Quality with name not found: " + name);
             return Formula.createConstantFormula("Unknown QualityID");
         }
     }
@@ -199,7 +199,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                 return new NegateOperator(formula);
             }
         }
-        LOGGER.warning(getClass(), "No valid operand found in negate operation");
+        LOGGER.error(getClass(), "No valid operand found in negate operation");
         return Formula.createConstantFormula("0");
     }
 

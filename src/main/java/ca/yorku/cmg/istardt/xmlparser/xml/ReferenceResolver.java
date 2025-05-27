@@ -1,17 +1,17 @@
 package ca.yorku.cmg.istardt.xmlparser.xml;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.Element;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Reference resolver for managing object references during deserialization.
  */
 public class ReferenceResolver {
-    private static final Logger LOGGER = Logger.getLogger(ReferenceResolver.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
     private static final ReferenceResolver INSTANCE = new ReferenceResolver();
 
     // Map of elements by ID for quick lookup
@@ -62,7 +62,7 @@ public class ReferenceResolver {
     public Element getElementById(String id) {
         Element element = elementsById.get(id);
         if (element == null) {
-            LOGGER.warning("Element with ID or name '" + id + "' not found in reference resolver");
+            LOGGER.warning(getClass(), "Element with ID '" + id + "' not found in reference resolver");
         }
         return element;
     }
@@ -77,7 +77,7 @@ public class ReferenceResolver {
     public Element getElementByName(String name) {
         Element element = elementsByName.get(name);
         if (element == null) {
-            LOGGER.warning("Element with name '" + name + "' not found in reference resolver");
+            LOGGER.warning(getClass(),"Element with name '" + name + "' not found in reference resolver");
         }
         return element;
     }
