@@ -1,6 +1,5 @@
 package ca.yorku.cmg.istardt.xmlparser.xml.utils;
 
-import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +14,7 @@ import java.util.logging.Logger;
  * Enhanced utility class providing common methods for deserializers.
  */
 public class DeserializerUtils {
-    private static final Logger LOGGER = Logger.getLogger(DeserializerUtils.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
 
     /**
      * Deserializes a node or array of nodes into a list of objects.
@@ -45,7 +43,7 @@ public class DeserializerUtils {
                 }
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error deserializing list of " + type.getSimpleName(), e);
+            LOGGER.error("Error deserializing list of " + type.getSimpleName(), e);
             throw e;
         }
 

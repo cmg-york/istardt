@@ -7,11 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
-import java.util.logging.Logger;
-
 public class QualityDeserializer extends BaseDeserializer<Quality> {
-    private static final Logger LOGGER = Logger.getLogger(QualityDeserializer.class.getName());
-
     public QualityDeserializer() {
         super(Quality.class);
     }

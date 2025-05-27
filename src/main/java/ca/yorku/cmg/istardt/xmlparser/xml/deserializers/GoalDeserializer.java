@@ -8,10 +8,8 @@ import ca.yorku.cmg.istardt.xmlparser.objects.DecompType;
 import ca.yorku.cmg.istardt.xmlparser.objects.Goal;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class GoalDeserializer extends BaseDeserializer<Goal> {
-    private static final Logger LOGGER = Logger.getLogger(GoalDeserializer.class.getName());
 
     public GoalDeserializer() {
         super(Goal.class);

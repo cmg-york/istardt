@@ -2,6 +2,7 @@ package ca.yorku.cmg.istardt.xmlparser.xml.formula;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.ReferenceResolver;
+import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,10 +10,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.logging.Logger;
 
 public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
-    private static final Logger LOGGER = Logger.getLogger(FormulaNodeVisitorImpl.class.getName());
+    private static final CustomLogger LOGGER = CustomLogger.getInstance();
 
     private static final String[] NUMERIC_OPERAND_TYPES = {
             "numConst", "variableID", "qualID", "predicateID", "goalID", "taskID",
@@ -81,10 +81,10 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         String name = node.asText();
         Element element = referenceResolver.getElementByName(name);
         if (element != null && element instanceof Predicate) {
-            LOGGER.info("Found predicate with ID: " + name);
+            LOGGER.info(getClass(), "Found predicate with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning("Predicate with ID not found: " + name);
+            LOGGER.error(getClass(), "Predicate with name not found: " + name);
             return Formula.createConstantFormula("Unknown PredicateID");
         }
     }
@@ -94,10 +94,10 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         String name = node.asText();
         Element element = referenceResolver.getElementByName(name);
         if (element != null && element instanceof Goal) {
-            LOGGER.info("Found goal with ID: " + name);
+            LOGGER.info(getClass(), "Found goal with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning("Goal with ID not found: " + name);
+            LOGGER.error(getClass(), "Goal with name not found: " + name);
             return Formula.createConstantFormula("Unknown GoalID");
         }
     }
@@ -107,10 +107,10 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         String name = node.asText();
         Element element = referenceResolver.getElementByName(name);
         if (element != null && element instanceof Task) {
-            LOGGER.info("Found task with ID: " + name);
+            LOGGER.info(getClass(), "Found task with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning("Task with ID not found: " + name);
+            LOGGER.error(getClass(), "Task with name not found: " + name);
             return Formula.createConstantFormula("Unknown TaskID");
         }
     }
@@ -120,10 +120,10 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         String name = node.asText();
         Element element = referenceResolver.getElementByName(name);
         if (element != null && element instanceof Variable) {
-            LOGGER.info("Found variable with ID: " + name);
+            LOGGER.info(getClass(), "Found variable with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning("Variable with ID not found: " + name);
+            LOGGER.error(getClass(), "Variable with name not found: " + name);
             return Formula.createConstantFormula("Unknown VariableID");
         }
     }
@@ -133,10 +133,10 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         String name = node.asText();
         Element element = referenceResolver.getElementByName(name);
         if (element != null && element instanceof Quality) {
-            LOGGER.info("Found quality with ID: " + name);
+            LOGGER.info(getClass(), "Found quality with name: " + name);
             return element.getAtom();
         } else {
-            LOGGER.warning("Quality with ID not found: " + name);
+            LOGGER.error(getClass(), "Quality with name not found: " + name);
             return Formula.createConstantFormula("Unknown QualityID");
         }
     }
@@ -172,19 +172,19 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         // Check if any ID fields exist in the node
         for (String type : ids) {
             if (node.has(type)) {
-                LOGGER.info("Found " + type + " in Previous node");
+                LOGGER.info(getClass(), "Found " + type + " in Previous node");
                 String name = node.get(type).asText();
                 Element element = referenceResolver.getElementByName(name);
                 if (element != null) {
-                    LOGGER.info("Creating PreviousOperator with Atom for: " + name);
+                    LOGGER.info(getClass(), "Creating PreviousOperator with Atom for: " + name);
                     return new PreviousOperator(element.getAtom());
                 } else {
-                    LOGGER.warning("Element not found for " + type + ": " + name);
+                    LOGGER.warning(getClass(), "Element not found for " + type + ": " + name);
                     return new PreviousOperator(Formula.createConstantFormula(name));
                 }
             }
         }
-        LOGGER.warning("Previous node has no valid ID fields: " + node);
+        LOGGER.warning(getClass(), "Previous node has no valid name fields: " + node);
         return Formula.createConstantFormula("Unknown Previous");
     }
 
@@ -199,7 +199,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                 return new NegateOperator(formula);
             }
         }
-        LOGGER.warning("No valid operand found in negate operation");
+        LOGGER.error(getClass(), "No valid operand found in negate operation");
         return Formula.createConstantFormula("0");
     }
 
@@ -264,7 +264,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
                             try {
                                 return visitOperandByType(type, n);
                             } catch (IOException e) {
-                                LOGGER.severe("Error processing operand: " + e.getMessage());
+                                LOGGER.error(getClass(), "Error processing operand: " + e.getMessage(), e);
                                 return null;
                             }
                         });
