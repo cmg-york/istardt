@@ -135,12 +135,12 @@ public class OrganizeTravelNewUnmarshallerTest {
         assertEquals("privacy", crossRunAtom2.getTitleText(), "crossRun element Name");
         assertEquals("Privacy", crossRunAtom2.getDescription(), "crossRun element Description");
 
-//        // ========= CROSSRUN 3 =========
-//        Atom crossRunAtom3 = crossRuns.get(2).getAtom();
-//        assertTrue(crossRuns.get(2) instanceof Predicate,
-//                "Expected the element to be a Predicate but was " + crossRuns.get(2).getClass().getName());
-//        assertEquals("headGranted", crossRunAtom3.getTitleText(), "crossRun element Name");
-//        assertEquals("", crossRunAtom3.getDescription(), "crossRun element Description");
+        // ========= CROSSRUN 3 =========
+        Atom crossRunAtom3 = crossRuns.get(2).getAtom();
+        assertTrue(crossRuns.get(2) instanceof Predicate,
+                "Expected the element to be a Predicate but was " + crossRuns.get(2).getClass().getName());
+        assertEquals("headGranted", crossRunAtom3.getTitleText(), "crossRun element Name");
+        assertEquals("", crossRunAtom3.getDescription(), "crossRun element Description");
 
         // ========= CROSSRUN 4 =========
         Atom crossRunAtom4 = crossRuns.get(3).getAtom();

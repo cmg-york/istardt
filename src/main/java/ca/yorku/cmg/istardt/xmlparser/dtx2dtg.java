@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class dtx2dtg {
 
-    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v4.xsd";
-    private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron4.sch";
+    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar_dt_x_schema.xsd";
+    private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar_dt_x_schematron.sch";
     private static final String XML_FILE_PATH = "src/main/resources/xml/Order.istardt";
     private static final String OUTPUT_FILE_PATH = "F:/Dropbox/Private/Others/Software/gReason-2025/Nina/dtg2sim-new/src";
 
