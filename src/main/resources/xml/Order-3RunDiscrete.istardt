@@ -11,7 +11,7 @@
 <header title = ""
     author = ""
     source = ""
-    lastUpdated = "2025-05-27 19:14:22">
+    lastUpdated = "2025-05-27 19:34:23">
 </header>
 
 
@@ -34,7 +34,7 @@
 *** G O A L S ***
 -->
 <goals>
-   <goal name = "orderMaterial" description = "Order Material" root = "true" terminal = "false" episodeLength = "5">
+   <goal name = "orderMaterial" description = "Order Material" root = "true" terminal = "false" episodeLength = "3">
       <refinement type = "OR">
          <childTask ref = "orderFromSupplierA"/>
          <childTask ref = "orderFromSupplierB"/>

@@ -11,7 +11,7 @@
 <header title = ""
     author = ""
     source = ""
-    lastUpdated = "2025-05-23 12:11:16">
+    lastUpdated = "2025-05-27 20:19:45">
 </header>
 
 
@@ -127,12 +127,6 @@
          <multiply><numConst>0.5</numConst><predicateID>badQualityB</predicateID></multiply>
       </add>
    </quality>
-   <quality name = "overallQuality" description = "Overall Quality" root = "true">
-      <add>
-         <multiply><numConst>0.7</numConst><qualID>cost</qualID></multiply>
-         <multiply><numConst>0.3</numConst><qualID>reputation</qualID></multiply>
-      </add>
-   </quality>
    <quality name = "reputation" description = "Reputation" root = "false">
       <add>
          <multiply><numConst>1.0</numConst><predicateID>deliveredInTimeA</predicateID></multiply>
@@ -141,6 +135,12 @@
          <multiply><numConst>0.7</numConst><predicateID>deliveredLateB</predicateID></multiply>
          <multiply><numConst>1.0</numConst><predicateID>goodQualityA</predicateID></multiply>
          <multiply><numConst>1.0</numConst><predicateID>goodQualityB</predicateID></multiply>
+      </add>
+   </quality>
+   <quality name = "overallQuality" description = "Overall Quality" root = "true">
+      <add>
+         <multiply><numConst>0.7</numConst><qualID>cost</qualID></multiply>
+         <multiply><numConst>0.3</numConst><qualID>reputation</qualID></multiply>
       </add>
    </quality>
 </qualities>
@@ -158,8 +158,8 @@
 -->
 <initializations>
       <initialization element = "cost">0</initialization>
-      <initialization element = "overalQuality">0</initialization>
       <initialization element = "reputation">0</initialization>
+      <initialization element = "overallQuality">0</initialization>
 </initializations>
 
 
@@ -168,7 +168,6 @@
 -->
 <crossRuns>
       <crossRun><qualID>cost</qualID></crossRun>
-      <crossRun><qualID>overallQuality</qualID></crossRun>
       <crossRun><qualID>reputation</qualID></crossRun>
 </crossRuns>
 
@@ -183,6 +182,10 @@
       <export continuous = "false"><predicateID>deliveredLateB</predicateID></export>
       <export continuous = "false"><predicateID>neverDeliveredA</predicateID></export>
       <export continuous = "false"><predicateID>neverDeliveredB</predicateID></export>
+      <export continuous = "false"><predicateID>goodQualityA</predicateID></export>
+      <export continuous = "false"><predicateID>goodQualityB</predicateID></export>
+      <export continuous = "false"><predicateID>badQualityA</predicateID></export>
+      <export continuous = "false"><predicateID>badQualityB</predicateID></export>
 </exportedSet>
 
 

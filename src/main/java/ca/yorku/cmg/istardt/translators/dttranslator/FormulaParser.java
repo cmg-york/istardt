@@ -6,12 +6,14 @@ import java.util.Map;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.ANDOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
+import ca.yorku.cmg.istardt.xmlparser.objects.Element;
 import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import ca.yorku.cmg.istardt.xmlparser.objects.GTOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.Goal;
 import ca.yorku.cmg.istardt.xmlparser.objects.LTOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.MinusOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.MultiplyOperator;
+import ca.yorku.cmg.istardt.xmlparser.objects.NOTOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.NumericConstant;
 import ca.yorku.cmg.istardt.xmlparser.objects.OROperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.PlusOperator;
@@ -43,12 +45,21 @@ public class FormulaParser {
 			return  generateComparisonExpression(f,GTOperator.class,"<");
 		} else if (f instanceof LTOperator) {
 			return  generateComparisonExpression(f,LTOperator.class,"<");
-			} else if (f instanceof PreviousOperator) {
+		} else if (f instanceof PreviousOperator) {
 			Atom a = (Atom) ((PreviousOperator) f).getLeft();
 			return a.getTitleText() + "_fl(s0)";
+		} else if (f instanceof NOTOperator) {
+			return ("\\+ (" + parseConditionExpression(((NOTOperator) f).getLeft()) + ")");
 		} else if (f instanceof Atom) {
-			//TODO: Check its type and add Sat() or fl() 
-			return ((Atom) f).getTitleText() + "_fl(S)";
+			if ((((Atom) f).getElement() instanceof Goal) || (((Atom) f).getElement() instanceof Task)) {
+				return ((Atom) f).getTitleText() + "_Sat(S)";
+			} else if (((Atom) f).getElement() instanceof Predicate) {
+				return ((Atom) f).getTitleText() + "_fl(S)";
+			} else {//quality or variable
+				return ((Atom) f).getTitleText() + "(S)";
+			}
+		} else {
+			System.err.println("parseConditionExpression: unimplemented operator [" + f.getClass().toGenericString() + "].");
 		}
 		return "";
 	}
@@ -158,7 +169,7 @@ public class FormulaParser {
 		} else {
 			m = (Atom) f;
 		}
-		if ((m.getElement() instanceof Predicate) || (m.getElement() instanceof Goal) || (m.getElement() instanceof Task)) {
+		if ((m.getElement() instanceof Predicate)) {
 			return(
 					"val(R_" + m.getTitleText() + "_fl," +  m.getTitleText() + "_fl(" + (hasPrev ? "s0" : "S") + ")),\n"  
 				);
@@ -188,26 +199,39 @@ public class FormulaParser {
 			return parseSimpleQualityExpressionPart1(((MinusOperator) f).getLeft(),indent) +  
 					parseSimpleQualityExpressionPart1(((MinusOperator) f).getRight(),indent);
 		} else if (f instanceof PreviousOperator) {
-			return parseSimpleQualityExpressionPart1(((PreviousOperator) f).getLeft(),indent);
+			return indent + getAtomExpressionForRewardFormulaPart1(((PreviousOperator) f));
 		} else if (f instanceof NumericConstant) {
 			return("");
 		} else if (f instanceof Atom) {
 			return( indent + getAtomExpressionForRewardFormulaPart1((Atom) f));		
 		} else {
-			//Bakaliki
-			System.err.println("parseSimpleQualityExpressionPart1 warning: type of |" + f.getFormula() +  "| is: " + f.getClass().toGenericString());
-			if (f.getFormula().equals("0")) {
-				return("0");	
-			} else if (f.getFormula().equals("Unknown PredicateID")) {
-				Atom a = new Atom();
-				Predicate p = new Predicate();
-				a.setElement(p);
-				a.setTitleText("hvacOn");
-				return( getAtomExpressionForRewardFormulaPart1((Atom) a));	
-			} else {
-				return "\n ** Unexpected type " + f.getClass().toGenericString() + " for " + f.getFormula() + " ** \n" ;
-			}
-			
+			String issue = "parseSimpleQualityExpressionPart1 warning: type of |" + f.getFormula() +  "| is: " + f.getClass().toGenericString();
+			System.err.println(issue);
+			return (issue);
+		}
+	}
+	
+	
+	public boolean isOperantOfPrevious(Element e, Formula f){
+		if (f instanceof MultiplyOperator) {
+			return (isOperantOfPrevious(e, ((MultiplyOperator) f).getRight()) ||  
+					isOperantOfPrevious(e, ((MultiplyOperator) f).getLeft()));
+		} else if (f instanceof PlusOperator) {
+			return (isOperantOfPrevious(e, ((PlusOperator) f).getRight()) ||  
+					isOperantOfPrevious(e, ((PlusOperator) f).getLeft()));
+		} else if (f instanceof MinusOperator) {
+			return (isOperantOfPrevious(e, ((MinusOperator) f).getRight()) ||  
+					isOperantOfPrevious(e, ((MinusOperator) f).getLeft()));
+		} else if (f instanceof PreviousOperator) {
+			Atom a = (Atom) ((PreviousOperator) f).getLeft();
+			Element q = a.getElement();
+			return q.getName().equals(e.getName());
+		} else if ((f instanceof NumericConstant) || (f instanceof Atom)) {
+			return(false);
+		} else {
+			String issue = "isOperantOfPrevious warning: type of |" + f.getFormula() +  "| is: " + f.getClass().toGenericString();
+			System.err.println(issue);
+			return (false);
 		}
 	}
 	
@@ -219,8 +243,10 @@ public class FormulaParser {
 		} else {
 			m = (Atom) f;
 		}
-		if ((m.getElement() instanceof Predicate) || (m.getElement() instanceof Goal) || (m.getElement() instanceof Task)) {
+		if ((m.getElement() instanceof Predicate) ) {
 			return("R_" + m.getTitleText() + "_fl");
+		} else if ((m.getElement() instanceof Goal) || (m.getElement() instanceof Task)) {
+			return("R_" + m.getTitleText() + "_Sat");
 		} else if ((m.getElement() instanceof Quality) || (m.getElement() instanceof Variable)) {
 			return("R_" + m.getTitleText());
 		} else {
@@ -248,8 +274,10 @@ public class FormulaParser {
 			return(String.valueOf(((NumericConstant) f).getContent()));
 		} else {
 			//Bakaliki
-			System.err.println("parseSimpleQualityExpressionPart2 warning: type of |" + f.getFormula() +  "| is: " + f.getClass().toGenericString());
-			if (f.getFormula().equals("0")) {
+			String issue = "parseSimpleQualityExpressionPart2 warning: type of |" + f.getFormula() +  "| is: " + f.getClass().toGenericString();
+			System.err.println(issue);
+			return(issue);
+			/* if (f.getFormula().equals("0")) {
 				Quality qul = new Quality();
 				Atom a = new Atom();
 				NumericConstant x = new NumericConstant(23);
@@ -267,7 +295,7 @@ public class FormulaParser {
 				return( getAtomExpressionForRewardFormulaPart2((Atom) a));	
 			} else {
 			return "ERROR in parseSimpleQUalityExpressionPart2";
-			}
+			} */
 		}
 	}
 	

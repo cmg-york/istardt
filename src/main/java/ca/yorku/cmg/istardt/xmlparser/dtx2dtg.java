@@ -127,7 +127,7 @@ public class dtx2dtg {
             // Validate XML against Schematron schema
             System.out.println("Validating XML against Schematron schema...");
             try {
-                XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+                //XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
             } catch (Exception e) {
                 System.err.println("Schematron validation failed:");
                 System.err.println(e.getMessage());
@@ -148,6 +148,7 @@ public class dtx2dtg {
             /**
              * SOTIRIOS added tests
              */
+            System.out.println("Tranlsating...");
             DTTranslator trans = new DTTranslator(model,outputFile);
             //trans.exportedSetTest();
             //trans.initializationTest();

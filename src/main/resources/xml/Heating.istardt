@@ -11,7 +11,7 @@
 <header title = ""
     author = ""
     source = ""
-    lastUpdated = "2025-05-26 16:15:56">
+    lastUpdated = "2025-05-27 16:00:52">
 </header>
 
 
@@ -34,7 +34,7 @@
 *** G O A L S ***
 -->
 <goals>
-   <goal name = "controlHeater" description = "Control Heater" root = "true" terminal = "false" episodeLength = "1">
+   <goal name = "controlHeater" description = "Control Heater" root = "true" terminal = "false" episodeLength = "10">
       <refinement type = "OR">
          <childTask ref = "sendOnSignal"/>
          <childTask ref = "sendOffSignal"/>
@@ -83,12 +83,16 @@
    <quality name = "comfort" description = "Comfort" root = "false">
 <multiply>
  <subtract>
-  <qualID>roomTemperature</qualID>
-  <numConst>23</numConst>
+  <left><qualID>roomTemperature</qualID></left>
+  <right><numConst>23</numConst></right>
  </subtract>
  <subtract>
+<left>
   <qualID>roomTemperature</qualID>
-  <numConst>23</numConst>
+</left>
+  <right>
+<numConst>23</numConst>
+</right>
  </subtract>
  <numConst>-0.1</numConst>
 </multiply>
@@ -123,10 +127,13 @@
 </add>
    </quality>
    <quality name = "runningTime" description = "Running Time" root = "false">
-<multiply>
- <numConst>10</numConst>
- <predicateID>hvacOn</predicateID>
-</multiply>
+<add>
+ <previous><qualID>runningTime</qualID></previous>
+ <multiply>
+  <numConst>10</numConst>
+  <predicateID>hvacOn</predicateID>
+ </multiply>
+</add>
    </quality>
 </qualities>
 
@@ -163,6 +170,8 @@
 -->
 <crossRuns>
       <crossRun><qualID>roomTemperature</qualID></crossRun>
+      <crossRun><qualID>runningTime</qualID></crossRun>
+      <crossRun><predicateID>hvacOn</predicateID></crossRun>
 </crossRuns>
 
 
@@ -170,7 +179,9 @@
 *** E X P O R T S ***
 -->
 <exportedSet>
-      <export continuous = "false"><qualID>roomTemperature</qualID></export>
+      <export continuous = "false"><predicateID>hvacOn</predicateID></export>
+      <export continuous = "true" minVal = "-10" maxVal = "100"><qualID>roomTemperature</qualID></export>
+      <export continuous = "true" minVal = "0" maxVal = "100"><qualID>runningTime</qualID></export>
 </exportedSet>
 
 

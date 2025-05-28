@@ -65,10 +65,12 @@ public class DTTranslator {
 	
 	public Boolean isContinuous(ExportedSet exp) {
 		Boolean contProblem = false;
-		for (Export rt: exp.getExports()) {
-			String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
-			if ((rt.getElement() instanceof Quality) || (rt.getElement() instanceof Variable))  {
-				contProblem = true;
+		if (exp != null) { //if exp is null default is discrete
+			for (Export rt: exp.getExports()) {
+				String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
+				if ((rt.getElement() instanceof Quality) || (rt.getElement() instanceof Variable))  {
+					contProblem = true;
+				}
 			}
 		}
 		return(contProblem);
@@ -78,24 +80,26 @@ public class DTTranslator {
 		String discreteExport = "%\n% D I S C R E T E   E X P O R T S\n%\n";
 		discreteExport += "discreteExportedSet([";
 		Boolean empty = true;
-
-		for (Export rt: exp.getExports()) {
-			String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
-			if ((rt.getElement() instanceof Goal) || (rt.getElement() instanceof Task))  {
-				descr += "_Sat";
-				discreteExport += descr + ",";
-				empty = false;
-			} else if (rt.getElement() instanceof Predicate) {
-				descr += "_fl";
-				discreteExport += descr + ",";
-				empty = false;
+		if (exp != null) {
+			for (Export rt: exp.getExports()) {
+				String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
+				if ((rt.getElement() instanceof Goal) || (rt.getElement() instanceof Task))  {
+					descr += "_Sat";
+					discreteExport += descr + ",";
+					empty = false;
+				} else if (rt.getElement() instanceof Predicate) {
+					descr += "_fl";
+					discreteExport += descr + ",";
+					empty = false;
+				}
 			}
 		}
 		
 		if (!empty) {
 			discreteExport = discreteExport.substring(0, discreteExport.length() - 1) + "]).\n";
 		} else {
-			discreteExport += "]).\n";
+			//discreteExport += "]).\n";
+			discreteExport = "discreteExportedSet(X) :- fluentList(X),!.\n";
 		}
 		
 		return(discreteExport);
@@ -107,17 +111,19 @@ public class DTTranslator {
 		continuousExport += "continuousExportedSet([";
 		Boolean empty = true;
 		
-		for (Export rt: exp.getExports()) {
-			String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
-			if ((rt.getElement() instanceof Quality) || (rt.getElement() instanceof Variable))  {
-				descr += "_fl()," + rt.getMinVal() + "," + rt.getMaxVal();
-				continuousExport += "[" + descr + "], ";
-				empty = false;
+		if (exp != null) {
+			for (Export rt: exp.getExports()) {
+				String descr = rt.getElement().getName(); //CAUTION: maybe this is getRef
+				if ((rt.getElement() instanceof Quality) || (rt.getElement() instanceof Variable))  {
+					descr += "(_)," + rt.getMinVal() + "," + rt.getMaxVal();
+					continuousExport += "[" + descr + "], ";
+					empty = false;
+				}
 			}
 		}
-
+		
 		if (!empty) {
-			continuousExport = continuousExport.substring(0, continuousExport.length() - 1) + "]).\n";
+			continuousExport = continuousExport.substring(0, continuousExport.length() - 2) + "]).\n";
 		} else {
 			continuousExport += "]).\n";
 		}
@@ -238,7 +244,7 @@ public class DTTranslator {
 			String localSatFormula = "";
 			String localPreFormula = "";
 			String localAttFormula = "";
-
+			
 			for (Effect e: t.getEffects()) {
 				String effectID = e.getName(); //formatter.toCamelCase(e.getName());
 				ArrayList<String> localPreconditions = new ArrayList<String>();
@@ -307,6 +313,7 @@ public class DTTranslator {
 				
 
 			} // Next effect
+
 			localSatFormula = formatter.toSat(taskID) + "(S) :- " +  localSatFormula.substring(0, localSatFormula.length() - 1) + ".\n";
 			localPreFormula = formatter.toPreFluent(taskID) + "(S) :- " +  localPreFormula.substring(0, localPreFormula.length() - 1) + ".\n";
 			localAttFormula = formatter.toAtt(taskID) + "(S) :- " +  localAttFormula.substring(0, localAttFormula.length() - 1) + ".\n";
@@ -338,7 +345,7 @@ public class DTTranslator {
 		// Task post-processing
 		agentActionList = agentActionList.substring(0, agentActionList.length() - 1) + "]).\n";
 		stochasticActionList = stochasticActionList.substring(0, stochasticActionList.length() - 1) + "]).\n";
-		fluentList = fluentList.substring(0, fluentList.length() - 1) + "]).\n";
+		
 		
 		/* 
 		 *  Process Goals
@@ -384,36 +391,64 @@ public class DTTranslator {
 		}
 
 		rootSat = "goalAchieved(S) :- " + a.getGoalRoot().getName() + "_Sat(S).\n";
+		procedures += "dtgRun :- write('Policy: '), bp(" + a.getGoalRoot().getName() + ",10,_,U,P,x),"
+				+ "\n        write('Utility: '),writeln(U), "
+				+ "\n        write('Probability: '),writeln(P).";
 		
-
 		/* 
 		 *  Process Qualities
 		 */
 		String rewardTotal = "";
 		for (Quality o:a.getQualities()) {
+
 			String header =
-					o.getName() + "(V,s0):-current_predicate(init/1),init(L),member(" + o.getName() + "(V), L),!.\n" +
-							o.getName() + "(0,s) :- !.\n";
-			String indent = " ".repeat((o.getName() + "(0,s) :- ").length());
+					o.getName() + "(V_init,s0) :- getInitValue(" + o.getName() + ",V_init),!.\n";
+			String indent = " ".repeat((o.getName() + "(0,s0) :- ").length());
 
-			String part1 = o.getName() + "(V,S) :-" + o.getName() + "(R_" + o.getName() + "_init,s0),\n" +
-					parser.parseSimpleQualityExpressionPart1(o.getFormula(),indent);
-			//System.out.println(part1);
-			String part2 = indent + "V is R_" + o.getName() + "_init +\n" + parser.parseSimpleQualityExpressionPart2(o.getFormula(),indent) + ".\n";
+			
+			//addInit if PREVIOUS (o)
+			//isOperantOfPrevious(Element e, Formula f)
+			//isInCrossRun(Element e)
+			
+			boolean addInit = !parser.isOperantOfPrevious(o, o.getFormula()) && isInCrossRun(o,a.getCrossRunSet());
+
+			if (addInit) {
+				String part1 = o.getName() + "(V,S) :-" + o.getName() + "(R_" + o.getName() + "_init,s0),\n" +
+						parser.parseSimpleQualityExpressionPart1(o.getFormula(),indent);
+				String part2 = indent + "V is R_" + o.getName() + "_init +\n" + parser.parseSimpleQualityExpressionPart2(o.getFormula(),indent) + ".\n";
+				rewardFormulae +=  header + part1 + part2 + "\n\n";
+			} else {
+				String part1 = o.getName() + "(V,S) :- \n" + parser.parseSimpleQualityExpressionPart1(o.getFormula(),indent);
+				String part2 = indent + "V is \n" + parser.parseSimpleQualityExpressionPart2(o.getFormula(),indent) + ".\n";
+				rewardFormulae +=  header + part1 + part2 + "\n\n";				
+			}
 			
 			
-			//System.out.println(header + part1 + part2);
 
-			rewardFormulae +=  header + part1 + part2 + "\n\n";
-					
-			//rewardFormulae += o.getName() + "(V,S) :- " + parser.parseSimpleQualityExpression(o.getFormula()) + "\n";
 			restoreSitArg += "restoreSitArg(" + o.getName() + "(X),S," + o.getName() + "(X,S)).\n";
+			
+			
 			
 			if (o.isRoot()) {
 				rewardTotal = "rewardInst(R,S) :- " + o.getName() + "(R,S).\n";
 			}
 		}
 		rewardFormulae += "\n" + rewardTotal + "\n";
+		
+		
+		
+		satisfactionFormulae += "\n\n % Condition Box Related\n";
+		
+		for (Condition cond:a.getConditions()) {
+			//fluentList += cond.getName() + "_fl,";
+			satisfactionFormulae += cond.getName() + "_fl(s0) :- !,initiallyTrue(" + cond.getName() + "_fl).\n";
+			satisfactionFormulae += cond.getName() + "_fl(S) :- " + parser.parseConditionExpression(cond.getFormula()) + ".\n";
+			restoreSitArg += "restoreSitArg(" + formatter.toFluent(cond.getName()) + ",S," + formatter.toFluent(cond.getName()) + "(S)).\n";
+		}
+		
+		
+		fluentList = fluentList.substring(0, fluentList.length() - 1) + "]).\n";
+		
 		
 		if (outputFile.equals("")) {
 			printToStdOut(getSpecFromVars());
@@ -450,6 +485,15 @@ public class DTTranslator {
 		return "";
 	}
 	
+	
+	
+	private boolean isInCrossRun(Element e,CrossRunSet crs) {
+		boolean found = false;
+		for (Element cr: crs.getElements()) {
+			found = found || cr.getName().equals(e.getName());
+		}
+		return found;
+	}
 	
 	
 	private boolean isExported(Element t) {
