@@ -3,7 +3,7 @@
 ### bnf_grammar.md
 Provides a Backus-Naur Form (BNF) grammar specification for the iStar-DT-X XML format. This formal notation describes the syntax rules of the XML language used in the project, detailing the structure of elements such as actors, goals, tasks, and formulas.
 
-### domain_model_uml (.png, .md, .uml)
+### domain_model_uml (.png, .uml)
 Contains a UML class diagram of the Java domain model implemented in the system.
 
 ### ocl.md (Work in progress)
