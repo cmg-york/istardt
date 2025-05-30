@@ -25,17 +25,105 @@ public class dtx2dtg {
 	static String outputFile ="";
 	static boolean printUsage = false;
     
+	static boolean translate = true;
+	static boolean validate = true;
+	static boolean print = false;
 	
+    
+    
+    public static void main(String[] args) {
+
+        LOGGER.setDebugEnabled(debugMode);
+
+        try {
+        	processArgs(args);
+        	File xmlFile = new File(inputFile);
+
+            if (validate) {
+                File xsdFile = new File(XSD_SCHEMA_PATH);
+                File schematronFile = new File(SCHEMATRON_SCHEMA_PATH);
+                
+                if (!xsdFile.exists()) {
+                    System.err.println("Error: XSD schema file not found: " + XSD_SCHEMA_PATH);
+                    System.exit(1);
+                }
+
+                if (!schematronFile.exists()) {
+                    System.err.println("Error: Schematron schema file not found: " + SCHEMATRON_SCHEMA_PATH);
+                    System.exit(1);
+                }
+
+	            // Validate XML against XSD schema
+	            System.out.println("Validating XML against XSD schema...");
+	            try {
+	                XmlValidation.validate("xsd", xsdFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+	            } catch (Exception e) {
+	                System.err.println("XSD validation failed:");
+	                System.err.println(e.getMessage());
+	                System.exit(1);
+	            }
+	
+	            // Validate XML against Schematron schema
+	            System.out.println("Validating XML against Schematron schema...");
+	            try {
+	                XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+	            } catch (Exception e) {
+	                System.err.println("Schematron validation failed:");
+	                System.err.println(e.getMessage());
+	                System.exit(1);
+	            }
+
+            }
+            
+            
+            if (translate) {
+                // Create unmarshaller
+                System.out.println("Unmarshalling XML...");
+                IStarUnmarshaller unmarshaller = new IStarUnmarshaller();
+
+                // Unmarshal XML to model
+                Model model = unmarshaller.unmarshalToModel(xmlFile);
+
+                System.out.println("Tranlsating...");
+                DTTranslator trans = new DTTranslator(model,outputFile);
+                trans.translate();
+                
+               if (print) {
+                printModelInformation(model);
+               }
+            }
+
+            /**
+             * SOTIRIOS added tests
+             */
+
+        } catch (Exception e) {
+            System.err.println("Unexpected error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    
+    /** 
+     * 
+     * Argument Handling
+     * 
+     */
+    
 	private static String printUsage() {
 		String s = "";
 		s = "Usage: dtx2dtg [-options]\n" + 
-				"where options are:\n" + 
+				"where options are:\n" +
+				"    -t translate only (skip validation) \n" +
+				"    -t validate only (skip tranlsation) \n" +
+				"    -p print model info \n" +
 				"    -f filename \t iStarDT-X XML file \n" + 
 				"    -o filename \t DT-Golog PL file \n" + 
 				"    -h \t\t\t prints this help \n";
 		return(s);
 	}
 	
+
 	private static void processArgs(String[] args) throws Exception {
 	       for (int i = 0; i < args.length; i++) {
 	            String arg = args[i];
@@ -63,6 +151,12 @@ public class dtx2dtg {
 		            	case 'h':
 		                    System.out.println(printUsage());
 		                    System.exit(0);
+		            	case 't':
+		            		validate = false;
+		            	case 'c':
+		            		translate = false;
+		            	case 'p':
+		            		print = true;
 		                default:
 	                    	printUsage = true;
 		                	throw new Exception("Unknown option: " + option);
@@ -88,81 +182,20 @@ public class dtx2dtg {
 	           throw new Exception("Input file does not exist: " + inputFile);
 	       }
 		}
-		
-		
 
+
+	
+	
+	
+    /** 
+     * 
+     * M O D E L   P R I N T I N G
+     * 
+     */
+	
+	
+	
     
-    
-    public static void main(String[] args) {
-
-        LOGGER.setDebugEnabled(debugMode);
-
-        try {
-        	processArgs(args);
-        	File xmlFile = new File(inputFile);
-            File xsdFile = new File(XSD_SCHEMA_PATH);
-            File schematronFile = new File(SCHEMATRON_SCHEMA_PATH);
-            
-            if (!xsdFile.exists()) {
-                System.err.println("Error: XSD schema file not found: " + XSD_SCHEMA_PATH);
-                System.exit(1);
-            }
-
-            if (!schematronFile.exists()) {
-                System.err.println("Error: Schematron schema file not found: " + SCHEMATRON_SCHEMA_PATH);
-                System.exit(1);
-            }
-
-
-            // Validate XML against XSD schema
-            System.out.println("Validating XML against XSD schema...");
-            try {
-                XmlValidation.validate("xsd", xsdFile.getAbsolutePath(), xmlFile.getAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("XSD validation failed:");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
-
-            // Validate XML against Schematron schema
-            System.out.println("Validating XML against Schematron schema...");
-            try {
-                //XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("Schematron validation failed:");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
-
-
-            // Create unmarshaller
-            System.out.println("Unmarshalling XML...");
-            IStarUnmarshaller unmarshaller = new IStarUnmarshaller();
-
-            // Unmarshal XML to model
-            Model model = unmarshaller.unmarshalToModel(xmlFile);
-
-            // Display model information
-            //printModelInformation(model);
-
-            /**
-             * SOTIRIOS added tests
-             */
-            System.out.println("Tranlsating...");
-            DTTranslator trans = new DTTranslator(model,outputFile);
-            //trans.exportedSetTest();
-            //trans.initializationTest();
-            //trans.crossRunTest();
-            //trans.conditionExpressionTest();
-            trans.translate();
-
-
-        } catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Print information about the model structure.
      *
