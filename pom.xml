@@ -78,7 +78,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>ca.yorku.cmg.istardt.xmlparser.dtx2dtg</mainClass>
+                    <mainClass>ca.yorku.cmg.istardt.translators.dtx2dtg.dtx2dtg</mainClass>
                 </configuration>
             </plugin>
 

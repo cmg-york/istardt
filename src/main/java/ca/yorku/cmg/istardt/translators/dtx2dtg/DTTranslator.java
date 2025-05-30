@@ -1,4 +1,4 @@
-package ca.yorku.cmg.istardt.translators.dttranslator;
+package ca.yorku.cmg.istardt.translators.dtx2dtg;
 
 import java.io.BufferedWriter;
 import java.io.File;

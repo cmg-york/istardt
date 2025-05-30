@@ -1,4 +1,4 @@
-package ca.yorku.cmg.istardt.translators.dttranslator;
+package ca.yorku.cmg.istardt.translators.dtx2dtg;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

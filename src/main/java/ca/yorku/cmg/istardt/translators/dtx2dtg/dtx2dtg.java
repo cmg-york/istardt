@@ -1,6 +1,6 @@
-package ca.yorku.cmg.istardt.xmlparser;
+package ca.yorku.cmg.istardt.translators.dtx2dtg;
 
-import ca.yorku.cmg.istardt.translators.dttranslator.DTTranslator;
+import ca.yorku.cmg.istardt.xmlparser.XmlValidation;
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
