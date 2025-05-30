@@ -113,7 +113,7 @@ public class dtx2dtg {
 				"where options are:\n" +
 				"    -t translate only (skip validation) \n" +
 				"    -t validate only (skip tranlsation) \n" +
-				"    -p print model info \n" +
+				"    -p print model info  \n" +
 				"    -f filename \t iStarDT-X XML file \n" + 
 				"    -o filename \t DT-Golog PL file \n" + 
 				"    -h \t\t\t prints this help \n";
@@ -145,15 +145,18 @@ public class dtx2dtg {
 			                	throw new Exception("Option -o requires a file name.");
 		                    }
 		                    break;
+		            	case 't':
+		            		validate = false;
+		            		break;
+		            	case 'v':
+		            		translate = false;
+		            		break;
+		            	case 'p':
+		            		print = true;
+		            		break;
 		            	case 'h':
 		                    System.out.println(printUsage());
 		                    System.exit(0);
-		            	case 't':
-		            		validate = false;
-		            	case 'c':
-		            		translate = false;
-		            	case 'p':
-		            		print = true;
 		                default:
 	                    	printUsage = true;
 		                	throw new Exception("Unknown option: " + option);
