@@ -26,6 +26,7 @@ public class dtx2dtg {
 	static boolean translate = true;
 	static boolean validate = true;
 	static boolean print = false;
+	static boolean unmarshal = true;
 	
     
     
@@ -74,22 +75,28 @@ public class dtx2dtg {
             }
             
             
-            if (translate) {
+            //Unmarshall only if you are asked to translate, print, or both
+            unmarshal = print || translate;
+            
+            if (unmarshal) {
                 // Create unmarshaller
                 System.out.println("Unmarshalling XML...");
                 IStarUnmarshaller unmarshaller = new IStarUnmarshaller();
-
                 // Unmarshal XML to model
                 Model model = unmarshaller.unmarshalToModel(xmlFile);
 
-                System.out.println("Tranlsating...");
-                com2dtg trans = new com2dtg(model,outputFile);
-                trans.translate();
+                if (print) {
+                    printModelInformation(model);
+                   }
                 
-               if (print) {
-                printModelInformation(model);
-               }
+                if (translate) {
+                    System.out.println("Tranlsating...");
+                    com2dtg trans = new com2dtg(model,outputFile);
+                    trans.translate();
+                }            	
             }
+            
+
 
 
         } catch (Exception e) {
@@ -109,11 +116,11 @@ public class dtx2dtg {
 		String s = "";
 		s = "Usage: dtx2dtg [-options]\n" + 
 				"where options are:\n" +
-				"    -t translate only (skip validation) \n" +
-				"    -t validate only (skip tranlsation) \n" +
-				"    -p print model info  \n" +
 				"    -f filename \t iStarDT-X XML file \n" + 
-				"    -o filename \t DT-Golog PL file \n" + 
+				"    -o filename \t DT-Golog PL file \n" +
+				"    -t \t translate only (skip validation) \n" +
+				"    -t \t validate only (skip tranlsation) \n" +
+				"    -p \t print model info  \n" +
 				"    -h \t\t\t prints this help \n";
 		return(s);
 	}

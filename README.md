@@ -1,6 +1,8 @@
-# istar-unmarshal
+# dtx2X: an iStarDT-X deserializer
 
-A Java-based system for deserializing iStar-DT-X XML models into a structured object model. 
+`dtx2X` is a Java-based system for deserializing iStar-DT-X XML models into a structured object model, called a common object model, and then into third-party formal specifications as per specified plug-ins. 
+
+Currently a translator to DT-Golog, `dtx2dtg`, is included.
 
 ## Table of Contents
 - [Features](#features)
@@ -18,8 +20,9 @@ A Java-based system for deserializing iStar-DT-X XML models into a structured ob
 
 - XML validation against XSD and Schematron schemas
 - Two-phase deserialization for resolving complex references
-- Formula processing using the Visitor pattern
-- Comprehensive domain model
+- Formula processing
+- Common object model definition
+- Translators: dtx2dtg
 
 ## Requirements
 
@@ -54,17 +57,59 @@ https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-
 ```bash
 mvn clean install -s settings.xml
 ```
+
+<!-- 
 6. To run the main application (IStarTApplication), run:
 
 ```bash
 mvn exec:java
 ```
+-->
 
 ## Usage
 
 ### Running the Application
 
+The validation and unmarshalling components are currently usable through a specific translation context. We have specifically implemented a translation to DT-Golog accessed through `dtx2dtg` whose main function is invoked under the current `pom.xml` configuration.
+
+In the root directory:
+```
+mvn exec:java -Dexec.args="-f [path to ISTARDT input file] -o [path to DT-Golog out spec  -PL file]
+```
+
+For example:
+
+```
+exec:java -Dexec.args="-f ./src/main/resources/xml/Heating.istardt -o ../dtg2sim-new/src/Heating.pl"
+```
+
+or (on windows)
+```
+dtx2dtg -f ./src/main/resources/xml/Heating.istardt -o ../dtg2sim-new/src/Heating.pl
+```
+
+### Options
+
+You can have the application perform only validation `-v` (skips translation)  or only translation `-t` (skips validation - not recommended). Option `-p` prints detailed model information on screen.
+
+Use the `-h` to display these additional options. 
+
+```
+Usage: dtx2dtg [-options]
+where options are:
+    -f filename          iStarDT-X XML file
+    -o filename          DT-Golog PL file
+	-t                   translate only (skip validation)
+    -t                   validate only (skip tranlsation)
+    -p                   print model info (forces unmarshalling)
+    -h                   prints this help
+```
+
+
+<!--
 The main application reads an XML file, validates it against both XSD and Schematron schemas, and prints model information:
+
+
 
 ```bash
 mvn exec:java
@@ -157,7 +202,7 @@ The system has the following main components:
 1. **Validation**: XML validation against schemas
 2. **Unmarshalling**: Conversion of XML to Java objects
 3. **Reference Resolution**: Establishing relationships between objects
-
+--> 
 ## Configuration
 
 Configuration is handled through the Maven POM file. The main configurable elements are:
@@ -176,4 +221,4 @@ mvn test
 
 ## Limitations/Future notes
 
-- Current XSD defines 1 actor per model. In the future, will consider multiple actors per model.
+- Current XSD defines 1 actor per model.
