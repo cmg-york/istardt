@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class dtx2dtg {
 
-    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar-rl-schema_v4.xsd";
-    private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar-rl-schematron4.sch";
+    private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar_dt_x_schema.xsd";
+    private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar_dt_x_schematron.sch";
     private static final String XML_FILE_PATH = "src/main/resources/xml/Order.istardt";
     private static final String OUTPUT_FILE_PATH = "F:/Dropbox/Private/Others/Software/gReason-2025/Nina/dtg2sim-new/src";
 
@@ -93,9 +93,6 @@ public class dtx2dtg {
                }
             }
 
-            /**
-             * SOTIRIOS added tests
-             */
 
         } catch (Exception e) {
             System.err.println("Unexpected error: " + e.getMessage());
@@ -186,6 +183,87 @@ public class dtx2dtg {
 
 	
 	
+
+	
+	
+	
+    
+//<<<<<<< HEAD
+//=======
+//    
+//    public static void main(String[] args) {
+//
+//        LOGGER.setDebugEnabled(debugMode);
+//
+//        try {
+//        	processArgs(args);
+//        	File xmlFile = new File(inputFile);
+//            File xsdFile = new File(XSD_SCHEMA_PATH);
+//            File schematronFile = new File(SCHEMATRON_SCHEMA_PATH);
+//            
+//            if (!xsdFile.exists()) {
+//                System.err.println("Error: XSD schema file not found: " + XSD_SCHEMA_PATH);
+//                System.exit(1);
+//            }
+//
+//            if (!schematronFile.exists()) {
+//                System.err.println("Error: Schematron schema file not found: " + SCHEMATRON_SCHEMA_PATH);
+//                System.exit(1);
+//            }
+//
+//
+//            // Validate XML against XSD schema
+//            System.out.println("Validating XML against XSD schema...");
+//            try {
+//                XmlValidation.validate("xsd", xsdFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+//            } catch (Exception e) {
+//                System.err.println("XSD validation failed:");
+//                System.err.println(e.getMessage());
+//                System.exit(1);
+//            }
+//
+//            // Validate XML against Schematron schema
+//            System.out.println("Validating XML against Schematron schema...");
+//            try {
+//                XmlValidation.validate("schematron", schematronFile.getAbsolutePath(), xmlFile.getAbsolutePath());
+//            } catch (Exception e) {
+//                System.err.println("Schematron validation failed:");
+//                System.err.println(e.getMessage());
+//                System.exit(1);
+//            }
+//
+//
+//            // Create unmarshaller
+//            System.out.println("Unmarshalling XML...");
+//            IStarUnmarshaller unmarshaller = new IStarUnmarshaller();
+//
+//            // Unmarshal XML to model
+//            Model model = unmarshaller.unmarshalToModel(xmlFile);
+//
+//            // Display model information
+//            //printModelInformation(model);
+//
+//            /**
+//             * SOTIRIOS added tests
+//             */
+//            System.out.println("Tranlsating...");
+//            DTTranslator trans = new DTTranslator(model,outputFile);
+//            //trans.exportedSetTest();
+//            //trans.initializationTest();
+//            //trans.crossRunTest();
+//            //trans.conditionExpressionTest();
+//            trans.translate();
+//
+//
+//        } catch (Exception e) {
+//            System.err.println("Unexpected error: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//    }
+//
+//>>>>>>> refs/remotes/upstream/main
+	
+	
 	
     /** 
      * 
@@ -194,8 +272,6 @@ public class dtx2dtg {
      */
 	
 	
-	
-    
     /**
      * Print information about the model structure.
      *

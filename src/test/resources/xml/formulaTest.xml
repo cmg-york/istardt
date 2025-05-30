@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <iStarDT xmlns="https://example.org/istar-dt-x"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="https://example.org/istar-dt-x ../xsd/istar-rl-schema_v4.xsd">
+         xsi:schemaLocation="https://example.org/istar-dt-x ../xsd/istar_dt_x_schema.xsd">
 
     <!--
     *** H E A D E R ***
