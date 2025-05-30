@@ -10,8 +10,6 @@ Currently a translator to DT-Golog, `dtx2dtg`, is included.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Running the Application](#running-the-application)
-- [Project Structure](#project-structure)
-- [Architecture](#architecture)
 - [Configuration](#configuration)
 - [Testing](#testing)
 - [Limitations/Future notes](#limitationsfuture-notes)
