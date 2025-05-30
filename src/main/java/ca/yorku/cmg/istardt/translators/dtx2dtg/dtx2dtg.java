@@ -15,8 +15,6 @@ public class dtx2dtg {
 
     private static final String XSD_SCHEMA_PATH = "src/main/resources/xsd/istar_dt_x_schema.xsd";
     private static final String SCHEMATRON_SCHEMA_PATH = "src/main/resources/schematron/istar_dt_x_schematron.sch";
-    private static final String XML_FILE_PATH = "src/main/resources/xml/Order.istardt";
-    private static final String OUTPUT_FILE_PATH = "F:/Dropbox/Private/Others/Software/gReason-2025/Nina/dtg2sim-new/src";
 
     private static final CustomLogger LOGGER = CustomLogger.getInstance();
     static boolean debugMode = false;
@@ -85,7 +83,7 @@ public class dtx2dtg {
                 Model model = unmarshaller.unmarshalToModel(xmlFile);
 
                 System.out.println("Tranlsating...");
-                DTTranslator trans = new DTTranslator(model,outputFile);
+                com2dtg trans = new com2dtg(model,outputFile);
                 trans.translate();
                 
                if (print) {
@@ -250,7 +248,7 @@ public class dtx2dtg {
 //             * SOTIRIOS added tests
 //             */
 //            System.out.println("Tranlsating...");
-//            DTTranslator trans = new DTTranslator(model,outputFile);
+//            com2dtg trans = new com2dtg(model,outputFile);
 //            //trans.exportedSetTest();
 //            //trans.initializationTest();
 //            //trans.crossRunTest();
