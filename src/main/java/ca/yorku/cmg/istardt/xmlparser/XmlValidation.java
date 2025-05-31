@@ -1,7 +1,7 @@
 package ca.yorku.cmg.istardt.xmlparser;
 
-import com.example.validation.XmlValidationService;
-import com.example.validation.ValidationResult;
+import io.github.nina2dv.xmlvalidation.XmlValidationService;
+import io.github.nina2dv.xmlvalidation.ValidationResult;
 
 /**
  * Utility class to run XML validators based on the specified type.

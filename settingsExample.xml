@@ -14,7 +14,7 @@
                 <repository>
                     <id>github</id>
                     <name>Github Packages</name>
-                    <url>https://maven.pkg.github.com/nina2dv/xml-istar-rl</url>
+                    <url>https://maven.pkg.github.com/nina2dv/xml-validation</url>
                     <snapshots>
                         <enabled>true</enabled>
                         <updatePolicy>always</updatePolicy>
