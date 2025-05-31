@@ -2,15 +2,13 @@
 
 ## What is Schematron?
 
-Schematron is a rule-based validation language for making assertions about patterns found in XML documents. Unlike grammar-based schema languages (like XSD), Schematron uses XPath expressions to define rules and can validate context-specific constraints that are difficult 
-to express with other XML schema languages.
+Schematron is a rule-based validation language for making assertions about patterns found in XML documents. Unlike XSD, Schematron uses XPath expressions to define rules and can validate context-specific constraints.
 
-## Key Features
+## Features
 
-- **Rule-based validation**: Validates XML documents based on rules rather than structure
+- **Rule-based validation**: Validates XML documents based on rules
 - **XPath-based**: Uses XPath expressions to select document nodes and check conditions
 - **Flexible reporting**: Provides customizable error and warning messages
-- **Context-sensitive**: Can validate based on document context or business rules
 
 ## Basic Concepts
 
@@ -36,22 +34,8 @@ Rules define the context nodes to which assertions and reports apply. The contex
 
 ### Assertions and Reports
 
-- **Assertions (`<sch:assert>`)**: Define conditions that should be true; failures generate messages
+- **Assertions (`<sch:assert>`)**: Define conditions that should be true
 - **Reports (`<sch:report>`)**: Define conditions that should trigger a report when true
-
-Both use test attributes containing XPath expressions:
-
-```xml
-<!-- Error if an AND-refinement doesn't have at least 2 children -->
-<sch:assert test="count(istar-dt-x:childGoal | istar-dt-x:childTask) >= 2" role="ERROR">
-  AND-refinement must have at least 2 children.
-</sch:assert>
-
-<!-- Warning if a goal doesn't have a description -->
-<sch:report test="not(@description)" role="WARN">
-  Element &lt;<sch:value-of select="name()"/>&gt; with @name="<sch:value-of select="@name"/>" has no @description.
-</sch:report>
-```
 
 ### Severity Levels
 
@@ -62,7 +46,7 @@ In our implementation, validation messages have two severity levels:
 
 ## XPath Essentials for Schematron
 
-Schematron relies heavily on XPath expressions. Here are some common XPath patterns used in our Schematron rules:
+Schematron relies heavily on XPath expressions. Common XPath patterns used:
 
 ### Node Selection
 
@@ -96,15 +80,6 @@ Variables store XPath expressions for reuse:
 
 ## Common Validation Patterns
 
-### Required Attributes
-
-```xml
-<!-- Error if probability is missing -->
-<sch:assert test="@probability" role="ERROR">
-  Effect "<sch:value-of select="@name"/>" is missing the required probability attribute.
-</sch:assert>
-```
-
 ### Value Constraints
 
 ```xml
@@ -114,14 +89,6 @@ Variables store XPath expressions for reuse:
 </sch:assert>
 ```
 
-### Uniqueness Constraints
-
-```xml
-<!-- Error if element name is not unique -->
-<sch:assert test="count($allNamed) = 1" role="ERROR">
-  Element &lt;<sch:value-of select="$currentType"/>&gt; with name="<sch:value-of select="$name"/>" is not unique.
-</sch:assert>
-```
 
 ### Reference Validation
 
@@ -141,25 +108,6 @@ Variables store XPath expressions for reuse:
 </sch:assert>
 ```
 
-## Schematron in XML Validation Library
-
-Schematron complements XSD validation by checking:
-
-1. **Business rules**: Logical constraints that XSD cannot express
-2. **Cross-element relationships**: Validating references between elements
-3. **Quantitative constraints**: Checking numeric properties like probability sums
-4. **Best practices**: Warning about recommended patterns
-
-## Custom Message Formatting
-
-Schematron allows rich message formatting using XPath expressions:
-
-```xml
-<sch:report test="not(@description)" role="WARN">
-  Element &lt;<sch:value-of select="name()"/>&gt; with @name="<sch:value-of select="@name"/>" has no @description.
-</sch:report>
-```
-
 ## Adding New Rules
 
 To add new Schematron rules:
@@ -167,9 +115,9 @@ To add new Schematron rules:
 1. Identify the validation requirement
 2. Determine the appropriate pattern and context
 3. Write the XPath expression for the test condition
-4. Create an `assert` (for must-be-true conditions) or `report` (for must-not-be-true conditions)
-5. Set the appropriate role (`ERROR` or `WARN`)
-6. Add a clear error message
+4. Create an `assert` or `report` 
+5. Set the role (`ERROR` or `WARN`)
+6. Add an error message
 
 Example of adding a new rule:
 
@@ -177,7 +125,7 @@ Example of adding a new rule:
 <sch:pattern id="CheckNewRequirement">
   <sch:rule context="istar-dt-x:element">
     <sch:assert test="condition-that-must-be-true" role="ERROR">
-      Clear error message explaining the problem and how to fix it.
+      Clear error message.
     </sch:assert>
   </sch:rule>
 </sch:pattern>
@@ -188,3 +136,4 @@ Example of adding a new rule:
 - [Schematron Official Website](https://schematron.com/)
 - [W3C XPath Introduction](https://www.w3schools.com/xml/xpath_intro.asp)
 - [XML Validation Library](https://github.com/nina2dv/xml-istar-rl)
+- [XPath Playground](https://xpath.playground.fontoxml.com)
