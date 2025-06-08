@@ -107,12 +107,12 @@
 # Cross-runs, Exported Sets, Initializations
 ```
 [cross-runs] ::= "<crossRuns>" [cross-run]+ "</crossRuns>"
-([cross-run] ::= "<crossRun>" [predicate-id] | [variable-id] | [qual-id] "</crossRun>"
+[cross-run] ::= "<crossRun>" [predicate-id] | [variable-id] | [qual-id] "</crossRun>"
 [exported-set] ::= "<exportedSet>" [export]+ "</exportedSet>"
 [export] ::= ::= "<export continuous=" [boolean] [ "minVal=" [decimal]] [" maxVal=" [decimal] ] ">" [exp-id] "</export>"
 [exp-id] ::= [goal-id] | [task-id] | [predicate-id] | [variable-id] | [qual-id]
 [initializations] ::= "<initializations> " [initialization] "</initialization>"
-(initialization] ::= [b-init] | [d-init]
+[initialization] ::= [b-init] | [d-init]
 [b-init] ::= "<initialization element=" [predicate-id] "> " [boolean] "</initialization>"
 [d-init] ::= "<initialization element=" [cont-init-id] "> " [decimal] "</initialization>"
 [cont-init-id] ::= [variable-id] | [qual-id]
