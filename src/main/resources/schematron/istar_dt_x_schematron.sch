@@ -140,7 +140,7 @@
     </sch:rule>
   </sch:pattern>
 
-  <sch:pattern id="CheckRootGoalsEpisodeLength">
+  <sch:pattern id="CheckGoalEpisodeLength">
     <sch:rule context="istar-dt-x:goal">
 <!--      <sch:report test="not(@episodeLength)" role="WARN">-->
 <!--        <sch:text>-->
@@ -150,7 +150,25 @@
 
       <sch:assert test="@episodeLength castable as xs:integer and @episodeLength &gt; 0" role="ERROR">
         <sch:text>
-          Root goal "<sch:value-of select="@name"/>" has an invalid @episodeLength. It must be a positive integer.
+          Goal "<sch:value-of select="@name"/>" has an invalid @episodeLength. It must be a positive integer.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+  </sch:pattern>
+
+  <sch:pattern id="CheckRoot">
+    <sch:rule context="istar-dt-x:quality[@root='true']">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:qualities/istar-dt-x:quality[@root='true']) = 1" role="ERROR">
+        <sch:text>
+          There must be exactly one root quality per actor.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+
+    <sch:rule context="istar-dt-x:goal[@root='true']">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:goals/istar-dt-x:goal[@root='true']) = 1" role="ERROR">
+        <sch:text>
+          There must be exactly one root goal per actor.
         </sch:text>
       </sch:assert>
     </sch:rule>
