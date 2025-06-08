@@ -157,7 +157,7 @@
   </sch:pattern>
 
   <sch:pattern id="CheckRoot">
-    <sch:rule context="istar-dt-x:quality[@root='true']">
+    <sch:rule context="istar-dt-x:qualities">
       <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:qualities/istar-dt-x:quality[@root='true']) = 1" role="ERROR">
         <sch:text>
           There must be exactly one root quality per actor.
@@ -165,7 +165,7 @@
       </sch:assert>
     </sch:rule>
 
-    <sch:rule context="istar-dt-x:goal[@root='true']">
+    <sch:rule context="istar-dt-x:goals">
       <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:goals/istar-dt-x:goal[@root='true']) = 1" role="ERROR">
         <sch:text>
           There must be exactly one root goal per actor.
@@ -173,5 +173,34 @@
       </sch:assert>
     </sch:rule>
   </sch:pattern>
+
+  <sch:pattern id="CheckInitializationIDs">
+    <!-- b-init: boolean content - element must be a predicate ID -->
+    <sch:rule context="istar-dt-x:initializations/istar-dt-x:initialization[. = 'true' or . = 'false']">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:predicates/istar-dt-x:predicate[normalize-space() = current()/@element]) = 1" role="ERROR">
+        Initialization references unknown Predicate ID "<sch:value-of select="@element"/>".
+      </sch:assert>
+    </sch:rule>
+
+    <!-- d-init: decimal content - element must be a quality ID or variable ID -->
+    <sch:rule context="istar-dt-x:initializations/istar-dt-x:initialization[. castable as xs:decimal]">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:qualities/istar-dt-x:quality[@name = current()/@element]) = 1
+      or
+      count(ancestor::istar-dt-x:actor/istar-dt-x:variables/istar-dt-x:variable[normalize-space() = current()/@element]) = 1
+    " role="ERROR">
+        Initialization references unknown quality or variable ID "<sch:value-of select="@element"/>".
+      </sch:assert>
+    </sch:rule>
+  </sch:pattern>
+
+  <sch:pattern id="CheckConditionNames">
+    <sch:rule context="istar-dt-x:condBoxes/istar-dt-x:condBox">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:predicates/istar-dt-x:predicate[normalize-space() = normalize-space(current()/@name)]) = 1" role="ERROR">
+        Condition name “<sch:value-of select="@name"/>” must match exactly one predicate.
+      </sch:assert>
+    </sch:rule>
+  </sch:pattern>
+
+<!-- TODO Will add rule for turnsTrue/turnsFalse -->
 
 </sch:schema>
