@@ -168,7 +168,7 @@
             <initializations>
                 <initialization element = "happyCustomer">0</initialization>
                 <initialization element = "cost">0</initialization>
-                <initialization element = "overalQuality">0</initialization>
+                <initialization element = "overallQuality">0</initialization>
             </initializations>
 
             <!--
