@@ -10,7 +10,7 @@
     <xsd:element name="iStarDT" type="IStarDTType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
-                Root element representing a model in iStar-DT-X.
+                Root element representing a model in iStarDT-X.
             ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
@@ -18,7 +18,7 @@
     <xsd:complexType name="IStarDTType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
-                Complex type defining iStar-DT-X model.
+                Complex type defining iStarDT-X model.
                 Contains:
                 - header
                 - options
@@ -61,7 +61,7 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:all>
-            <xsd:element name="actor" type="ActorType" minOccurs="0"/>
+            <xsd:element name="actor" type="ActorType" minOccurs="0" maxOccurs="1"/>
         </xsd:all>
     </xsd:complexType>
 

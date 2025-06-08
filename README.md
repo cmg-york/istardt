@@ -1,6 +1,6 @@
 # dtx2X: an iStarDT-X deserializer
 
-`dtx2X` is a Java-based system for deserializing iStar-DT-X XML models into a structured object model, called a [common object model](https://github.com/cmg-yorku/dtx2X/tree/main/docs/images/CommonObjectModel.png), and then into third-party formal specifications as per specified plug-ins. 
+`dtx2X` is a Java-based system for deserializing iStarDT-X XML models into a structured object model, called a [common object model](https://github.com/cmg-yorku/dtx2X/tree/main/docs/images/CommonObjectModel.png), and then into third-party formal specifications as per specified plug-ins. 
 
 Currently a translator to DT-Golog, `dtx2dtg`, is included.
 

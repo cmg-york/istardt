@@ -1,7 +1,7 @@
 ## Documentation Files
 
 ### bnf_grammar.md
-Provides a Backus-Naur Form (BNF) grammar specification for the iStar-DT-X XML format. This formal notation describes the syntax rules of the XML language used in the project, detailing the structure of elements such as actors, goals, tasks, and formulas.
+Provides a Backus-Naur Form (BNF) grammar specification for the iStarDT-X XML format. This formal notation describes the syntax rules of the XML language used in the project, detailing the structure of elements such as actors, goals, tasks, and formulas.
 
 ### domain_model_uml (.png, .uml)
 Contains a UML class diagram of the iStar-DT Java domain model.
@@ -16,7 +16,7 @@ Contains a sequence diagram illustrating the XML deserialization process. This d
 Provides a detailed explanation of the XML deserialization system architecture. This document describes the components involved in converting XML to Java objects, including the unmarshaller, deserializers, formula processing, and reference resolution mechanisms.
 
 ### xml_uml.md
-Contains a UML class diagram representing the XML schema structure of the iStar-DT-X format. This diagram shows the relationships between XML elements as defined in the XSD schema.
+Contains a UML class diagram representing the XML schema structure of the iStarDT-X format. This diagram shows the relationships between XML elements as defined in the XSD schema.
 
 ## Using the Documentation
 
