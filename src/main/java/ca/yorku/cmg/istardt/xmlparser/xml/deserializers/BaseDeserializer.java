@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Enhanced base deserializer with expanded common functionality for all iStar-DT-X elements.
- * Provides standardized helpers for extracting attributes, processing nodes, and handling lists.
+ * Base deserializer with common functionality for all iStarDT-X elements.
  *
  * @param <T> The type of element being deserialized, must extend Element
  */
@@ -61,7 +60,7 @@ public abstract class BaseDeserializer<T extends Element> extends StdDeserialize
 
     /**
      * Extracts common attributes from a node and sets them on an element.
-     * Handles name, description, and ID generation.
+     * Handles name, description, and ID.
      *
      * @param element The element to set attributes on
      * @param node The JSON node to extract from

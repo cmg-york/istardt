@@ -11,8 +11,6 @@ import java.util.List;
 
 /**
  * Post-processor for resolving references after deserialization.
- * This class handles establishing relationships between objects
- * that were unmarshalled from XML.
  */
 public class ReferenceProcessor {
     private static final CustomLogger LOGGER = CustomLogger.getInstance();
@@ -24,8 +22,6 @@ public class ReferenceProcessor {
 
     /**
      * Process the model to resolve all references between objects.
-     * This connects parent-child relationships and establishes cross-references.
-     * It also collects all non-decomposition elements and adds them to the environment.
      *
      * @param model The model to process
      */
@@ -126,7 +122,6 @@ public class ReferenceProcessor {
 
     /**
      * Process goal refinements to establish parent-child relationships.
-     * Uses name-based lookup rather than ID-based lookup.
      *
      * @param goals The list of goals to process
      */

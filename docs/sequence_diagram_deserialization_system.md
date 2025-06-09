@@ -1,12 +1,12 @@
 ```mermaid
 sequenceDiagram
-participant App as IStarTApplication
+autonumber
+participant App as Application
 participant Val as XmlValidation
 participant Unm as IStarUnmarshaller
 participant XMap as XmlMapper
-participant Mod as IStarTModule
+participant Mod as IStarDTXModule
 participant Des as Custom Deserializers
-participant FVisit as FormulaVisitor
 participant RefRes as ReferenceResolver
 participant RefProc as ReferenceProcessor
 
@@ -17,7 +17,8 @@ participant RefProc as ReferenceProcessor
     
     App->>Unm: new IStarUnmarshaller()
     Unm->>XMap: createXmlMapper()
-    Unm->>Mod: new IStarTModule()
+    Unm->>Mod: new IStarDTXModule()
+    Mod->>Mod: Register all deserializers
     Unm->>XMap: registerModule(module)
     
     App->>Unm: unmarshalToModel(xmlFile)
@@ -25,24 +26,38 @@ participant RefProc as ReferenceProcessor
     Unm->>XMap: readValue(xmlFile, Model.class)
     
     XMap->>Des: ModelDeserializer.deserialize()
-    Des->>Des: ActorDeserializer.deserialize()
+    Des->>Des: deserializeHeader()
+    Des->>Des: deserializeOptions()
     
-    loop For each element in the model
-        Des->>Des: Element Deserialization
-        alt Formula Processing
-            Des->>FVisit: visitFormula(node)
-            FVisit-->>Des: Formula objects
+    loop per Actor
+        Des->>Des: ActorDeserializer.deserialize()
+        
+        loop per element type: Goal, Task, etc.
+            Des->>Des: ElementDeserializer.deserialize()
+            Des->>Des: extractCommonAttributes()
+            Des->>RefRes: registerElement(id, element)
+            Des->>Des: handleSpecificAttributes()
         end
-        Des->>RefRes: registerElement(id, element)
     end
     
     XMap-->>Unm: Return populated Model
     
     Unm->>RefProc: processReferences(model)
-    RefProc->>RefRes: Get elements by ID/name
-    RefProc->>RefProc: Link parent-child relationships
-    RefProc->>RefProc: Resolve references between objects
     
-    Unm-->>App: Return fully resolved Model
+    RefProc->>RefProc: processGoalRefinements()
+    RefProc->>RefRes: getElementByName() for goal/task refs
+    RefProc->>RefProc: processDecompositionHierarchy()
+    RefProc->>RefProc: processCrossRunSets()
+    RefProc->>RefRes: getElementByName() for crossrun refs
+    RefProc->>RefProc: processExportedSet()
+    RefProc->>RefRes: getElementByName() for export refs
+    RefProc->>RefProc: processInitializationSet()
+    RefProc->>RefRes: getElementByName() for initialization refs
+    
+    
+    RefProc->>RefProc: processAllFormulas()
+
+    RefProc-->>Unm: Reference processing done
+    Unm-->>App: Return Model
     App->>App: printModelInformation(model)
 ```

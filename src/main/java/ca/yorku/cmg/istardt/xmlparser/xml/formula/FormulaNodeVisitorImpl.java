@@ -289,7 +289,6 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     /**
      * Helper method for binary operators that take left and right operands.
-     * Consolidates the duplicated code from multiple visit methods.
      *
      * @param node The JSON node containing the operator data
      * @param operatorFactory Function to create the specific operator type
@@ -313,7 +312,6 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
 
     /**
      * Helper method for operators that can take multiple operands (add, multiply, and, or).
-     * Consolidates the duplicated code from multiple visit methods.
      *
      * @param node The JSON node containing the operator data
      * @param operatorFactory Function to create the specific operator type
