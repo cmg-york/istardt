@@ -6,8 +6,8 @@ Provides a Backus-Naur Form (BNF) grammar specification for the iStarDT-X XML fo
 ### domain_model_uml (.png, .uml)
 Contains a UML class diagram of the iStar-DT Java domain model.
 
-### sequence_diagram_deserialization_system.md
-Contains a sequence diagram illustrating the XML deserialization process. This diagram shows the interaction between different components of the system during the deserialization of an XML file, including validation, unmarshalling, and reference resolution phases.
+### sequence_diagram_deserialization.md
+Contains a sequence diagram illustrating the XML deserialization process. This diagram shows the interaction between different components during the deserialization of an XML file, including validation, unmarshalling, and reference resolution phases.
 
 ### istardt_unmarshalling.png
 <img src="images/istardt_unmarshalling.png" alt="Alt Text" style="width:60%; height:auto;">
@@ -20,4 +20,4 @@ The green-coloured nodes represent XML elements corresponding to their respectiv
 
 - To follow the XML format, refer to `bnf_grammar.md`.
 - For details on the domain model implementation, see `domain_model_uml.md`.
-- For a visual representation of the deserialization process, see `sequence_diagram_deserialization_system.md`.
+- For a visual representation of the deserialization process, see `sequence_diagram_deserialization.md`.
