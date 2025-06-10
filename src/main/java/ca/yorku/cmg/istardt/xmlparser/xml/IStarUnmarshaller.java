@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Main entry point for unmarshalling iStar-DT-X XML to the domain model using Jackson XML.
+ * Main entry point for unmarshalling iStarDT-X XML to the domain model using Jackson XML.
  */
 public class IStarUnmarshaller {
     private final XmlMapper xmlMapper;
@@ -26,7 +26,7 @@ public class IStarUnmarshaller {
     }
 
     /**
-     * Creates and configures the XmlMapper with necessary settings for handling iStar-DT-X XML.
+     * Creates and configures the XmlMapper with necessary settings for handling iStarDT-X XML.
      *
      * @return Configured XmlMapper instance
      */
@@ -34,7 +34,7 @@ public class IStarUnmarshaller {
         XmlMapper mapper = new XmlMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // Register custom module with deserializers for iStar-DT-X specific types
+        // Register custom module with deserializers for iStarDT-X types
         mapper.registerModule(new IStarDTXModule());
         return mapper;
     }
