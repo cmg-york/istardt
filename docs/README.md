@@ -9,8 +9,8 @@ Contains a UML class diagram of the iStar-DT Java domain model.
 ### sequence_diagram_deserialization_system.md
 Contains a sequence diagram illustrating the XML deserialization process. This diagram shows the interaction between different components of the system during the deserialization of an XML file, including validation, unmarshalling, and reference resolution phases.
 
-### istardt_unmarshalling.drawio.png
-<img src="images/istardt_unmarshalling.drawio.png" alt="Alt Text" style="width:60%; height:auto;">
+### istardt_unmarshalling.png
+<img src="images/istardt_unmarshalling.png" alt="Alt Text" style="width:60%; height:auto;">
 
 The XML parsing and unmarshalling process is a preorder traversal, starting from the root “model” node. 
 It also shows which deserializer handles which element and to which other deserializer it delegates. 
