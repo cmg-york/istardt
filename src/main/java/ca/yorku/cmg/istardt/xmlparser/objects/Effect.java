@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @JsonDeserialize(using = EffectDeserializer.class)
 public class Effect extends DecompositionElement {
@@ -13,12 +15,14 @@ public class Effect extends DecompositionElement {
 
     private List<String> turnsTrue;
     private List<String> turnsFalse;
+    private Map<Variable, Float> sets;
 
     private Task task;
 
     public Effect() {
         this.turnsTrue = new ArrayList<>();
         this.turnsFalse = new ArrayList<>();
+        this.sets = new HashMap<>();
         decompType = DecompType.TERM;
     }
 
@@ -59,6 +63,8 @@ public class Effect extends DecompositionElement {
     public void addTurnsFalse(String element) {
         turnsFalse.add(element);
     }
+    public Map<Variable, Float> getSets() {return sets;}
+    public void setSets(Map<Variable, Float> sets) {this.sets = sets;}
 
     /**
      * Get the siblings of this effect (other effects from the same task).
