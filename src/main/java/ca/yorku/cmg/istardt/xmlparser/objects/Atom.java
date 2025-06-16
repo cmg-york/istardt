@@ -71,6 +71,7 @@ public class Atom extends Formula {
     public Element getElement() {
         return element;
     }
+
     public void setElement(Element element) {
         this.element = element;
     }
@@ -79,18 +80,39 @@ public class Atom extends Formula {
      * Get the string representation of this atom
      */
     public String getAtomRepresentation() {
-        return  "Atom{" +
+        return "Atom{" +
                 "id='" + id + '\'' +
                 ", titleText='" + titleText + '\'' +
                 ", titleHTMLText='" + titleHTMLText + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
+
     @Override
     public String toString() {
         return "Atom{id=" + id +
                 ", titleText=" + titleText +
                 ", titleHTMLText=" + titleHTMLText +
                 ", description=" + description + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Atom atom)) return false;
+
+        if (getTitleText() != null ? !getTitleText().equals(atom.getTitleText()) : atom.getTitleText() != null)
+            return false;
+        if (getTitleHTMLText() != null ? !getTitleHTMLText().equals(atom.getTitleHTMLText()) : atom.getTitleHTMLText() != null)
+            return false;
+        return getDescription() != null ? getDescription().equals(atom.getDescription()) : atom.getDescription() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getTitleText() != null ? getTitleText().hashCode() : 0;
+        result = 31 * result + (getTitleHTMLText() != null ? getTitleHTMLText().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        return result;
     }
 }

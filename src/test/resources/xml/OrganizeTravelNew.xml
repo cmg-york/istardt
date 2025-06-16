@@ -63,6 +63,14 @@
                     <effectGroup>
                         <effect name = "refTixSucc_eff" description = "refTixSucc" satisfying = "true" probability = "0.95">
                             <turnsTrue>refTixSucc</turnsTrue>
+                            <set>
+                                <variableID>cost</variableID>
+                                <numConst>5</numConst>
+                            </set>
+                            <set>
+                                <variableID>variableTest</variableID>
+                                <numConst>2.0</numConst>
+                            </set>
                         </effect>
                         <effect name = "refTixFailed_eff" description = "refTixFailed" satisfying = "false" probability = "0.05">
                             <turnsTrue>refTixFailed</turnsTrue>
@@ -146,6 +154,8 @@
                 <initialization element = "flightsExist">true</initialization>
                 <initialization element = "headAvailable">true</initialization>
                 <initialization element = "cost">70</initialization>
+                <initialization element = "variableTest">1</initialization>
+
             </initializations>
 
 
@@ -192,6 +202,7 @@
             -->
             <variables>
                 <variable description = "">cost</variable>
+                <variable description = "">variableTest</variable>
             </variables>
 
         </actor>

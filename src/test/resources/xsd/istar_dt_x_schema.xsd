@@ -672,7 +672,7 @@
         <xsd:sequence>
             <xsd:element name="turnsTrue" type="IdentifierType" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="turnsFalse" type="IdentifierType" minOccurs="0" maxOccurs="unbounded"/>
-
+            <xsd:element name="set" type="SetType" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
@@ -696,4 +696,11 @@
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
     </xsd:complexType>
 
+
+    <xsd:complexType name="SetType">
+        <xsd:all>
+            <xsd:element name="variableID" type="IdentifierType"/>
+            <xsd:element name="numConst" type="xsd:float"/>
+        </xsd:all>
+    </xsd:complexType>
 </xsd:schema>

@@ -37,14 +37,30 @@ public class EffectDeserializer extends BaseDeserializer<Effect> {
         }
 
         // Process string list properties for turnsTrue and turnsFalse
-        Map<String, BiConsumer<Effect, List<String>>> listSetters = new HashMap<>();
-        listSetters.put("turnsTrue", Effect::setTurnsTrue);
-        listSetters.put("turnsFalse", Effect::setTurnsFalse);
-
+        Map<String, BiConsumer<Effect, List<String>>> turnsSetter = new HashMap<>();
+        turnsSetter.put("turnsTrue", Effect::setTurnsTrue);
+        turnsSetter.put("turnsFalse", Effect::setTurnsFalse);
         // Apply list-based properties
-        for (Map.Entry<String, BiConsumer<Effect, List<String>>> entry : listSetters.entrySet()) {
+        for (Map.Entry<String, BiConsumer<Effect, List<String>>> entry : turnsSetter.entrySet()) {
             List<String> values = DeserializerUtils.getStringList(node, entry.getKey());
             entry.getValue().accept(effect, values);
         }
+
+        Map<String, Float> variableMap = new HashMap<>();
+        JsonNode setsNode = node.get("set");
+        if (setsNode != null) {
+            if (setsNode.isArray()) {
+                for (JsonNode setElem : setsNode) {
+                    String varId = setElem.path("variableID").asText();
+                    float numConst = DeserializerUtils.getFloatAttribute(setElem, "numConst", 0);
+                    variableMap.put(varId, numConst);
+                }
+            } else {
+                String varId = setsNode.path("variableID").asText();
+                float numConst = DeserializerUtils.getFloatAttribute(setsNode, "numConst", 0);
+                variableMap.put(varId, numConst);
+            }
+        }
+        effect.setVariableNameSet(variableMap);
     }
 }
