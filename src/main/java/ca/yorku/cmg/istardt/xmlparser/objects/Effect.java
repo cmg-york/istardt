@@ -12,28 +12,26 @@ import java.util.HashMap;
 public class Effect extends DecompositionElement {
     private float probability;
     private boolean satisfying = true;
-
     private List<String> turnsTrue;
     private List<String> turnsFalse;
-    private Map<Variable, Float> sets;
-
+    private Map<Variable, Float> variableSet;
+    private Map<String, Float> variableNameSet;
     private Task task;
 
     public Effect() {
         this.turnsTrue = new ArrayList<>();
         this.turnsFalse = new ArrayList<>();
-        this.sets = new HashMap<>();
+        this.variableSet = new HashMap<>();
+        this.variableNameSet = new HashMap<>();
         decompType = DecompType.TERM;
     }
 
     public boolean isSatisfying() {
         return satisfying;
     }
-
     public void setSatisfying(boolean satisfying) {
         this.satisfying = satisfying;
     }
-
     public Task getTask() {
         return task;
     }
@@ -44,7 +42,6 @@ public class Effect extends DecompositionElement {
     public void setTask(Task task) {
         this.task = task;
     }
-
     public List<String> getTurnsTrue() {
         return turnsTrue;
     }
@@ -63,8 +60,10 @@ public class Effect extends DecompositionElement {
     public void addTurnsFalse(String element) {
         turnsFalse.add(element);
     }
-    public Map<Variable, Float> getSets() {return sets;}
-    public void setSets(Map<Variable, Float> sets) {this.sets = sets;}
+    public Map<Variable, Float> getVariableSet() {return variableSet;}
+    public void setVariableSet(Map<Variable, Float> variableSet) {this.variableSet = variableSet;}
+    public Map<String, Float> getVariableNameSet() {return variableNameSet;}
+    public void setVariableNameSet(Map<String, Float> variableNameSet) {this.variableNameSet = variableNameSet;}
 
     /**
      * Get the siblings of this effect (other effects from the same task).

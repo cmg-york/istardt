@@ -62,11 +62,11 @@ public class OrganizeTravelNewUnmarshallerTest {
         assertEquals(3, actor.getQualities().size(), "actor getQualities size");
         assertEquals(1, actor.getConditions().size(), "actor getConditions size");
         assertEquals(9, actor.getPredicates().size(), "actor getPredicates size");
-        assertEquals(1, actor.getVariables().size(), "actor getVariables size");
+        assertEquals(2, actor.getVariables().size(), "actor getVariables size");
 
         assertEquals(4, actor.getCrossRunSetElements().size(), "actor getCrossRunSet size");
         assertEquals(4, actor.getExportedSetElements().size(), "actor getExportedSetElements size");
-        assertEquals(3, actor.getInitializationSetElements().size(), "actor getInitializationSetElements size");
+        assertEquals(4, actor.getInitializationSetElements().size(), "actor getInitializationSetElements size");
 
         // ========= QUALITY ROOT =========
         Quality rootQuality = actor.getQualityRoot();

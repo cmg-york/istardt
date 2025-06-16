@@ -6,7 +6,9 @@ import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -209,6 +211,13 @@ public class ModelUnmarshallerTest {
         List<String> actualElements1 = effect1.getTurnsTrue();
         assertEquals(expectedElements1, actualElements1, "Effect turnsTrue");
         assertTrue(effect1.getTurnsFalse().isEmpty());
+
+        // test the set
+        Map<Variable, Float> expectedMap = new HashMap<>();
+        List<Variable> variables = actor.getVariables();
+        expectedMap.put(variables.get(0), 10f);
+        expectedMap.put(variables.get(1), 2f);
+        assertEquals(expectedMap, effect1.getVariableSet());
 
         // ========= EFFECT 2 =========
         Effect effect2 = effects.get(1);

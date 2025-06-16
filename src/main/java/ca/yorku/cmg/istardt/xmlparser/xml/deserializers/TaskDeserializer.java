@@ -10,8 +10,6 @@ import ca.yorku.cmg.istardt.xmlparser.objects.Task;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TaskDeserializer extends BaseDeserializer<Task> {
     private static final CustomLogger LOGGER = CustomLogger.getInstance();

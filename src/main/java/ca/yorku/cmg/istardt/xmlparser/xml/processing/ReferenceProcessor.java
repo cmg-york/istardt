@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Post-processor for resolving references after deserialization.
@@ -50,9 +52,22 @@ public class ReferenceProcessor {
             processCrossRunSets(actor);
             processExportedSet(actor);
             processInitializationSet(actor);
+
+            processEffectSet(actor);
         }
         processAllFormulas(model);
         LOGGER.info(getClass(),"Reference processing completed successfully");
+    }
+
+    private void processEffectSet(Actor actor) {
+        Map<Variable, Float> variableMap = new HashMap<>();
+        for (Effect effect : actor.getEffects()){
+            Map<String, Float> variableNameSet = effect.getVariableNameSet();
+            for(String name: variableNameSet.keySet()){
+                variableMap.put((Variable) ReferenceResolver.getInstance().getElementByName(name), variableNameSet.get(name));
+            }
+            effect.setVariableSet(variableMap);
+        }
     }
 
     /**
@@ -261,6 +276,7 @@ public class ReferenceProcessor {
             }
         }
     }
+
 
     /**
      * Deserialize a formula from a JSON node.

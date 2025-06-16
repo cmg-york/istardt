@@ -1,5 +1,7 @@
 package ca.yorku.cmg.istardt.xmlparser.objects;
 
+import java.util.Objects;
+
 public abstract class Element {
 
     private String id;
@@ -43,5 +45,18 @@ public abstract class Element {
                 "id='" + id + '\'' +
                 ", representation=" + representation +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Element element)) return false;
+
+        return Objects.equals(representation, element.representation);
+    }
+
+    @Override
+    public int hashCode() {
+        return representation != null ? representation.hashCode() : 0;
     }
 }
