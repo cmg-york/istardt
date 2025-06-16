@@ -120,6 +120,7 @@
                     <effectGroup>
                         <effect name="successDeliveredInTimeDom" satisfying="true" probability="0.75"
                                 description="Successful">
+                            <turnsTrue>deliveredInTimeDom</turnsTrue>
                             <set>
                                 <variableID>test1</variableID>
                                 <numConst>10</numConst>
@@ -128,7 +129,6 @@
                                 <variableID>test2</variableID>
                                 <numConst>2.0</numConst>
                             </set>
-                            <turnsTrue>deliveredInTimeDom</turnsTrue>
                             <pre>
                                 <taskID>sourceDomestically</taskID>
                             </pre>

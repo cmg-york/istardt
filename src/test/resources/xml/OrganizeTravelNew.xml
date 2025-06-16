@@ -62,6 +62,7 @@
                 <task name = "bookRefundableTickets" description = "Book Refundable Tickets">
                     <effectGroup>
                         <effect name = "refTixSucc_eff" description = "refTixSucc" satisfying = "true" probability = "0.95">
+                            <turnsTrue>refTixSucc</turnsTrue>
                             <set>
                                 <variableID>cost</variableID>
                                 <numConst>5</numConst>
@@ -70,7 +71,6 @@
                                 <variableID>variableTest</variableID>
                                 <numConst>2.0</numConst>
                             </set>
-                            <turnsTrue>refTixSucc</turnsTrue>
                         </effect>
                         <effect name = "refTixFailed_eff" description = "refTixFailed" satisfying = "false" probability = "0.05">
                             <turnsTrue>refTixFailed</turnsTrue>

@@ -670,11 +670,9 @@
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="set" type="SetType" minOccurs="0" maxOccurs="unbounded"/>
-
             <xsd:element name="turnsTrue" type="IdentifierType" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="turnsFalse" type="IdentifierType" minOccurs="0" maxOccurs="unbounded"/>
-
+            <xsd:element name="set" type="SetType" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="pre" type="BooleanExpressionType" minOccurs="0" maxOccurs="1">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
