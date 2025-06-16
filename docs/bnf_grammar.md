@@ -78,9 +78,10 @@
 [task-content] ::= [effectGroup] [ [pre] ] [ [npr] ]
 [effectGroup] ::= "<effectGroup>" [effect]+ "</effectGroup>"
 [effect] ::= "<effect name=‘" [identifier] "’" [ " satisfying=‘" [boolean] "’" ] " probability=‘" [decimal] "’" [ " description=‘" [string] "’" ] ">" [effect-content] "</effect>"
-[effect-content] ::= [ [turnsTrue]* ] [ [turnsFalse]* ] [ [pre] ] [ [npr] ]
+[effect-content] ::= [ [turnsTrue]* ] [ [turnsFalse]* ] [ [sets]*] [ [pre] ] [ [npr] ]
 [turnsTrue] ::= "<turnsTrue>" [identifier] "</turnsTrue>"
 [turnsFalse] ::= "<turnsFalse>" [identifier] "</turnsFalse>"
+[sets] ::= "<set>" [variable-id] [num-const] "</set>"
 ```
 
 
