@@ -225,7 +225,6 @@
     </sch:rule>
   </sch:pattern>
 
-
 <!-- TODO Will add rule for turnsTrue/turnsFalse -->
 
   <sch:pattern id="NoInitializations">
@@ -259,6 +258,38 @@
         <sch:text>
           Actor "<sch:value-of select="@name"/>" has no &lt;exportedSet&gt; or it is empty.
           Effect predicates will be used.
+        </sch:text>
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+
+  <sch:pattern id="TerminalGoal">
+    <sch:rule context="istar-dt-x:goal">
+
+      <!-- terminal=true but non-empty refinement -->
+      <sch:report
+              test="@terminal = 'true' and istar-dt-x:refinement[istar-dt-x:childGoal or istar-dt-x:childTask]"
+              role="WARN">
+        <sch:text>
+          Goal "<sch:value-of select="@name"/>" is marked terminal="true" but has a non-empty &lt;refinement&gt;.
+        </sch:text>
+      </sch:report>
+
+      <!-- terminal=false but refinement is empty or absent -->
+      <sch:report
+              test="(@terminal = 'false' or not(@terminal)) and (not(istar-dt-x:refinement) or not(istar-dt-x:refinement/*))"
+              role="WARN">
+        <sch:text>
+          Goal "<sch:value-of select="@name"/>" is terminal="false" but &lt;refinement&gt; is empty or absent.
+        </sch:text>
+      </sch:report>
+
+      <!-- terminal=true and refinement is empty or absent -->
+      <sch:report
+              test="@terminal = 'true' and (not(istar-dt-x:refinement) or not(istar-dt-x:refinement/*))"
+              role="WARN">
+        <sch:text>
+          Goal "<sch:value-of select="@name"/>" is terminal="true" and &lt;refinement&gt; is empty or absent.
         </sch:text>
       </sch:report>
     </sch:rule>
