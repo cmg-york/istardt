@@ -3,14 +3,17 @@ package ca.yorku.cmg.istardt.xmlparser;
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//@Disabled("Temporarily excluded from test runs")
 public class FormulaUnmarshallerTest {
     private IStarUnmarshaller unmarshaller;
     private Model model;
@@ -240,12 +243,17 @@ public class FormulaUnmarshallerTest {
         assertTrue(deliveredLateB_cond.getElement() instanceof Condition);
     }
 
-        /**
-         * Helper method to get a file from the resources directory.
-         */
-    private File getResourceFile(String fileName) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(classLoader.getResource(fileName).getFile());
-    }
+	/** Helper method to get a file from the resources directory.
+	 * @throws URISyntaxException 
+	 */
+	private File getResourceFile(String fileName){
+		ClassLoader classLoader = getClass().getClassLoader();
+		try {
+			return new File(classLoader.getResource(fileName).toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }
