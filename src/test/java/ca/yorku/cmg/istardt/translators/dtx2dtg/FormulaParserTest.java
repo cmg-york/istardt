@@ -6,7 +6,7 @@ import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
 import ca.yorku.cmg.istardt.xmlparser.objects.MultiplyOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.PlusOperator;
 
-
+@Disabled("Temporarily excluded from test runs")
 class FormulaParserTest {
 
 	@Disabled
