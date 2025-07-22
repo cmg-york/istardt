@@ -6,7 +6,7 @@
         elementFormDefault="qualified"
         attributeFormDefault="unqualified">
 
-    <!-- Root element -->
+    <!-- ===== Root Element ===== -->
     <xsd:element name="iStarDT" type="IStarDTType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
@@ -278,9 +278,13 @@
     <xsd:group name="BooleanExpressionElements">
         <xsd:choice>
             <xsd:element name="boolConst" type="xsd:boolean"/>
+
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="effectID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
+
             <xsd:element name="previous" type="BoolAtomType"/>
 
             <xsd:element name="gt" type="NumericComparisonType"/>
@@ -357,6 +361,8 @@
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="effectID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
         </xsd:choice>
     </xsd:group>
 
