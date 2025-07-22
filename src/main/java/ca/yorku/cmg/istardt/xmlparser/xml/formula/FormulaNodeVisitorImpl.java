@@ -15,12 +15,12 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     private static final CustomLogger LOGGER = CustomLogger.getInstance();
 
     private static final String[] NUMERIC_OPERAND_TYPES = {
-            "numConst", "variableID", "qualID", "predicateID", "goalID", "taskID",
+            "numConst", "variableID", "qualID", "predicateID", "goalID", "taskID", "effectID", "conditionID",
             "add", "subtract", "multiply", "divide", "negate", "previous"
     };
 
     private static final String[] BOOLEAN_OPERAND_TYPES = {
-            "boolConst", "predicateID", "goalID", "taskID",
+            "boolConst", "predicateID", "goalID", "taskID", "effectID", "conditionID",
             "and", "or", "not", "gt", "gte", "lt", "lte", "eq", "neq", "previous"
     };
     private final JsonParser parser;
@@ -48,6 +48,8 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
         operandVisitors.put("taskID", this::visitTaskID);
         operandVisitors.put("variableID", this::visitVariableID);
         operandVisitors.put("qualID", this::visitQualID);
+        operandVisitors.put("effectID", this::visitEffectID);
+        operandVisitors.put("conditionID", this::visitConditionID);
 
         operandVisitors.put("add", this::visitAdd);
         operandVisitors.put("subtract", this::visitSubtract);
@@ -142,6 +144,32 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     }
 
     @Override
+    public Formula visitEffectID(JsonNode node) {
+        String name = node.asText();
+        Element element = referenceResolver.getElementByName(name);
+        if (element != null && element instanceof Effect) {
+            LOGGER.info(getClass(), "Found effect with name: " + name);
+            return element.getAtom();
+        } else {
+            LOGGER.error(getClass(), "Effect with name not found: " + name);
+            return Formula.createConstantFormula("Unknown EffectID");
+        }
+    }
+
+    @Override
+    public Formula visitConditionID(JsonNode node) {
+        String name = node.asText();
+        Element element = referenceResolver.getElementByName(name);
+        if (element != null && element instanceof Condition) {
+            LOGGER.info(getClass(), "Found condition with name: " + name);
+            return element.getAtom();
+        } else {
+            LOGGER.error(getClass(), "Condition with name not found: " + name);
+            return Formula.createConstantFormula("Unknown ConditionID");
+        }
+    }
+
+    @Override
     public Formula visitAdd(JsonNode node) throws IOException {
         return visitMultiOperator(node, PlusOperator::new, Formula.createConstantFormula("0"),
                 this::collectNumericOperands);
@@ -167,7 +195,7 @@ public class FormulaNodeVisitorImpl implements FormulaNodeVisitor {
     public Formula visitPrevious(JsonNode node) throws IOException {
         LOGGER.info("Visiting Previous node: " + node);
 
-        String[] ids = {"predicateID", "goalID", "taskID", "variableID", "qualID"};
+        String[] ids = {"predicateID", "goalID", "taskID", "variableID", "qualID", "effectID", "conditionID"};
 
         // Check if any ID fields exist in the node
         for (String type : ids) {

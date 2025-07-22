@@ -60,8 +60,8 @@ public class FormulaUnmarshallerTest {
         assertEquals(1, actor.getGoals().size(), "actor getGoals size");
         assertEquals(2, actor.getTasks().size(), "actor getTasks size");
         assertEquals(6, actor.getEffects().size(), "actor getEffects size");
-        assertEquals(8, actor.getQualities().size(), "actor getQualities size");
-        assertEquals(1, actor.getConditions().size(), "actor getConditions size");
+        assertEquals(9, actor.getQualities().size(), "actor getQualities size");
+        assertEquals(2, actor.getConditions().size(), "actor getConditions size");
         assertEquals(6, actor.getPredicates().size(), "actor getPredicates size");
         assertEquals(0, actor.getVariables().size(), "actor getVariables size");
 
@@ -195,10 +195,27 @@ public class FormulaUnmarshallerTest {
         Element p18 = ((Atom) p17.getLeft()).getElement();
         assertTrue(p18 instanceof Goal);
         assertEquals("orderMaterial", p18.getName(), "goalID");
+
+        // ========= QUALITY 8  =========
+        Quality quality9 = qualities.get(8);
+        assertEquals("(deliveredLateB_cond + deliveredInTimeB_eff)", quality9.getFormula().getFormula(), "quality expression");
+        assertTrue(quality9.getFormula() instanceof PlusOperator);
+        PlusOperator p19 = (PlusOperator) quality9.getFormula();
+        assertTrue(p19.getLeft() instanceof Atom);
+        assertTrue(p19.getRight() instanceof Atom);
+        Element deliveredLateB_cond = ((Atom) p19.getLeft()).getElement();
+        Element deliveredInTimeB_eff = ((Atom) p19.getRight()).getElement();
+
+        assertTrue(deliveredLateB_cond instanceof Condition);
+        assertEquals("deliveredLateB_cond", deliveredLateB_cond.getName(), "conditionID");
+
+        assertTrue(deliveredInTimeB_eff instanceof Effect);
+        assertEquals("deliveredInTimeB_eff", deliveredInTimeB_eff.getName(), "effectID");
     }
 
     @Test
     public void testUnmarshalConditions() {
+        // ========= CONDITION 1  =========
         Condition condition = actor.getConditions().get(0);
 
         assertEquals("((PREVIOUS(neverDeliveredB) AND NOT(deliveredInTimeB)) OR deliveredLateB)", condition.getFormula().getFormula(), "condition expression");
@@ -209,6 +226,21 @@ public class FormulaUnmarshallerTest {
 
         Atom deliveredLateB = (Atom) p1.getRight();
         assertTrue(deliveredLateB.getElement() instanceof Predicate);
+
+        // ========= CONDITION 2  =========
+        Condition condition2 = actor.getConditions().get(1);
+
+        assertEquals("(deliveredInTimeB_eff AND deliveredLateB_cond)", condition2.getFormula().getFormula(), "condition expression");
+        assertTrue(condition2.getFormula() instanceof ANDOperator);
+        ANDOperator p2 = (ANDOperator) condition2.getFormula();
+        assertTrue(p2.getLeft() instanceof Atom);
+        assertTrue(p2.getRight() instanceof Atom);
+
+        Atom deliveredInTimeB_eff = (Atom) p2.getLeft();
+        Atom deliveredLateB_cond = (Atom) p2.getRight();
+
+        assertTrue(deliveredInTimeB_eff.getElement() instanceof Effect);
+        assertTrue(deliveredLateB_cond.getElement() instanceof Condition);
     }
 
 	/** Helper method to get a file from the resources directory.

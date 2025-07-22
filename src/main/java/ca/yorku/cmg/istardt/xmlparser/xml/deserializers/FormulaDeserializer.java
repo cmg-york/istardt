@@ -67,6 +67,16 @@ public class FormulaDeserializer extends StdDeserializer<Formula> {
                 return visitor.visitQualID(node.get("qualID"));
             }
 
+            if (node.has("effectID")) {
+                LOGGER.info(getClass(), "Found effect ID atom: " + node.get("effectID").asText());
+                return visitor.visitEffectID(node.get("effectID"));
+            }
+
+            if (node.has("conditionID")) {
+                LOGGER.info(getClass(), "Found condition ID atom: " + node.get("conditionID").asText());
+                return visitor.visitConditionID(node.get("conditionID"));
+            }
+
             if (node.has("add")) {
                 LOGGER.info(getClass(), "Found add operator formula");
                 return visitor.visitAdd(node.get("add"));
