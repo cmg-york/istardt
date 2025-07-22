@@ -7,7 +7,7 @@
   <sch:ns prefix="istar-dt-x" uri="https://example.org/istar-dt-x"/>
 
   <sch:pattern id="CheckDescriptions">
-    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect | istar-dt-x:indirectEffect | istar-dt-x:condBox">
+    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect | istar-dt-x:condBox">
       <sch:report test="not(@description)" role="WARN">
         <sch:text>
           Element &lt;<sch:value-of select="name()"/>&gt; with @name="<sch:value-of select="@name"/>" has no @description.
@@ -52,12 +52,26 @@
         </sch:text>
       </sch:assert>
     </sch:rule>
+
     <sch:rule context="istar-dt-x:childTask">
       <sch:assert test="@ref = ancestor::istar-dt-x:actor//istar-dt-x:task/@name" role="ERROR">
         <sch:text>
           childTask ref="<sch:value-of select="@ref"/>" does not match any &lt;task name="..."&gt;.
         </sch:text>
       </sch:assert>
+    </sch:rule>
+  </sch:pattern>
+
+  <sch:pattern id="ChildOfMultipleGoals">
+    <sch:rule context="istar-dt-x:actor">
+      <sch:report test="some $t in distinct-values(.//istar-dt-x:childTask/@ref) satisfies count(.//istar-dt-x:childTask[@ref = $t]) > 1"
+                  role="ERROR">
+        At least one childTask is a child of multiple goals within this actor.
+      </sch:report>
+      <sch:report test="some $g in distinct-values(.//istar-dt-x:childGoal/@ref)satisfies count(.//istar-dt-x:childGoal[@ref = $g]) > 1"
+                  role="ERROR">
+        At least one childGoal is a child of multiple goals within this actor.
+      </sch:report>
     </sch:rule>
   </sch:pattern>
 
@@ -104,13 +118,14 @@
   </sch:pattern>
 
   <sch:pattern id="CheckUniqueNames">
-    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect">
+    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect | istar-dt-x:condBox">
       <sch:let name="name" value="@name"/>
       <sch:let name="currentType" value="local-name()"/>
       <sch:let name="allNamed" value="//istar-dt-x:actor[@name=$name] |
                                     //istar-dt-x:quality[@name=$name] |
                                     //istar-dt-x:goal[@name=$name] |
                                     //istar-dt-x:task[@name=$name] |
+                                    //istar-dt-x:condBox[@name=$name] |
                                     //istar-dt-x:effect[@name=$name]"/>
 
       <sch:assert test="count($allNamed) = 1" role="ERROR">
@@ -128,6 +143,7 @@
                                     //istar-dt-x:quality[@name=$content] |
                                     //istar-dt-x:goal[@name=$content] |
                                     //istar-dt-x:task[@name=$content] |
+                                    //istar-dt-x:condBox[@name=$content] |
                                     //istar-dt-x:effect[@name=$content] |
                                     //istar-dt-x:predicate[normalize-space(.) = $content] |
                                     //istar-dt-x:variable[normalize-space(.) = $content]"/>
@@ -142,12 +158,6 @@
 
   <sch:pattern id="CheckGoalEpisodeLength">
     <sch:rule context="istar-dt-x:goal">
-      <!--      <sch:report test="not(@episodeLength)" role="WARN">-->
-      <!--        <sch:text>-->
-      <!--          Root goal "<sch:value-of select="@name"/>" has no @episodeLength. Using default-->
-      <!--        </sch:text>-->
-      <!--      </sch:report>-->
-
       <sch:assert test="@episodeLength castable as xs:integer and @episodeLength &gt; 0" role="ERROR">
         <sch:text>
           Goal "<sch:value-of select="@name"/>" has an invalid @episodeLength. It must be a positive integer.
@@ -156,9 +166,25 @@
     </sch:rule>
   </sch:pattern>
 
+  <sch:pattern id="CheckGoalAndQuality">
+    <sch:rule context="istar-dt-x:actor">
+      <sch:assert test="count(istar-dt-x:goals/istar-dt-x:goal) &gt; 0"
+                  role="WARN">
+        Each actor must have at least one goal.
+      </sch:assert>
+    </sch:rule>
+
+    <sch:rule context="istar-dt-x:actor">
+      <sch:assert test="count(istar-dt-x:qualities/istar-dt-x:quality) &gt; 0"
+                  role="WARN">
+        Each actor must have at least one quality.
+      </sch:assert>
+    </sch:rule>
+  </sch:pattern>
+
   <sch:pattern id="CheckRoot">
     <sch:rule context="istar-dt-x:qualities">
-      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:qualities/istar-dt-x:quality[@root='true']) = 1" role="ERROR">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:qualities/istar-dt-x:quality[@root='true']) = 1" role="WARN">
         <sch:text>
           There must be exactly one root quality per actor.
         </sch:text>
@@ -166,7 +192,7 @@
     </sch:rule>
 
     <sch:rule context="istar-dt-x:goals">
-      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:goals/istar-dt-x:goal[@root='true']) = 1" role="ERROR">
+      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:goals/istar-dt-x:goal[@root='true']) = 1" role="WARN">
         <sch:text>
           There must be exactly one root goal per actor.
         </sch:text>
@@ -193,14 +219,74 @@
     </sch:rule>
   </sch:pattern>
 
-  <sch:pattern id="CheckConditionNames">
-    <sch:rule context="istar-dt-x:condBoxes/istar-dt-x:condBox">
-      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:predicates/istar-dt-x:predicate[normalize-space() = normalize-space(current()/@name)]) = 1" role="ERROR">
-        Condition name “<sch:value-of select="@name"/>” must match exactly one predicate.
-      </sch:assert>
+  <!-- TODO Will add rule for turnsTrue/turnsFalse -->
+
+  <sch:pattern id="NoInitializations">
+    <sch:rule context="istar-dt-x:actor">
+      <sch:report test="not(istar-dt-x:initializations) or not(istar-dt-x:initializations/istar-dt-x:initialization)" role="WARN">
+        <sch:text>
+          Actor "<sch:value-of select="@name"/>" has no &lt;initializations&gt; or it is empty.
+          All found variables and qualities will be initialized to 0.
+        </sch:text>
+      </sch:report>
     </sch:rule>
   </sch:pattern>
 
-  <!-- TODO Will add rule for turnsTrue/turnsFalse -->
+  <sch:pattern id="NoCrossRunsWithMultiRunRootGoal">
+    <sch:rule context="istar-dt-x:actor">
+      <sch:report
+              test="(not(istar-dt-x:crossRuns) or not(istar-dt-x:crossRuns/istar-dt-x:crossRun))
+             and
+            (istar-dt-x:goals/istar-dt-x:goal[@root='true' and @episodeLength > 1])"
+              role="WARN">
+        <sch:text>
+          Actor "<sch:value-of select="@name"/>" has no &lt;crossRuns&gt; or it is empty, but has a root goal with episodeLength &gt; 1.
+        </sch:text>
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+
+  <sch:pattern id="NoExportedSet">
+    <sch:rule context="istar-dt-x:actor">
+      <sch:report test="not(istar-dt-x:exportedSet) or not(istar-dt-x:exportedSet/istar-dt-x:export)" role="WARN">
+        <sch:text>
+          Actor "<sch:value-of select="@name"/>" has no &lt;exportedSet&gt; or it is empty.
+          Effect predicates will be used.
+        </sch:text>
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
+
+  <sch:pattern id="TerminalGoal">
+    <sch:rule context="istar-dt-x:goal">
+
+      <!-- terminal=true but non-empty refinement -->
+      <sch:report
+              test="@terminal = 'true' and istar-dt-x:refinement[istar-dt-x:childGoal or istar-dt-x:childTask]"
+              role="WARN">
+        <sch:text>
+          Goal "<sch:value-of select="@name"/>" is marked terminal="true" but has a non-empty &lt;refinement&gt;.
+        </sch:text>
+      </sch:report>
+
+      <!-- terminal=false but refinement is empty or absent -->
+      <sch:report
+              test="(@terminal = 'false' or not(@terminal)) and (not(istar-dt-x:refinement) or not(istar-dt-x:refinement/*))"
+              role="WARN">
+        <sch:text>
+          Goal "<sch:value-of select="@name"/>" is terminal="false" but &lt;refinement&gt; is empty or absent.
+        </sch:text>
+      </sch:report>
+
+      <!-- terminal=true and refinement is empty or absent -->
+      <sch:report
+              test="@terminal = 'true' and (not(istar-dt-x:refinement) or not(istar-dt-x:refinement/*))"
+              role="WARN">
+        <sch:text>
+          Goal "<sch:value-of select="@name"/>" is terminal="true" and &lt;refinement&gt; is empty or absent.
+        </sch:text>
+      </sch:report>
+    </sch:rule>
+  </sch:pattern>
 
 </sch:schema>
