@@ -217,14 +217,6 @@
     </sch:rule>
   </sch:pattern>
 
-  <sch:pattern id="CheckConditionNames">
-    <sch:rule context="istar-dt-x:condBoxes/istar-dt-x:condBox">
-      <sch:assert test="count(ancestor::istar-dt-x:actor/istar-dt-x:predicates/istar-dt-x:predicate[normalize-space() = normalize-space(current()/@name)]) = 1" role="ERROR">
-        Condition name “<sch:value-of select="@name"/>” must match exactly one predicate.
-      </sch:assert>
-    </sch:rule>
-  </sch:pattern>
-
 <!-- TODO Will add rule for turnsTrue/turnsFalse -->
 
   <sch:pattern id="NoInitializations">
