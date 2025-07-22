@@ -6,7 +6,7 @@
         elementFormDefault="qualified"
         attributeFormDefault="unqualified">
 
-    <!-- Root element -->
+    <!-- ===== Root Element ===== -->
     <xsd:element name="iStarDT" type="IStarDTType">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
@@ -278,9 +278,13 @@
     <xsd:group name="BooleanExpressionElements">
         <xsd:choice>
             <xsd:element name="boolConst" type="xsd:boolean"/>
+
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="effectID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
+
             <xsd:element name="previous" type="BoolAtomType"/>
 
             <xsd:element name="gt" type="NumericComparisonType"/>
@@ -303,6 +307,8 @@
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="effectID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
         </xsd:choice>
     </xsd:group>
 
@@ -337,6 +343,8 @@
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="effectID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
 
             <xsd:element name="previous" type="NumAtomType"/>
             <xsd:element name="add" type="NumericNaryOpType"/>
@@ -355,6 +363,8 @@
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="effectID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
         </xsd:choice>
     </xsd:group>
 
@@ -552,7 +562,7 @@
         <xsd:attribute name="root" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="description" type="xsd:string" use="optional"/>
         <xsd:attribute name="terminal" type="xsd:boolean" use="optional" default="false"/>
-        <xsd:attribute name="episodeLength" type="xsd:nonNegativeInteger" use="optional" default="1"/>
+        <xsd:attribute name="episodeLength" type="xsd:positiveInteger" use="optional" default="1"/>
     </xsd:complexType>
 
     <xsd:complexType name="RefinementType">

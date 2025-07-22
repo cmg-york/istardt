@@ -143,23 +143,38 @@
                         <goalID>orderMaterial</goalID>
                     </previous>
                 </quality>
+
+                <quality name = "test5" description = "" root = "false">
+                    <add>
+                        <conditionID>deliveredLateB_cond</conditionID>
+                        <effectID>deliveredInTimeB_eff</effectID>
+                    </add>
+                </quality>
             </qualities>
 
             <!--
             *** CO N D I T I O N   B O X E S ***
             -->
             <condBoxes>
-                <condBox name = "deliveredLateB"><or>
+                <condBox name = "deliveredLateB_cond">
+                    <or>
+                        <and>
+                            <previous>
+                                <predicateID>neverDeliveredB</predicateID>
+                            </previous>
+                            <not>
+                                <predicateID>deliveredInTimeB</predicateID>
+                            </not>
+                        </and>
+                        <predicateID>deliveredLateB</predicateID>
+                    </or>
+                </condBox>
+                <condBox name="test_cond">
                     <and>
-                        <previous>
-                            <predicateID>neverDeliveredB</predicateID>
-                        </previous>
-                        <not>
-                            <predicateID>deliveredInTimeB</predicateID>
-                        </not>
+                        <effectID>deliveredInTimeB_eff</effectID>
+                        <conditionID>deliveredLateB_cond</conditionID>
                     </and>
-                    <predicateID>deliveredLateB</predicateID>
-                </or></condBox>
+                </condBox>
             </condBoxes>
 
             <!--

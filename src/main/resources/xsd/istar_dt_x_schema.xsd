@@ -343,6 +343,8 @@
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="effectID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
 
             <xsd:element name="previous" type="NumAtomType"/>
             <xsd:element name="add" type="NumericNaryOpType"/>
