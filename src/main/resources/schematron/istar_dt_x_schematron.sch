@@ -118,13 +118,14 @@
   </sch:pattern>
 
   <sch:pattern id="CheckUniqueNames">
-    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect">
+    <sch:rule context="istar-dt-x:actor | istar-dt-x:quality | istar-dt-x:goal | istar-dt-x:task | istar-dt-x:effect | istar-dt-x:condBox">
       <sch:let name="name" value="@name"/>
       <sch:let name="currentType" value="local-name()"/>
       <sch:let name="allNamed" value="//istar-dt-x:actor[@name=$name] |
                                     //istar-dt-x:quality[@name=$name] |
                                     //istar-dt-x:goal[@name=$name] |
                                     //istar-dt-x:task[@name=$name] |
+                                    //istar-dt-x:condBox[@name=$name] |
                                     //istar-dt-x:effect[@name=$name]"/>
 
       <sch:assert test="count($allNamed) = 1" role="ERROR">
@@ -142,6 +143,7 @@
                                     //istar-dt-x:quality[@name=$content] |
                                     //istar-dt-x:goal[@name=$content] |
                                     //istar-dt-x:task[@name=$content] |
+                                    //istar-dt-x:condBox[@name=$content] |
                                     //istar-dt-x:effect[@name=$content] |
                                     //istar-dt-x:predicate[normalize-space(.) = $content] |
                                     //istar-dt-x:variable[normalize-space(.) = $content]"/>
