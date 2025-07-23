@@ -17,8 +17,10 @@
 ```
 [boolean-expression] ::= [bool-const] | [atom] | [previous-bool] | [boolean-operation] | [numeric-comparison]
 [bool-const] ::= "<boolConst>" [boolean] "</boolConst>"
-[atom] ::= [predicate-id] | [goal-id] | [task-id]
+[atom] ::= [predicate-id] |[condition-id] | [goal-id] | [task-id] |[effect-id]
 [predicate-id] ::= "<predicateID>" [identifier] "</predicateID>"
+[condition-id]::="<conditionID>" [identifier] "</conditionID>"
+[effect-id]::="<effectID>" [identifier] "</effectID>"
 [goal-id] ::= "<goalID>" [identifier] "</goalID>"
 [task-id] ::= "<taskID>" [identifier] "</taskID>"
 [previous-bool] ::= "<previous>" [atom] "</previous>"

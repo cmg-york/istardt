@@ -16,6 +16,8 @@ public interface FormulaNodeVisitor {
     Formula visitTaskID(JsonNode node);
     Formula visitVariableID(JsonNode node);
     Formula visitQualID(JsonNode node);
+    Formula visitEffectID(JsonNode node);
+    Formula visitConditionID(JsonNode node);
 
     Formula visitAdd(JsonNode node) throws IOException;
     Formula visitSubtract(JsonNode node) throws IOException;

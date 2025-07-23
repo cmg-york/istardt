@@ -1,6 +1,6 @@
 package ca.yorku.cmg.istardt.translators.dtx2dtg;
 
-import ca.yorku.cmg.istardt.xmlparser.XmlValidation;
+import io.github.nina2dv.xmlvalidation.XmlValidation;
 import ca.yorku.cmg.istardt.xmlparser.objects.*;
 import ca.yorku.cmg.istardt.xmlparser.xml.IStarUnmarshaller;
 import ca.yorku.cmg.istardt.xmlparser.xml.utils.CustomLogger;
