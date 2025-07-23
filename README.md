@@ -5,14 +5,18 @@
 Currently a translator to DT-Golog, `dtx2dtg`, is included.
 
 ## Table of Contents
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Running the Application](#running-the-application)
-- [Configuration](#configuration)
-- [Testing](#testing)
-- [Limitations/Future notes](#limitationsfuture-notes)
+* [Features](#features)
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Usage](#usage)
+  * [Running the Application](#running-the-application)
+  * [Options](#options)
+* [Configuration](#configuration)
+* [Testing](#testing)
+* [Related tools](#related-tools)
+* [Notes and Limitations](#notes-and-limitations)
+* [Contact](#contact)
+
 
 ## Features
 
