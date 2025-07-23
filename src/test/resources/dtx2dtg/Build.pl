@@ -1,5 +1,5 @@
 % DT-Golog Specification for Model: Spec 
-% Date Translated: 2025-07-21 09:28:36 
+% Date Translated: 2025-07-22 22:22:00 
 % From source: Spec 
 % Using DTTRanslate 
 :-style_check(-discontiguous).
@@ -111,7 +111,7 @@ prob(badQualityB_Eff,0.5,_).
 proc(orderMaterial, orderFromSupplierA # orderFromSupplierB).
 proc(assignWork, assignToSubcontractorA # assignToSubcontractorB).
 proc(buildRoof, orderMaterial : assignWork).
-dtgRun :- write('Policy: '), bp(buildRoof,10,_,U,P,x),
+dtgRun :- write('Policy: '), bp(buildRoof,10,_,U,P,x),nl,
         write('Utility: '),writeln(U), 
         write('Probability: '),writeln(P).
 
@@ -171,7 +171,21 @@ assignWork_Sat(S) :- assignToSubcontractorA_Sat(S);assignToSubcontractorB_Sat(S)
 buildRoof_Sat(S) :- orderMaterial_Sat(S),assignWork_Sat(S).
 
 
- % Condition Box Related
+% Condition Box Related
+
+
+% Effect Related
+deliveredInTimeA_Eff_Sat(S) :- deliveredInTimeA_fl(S).
+neverDeliveredA_Eff_Sat(S) :- neverDeliveredA_fl(S).
+deliveredLateA_Eff_Sat(S) :- deliveredLateA_fl(S).
+deliveredInTimeB_Eff_Sat(S) :- deliveredInTimeB_fl(S).
+neverDeliveredB_Eff_Sat(S) :- neverDeliveredB_fl(S).
+deliveredLateB_Eff_Sat(S) :- deliveredLateB_fl(S).
+goodQualityA_Eff_Sat(S) :- goodQualityA_fl(S).
+badQualityA_Eff_Sat(S) :- badQualityA_fl(S).
+goodQualityB_Eff_Sat(S) :- goodQualityB_fl(S).
+badQualityB_Eff_Sat(S) :- badQualityB_fl(S).
+
 
 %
 % ATTEMPT FORMULAE 
@@ -237,16 +251,16 @@ rewardInst(R,S) :- overallQuality(R,S).
 % SENSE CONDITIONS 
 % 
 
-senseCondition(deliveredInTimeA_Eff,deliveredInTimeA_Eff_fl).
-senseCondition(neverDeliveredA_Eff,neverDeliveredA_Eff_fl).
-senseCondition(deliveredLateA_Eff,deliveredLateA_Eff_fl).
-senseCondition(deliveredInTimeB_Eff,deliveredInTimeB_Eff_fl).
-senseCondition(neverDeliveredB_Eff,neverDeliveredB_Eff_fl).
-senseCondition(deliveredLateB_Eff,deliveredLateB_Eff_fl).
-senseCondition(goodQualityA_Eff,goodQualityA_Eff_fl).
-senseCondition(badQualityA_Eff,badQualityA_Eff_fl).
-senseCondition(goodQualityB_Eff,goodQualityB_Eff_fl).
-senseCondition(badQualityB_Eff,badQualityB_Eff_fl).
+senseCondition(deliveredInTimeA_Eff,deliveredInTimeA_Eff_Occured).
+senseCondition(neverDeliveredA_Eff,neverDeliveredA_Eff_Occured).
+senseCondition(deliveredLateA_Eff,deliveredLateA_Eff_Occured).
+senseCondition(deliveredInTimeB_Eff,deliveredInTimeB_Eff_Occured).
+senseCondition(neverDeliveredB_Eff,neverDeliveredB_Eff_Occured).
+senseCondition(deliveredLateB_Eff,deliveredLateB_Eff_Occured).
+senseCondition(goodQualityA_Eff,goodQualityA_Eff_Occured).
+senseCondition(badQualityA_Eff,badQualityA_Eff_Occured).
+senseCondition(goodQualityB_Eff,goodQualityB_Eff_Occured).
+senseCondition(badQualityB_Eff,badQualityB_Eff_Occured).
 
 %
 % RESTORE SITUATION ARGUMENT 

@@ -169,6 +169,7 @@ public class FormulaParser {
 		} else {
 			m = (Atom) f;
 		}
+		System.out.println("If am " + m.getTitleText() + " and I am of type " + m.getElement().getClass().getSimpleName());
 		if ((m.getElement() instanceof Predicate)) {
 			return(
 					"val(R_" + m.getTitleText() + "_fl," +  m.getTitleText() + "_fl(" + (hasPrev ? "s0" : "S") + ")),\n"  

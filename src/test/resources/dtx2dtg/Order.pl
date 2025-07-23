@@ -1,5 +1,5 @@
 % DT-Golog Specification for Model: Spec 
-% Date Translated: 2025-07-21 10:45:23 
+% Date Translated: 2025-07-22 22:22:00 
 % From source: Spec 
 % Using DTTRanslate 
 :-style_check(-discontiguous).
@@ -97,7 +97,7 @@ prob(deliveredLateB_Eff,0.35,_).
 % 
 
 proc(orderMaterial, orderFromSupplierA # orderFromSupplierB).
-dtgRun :- write('Policy: '), bp(orderMaterial,10,_,U,P,x),
+dtgRun :- write('Policy: '), bp(orderMaterial,10,_,U,P,x),nl,
         write('Utility: '),writeln(U), 
         write('Probability: '),writeln(P).
 
@@ -143,7 +143,17 @@ orderFromSupplierB_Sat(S) :- deliveredInTimeB_fl(S);deliveredLateB_fl(S).
 orderMaterial_Sat(S) :- orderFromSupplierA_Sat(S);orderFromSupplierB_Sat(S).
 
 
- % Condition Box Related
+% Condition Box Related
+
+
+% Effect Related
+deliveredInTimeA_Eff_Sat(S) :- deliveredInTimeA_fl(S).
+neverDeliveredA_Eff_Sat(S) :- neverDeliveredA_fl(S).
+deliveredLateA_Eff_Sat(S) :- deliveredLateA_fl(S).
+deliveredInTimeB_Eff_Sat(S) :- deliveredInTimeB_fl(S).
+neverDeliveredB_Eff_Sat(S) :- neverDeliveredB_fl(S).
+deliveredLateB_Eff_Sat(S) :- deliveredLateB_fl(S).
+
 
 %
 % ATTEMPT FORMULAE 
@@ -201,12 +211,12 @@ rewardInst(R,S) :- overallQuality(R,S).
 % SENSE CONDITIONS 
 % 
 
-senseCondition(deliveredInTimeA_Eff,deliveredInTimeA_Eff_fl).
-senseCondition(neverDeliveredA_Eff,neverDeliveredA_Eff_fl).
-senseCondition(deliveredLateA_Eff,deliveredLateA_Eff_fl).
-senseCondition(deliveredInTimeB_Eff,deliveredInTimeB_Eff_fl).
-senseCondition(neverDeliveredB_Eff,neverDeliveredB_Eff_fl).
-senseCondition(deliveredLateB_Eff,deliveredLateB_Eff_fl).
+senseCondition(deliveredInTimeA_Eff,deliveredInTimeA_Eff_Occured).
+senseCondition(neverDeliveredA_Eff,neverDeliveredA_Eff_Occured).
+senseCondition(deliveredLateA_Eff,deliveredLateA_Eff_Occured).
+senseCondition(deliveredInTimeB_Eff,deliveredInTimeB_Eff_Occured).
+senseCondition(neverDeliveredB_Eff,neverDeliveredB_Eff_Occured).
+senseCondition(deliveredLateB_Eff,deliveredLateB_Eff_Occured).
 
 %
 % RESTORE SITUATION ARGUMENT 

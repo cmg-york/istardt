@@ -35,6 +35,11 @@ public class Formatter {
 		return sb.toString();
 	}
 
+	
+	public String trimTrailingCharacter(String s) {
+		return s.substring(0, s.length() - 1);
+	}
+	
 	public String toFluent(String s) {
 		return s + "_fl";
 	}

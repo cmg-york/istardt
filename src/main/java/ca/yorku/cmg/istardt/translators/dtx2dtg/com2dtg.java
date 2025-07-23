@@ -46,6 +46,7 @@ public class com2dtg {
 //	private String successorStateAxiomsPre = "";
 	private String rewardFormulae = "";
 	private String satisfactionFormulae = "";
+	private String satisfactionFormulae_Effects = "";
 	private String rootSat = "";
 //	private String satisfactionFormulaePre = "";
 	private String attemptFormulae = "";
@@ -99,8 +100,8 @@ public class com2dtg {
 		if (!empty) {
 			discreteExport = discreteExport.substring(0, discreteExport.length() - 1) + "]).\n";
 		} else {
-			//discreteExport += "]).\n";
-			discreteExport = "discreteExportedSet(X) :- fluentList(X),!.\n";
+			discreteExport += "]).\n";
+			//discreteExport = "discreteExportedSet(X) :- fluentList(X),!.\n";
 		}
 		
 		return(discreteExport);
@@ -251,18 +252,16 @@ public class com2dtg {
 				nonDetActions += effectID + ",";
 				probabilities += "prob(" + effectID + "," + e.getProbability() + ",_).\n";
 				
+				String effectSatFormula = effectID + "_Sat(S) :- ";
+
 				for(String pred : e.getTurnsTrue()) {
 					fluentList += formatter.toFluent(pred) + ",";
-					//fluentList += formatter.toPreFluent(pred) + ","; // PRE
 					successorStateAxioms += formatter.toFluent(pred) + "(do(A,S)) :- " + 
 							formatter.toFluent(pred) + "(S); A=" + effectID + ".\n";
-					//successorStateAxiomsPre += formatter.toPreFluent(pred) + "(do(A,S)) :- " + 
-					//		formatter.toFluent(pred) + "(S).\n"; //PRE
-					senseConditions += "senseCondition(" + effectID + "," + formatter.toFluent(effectID) + ").\n";
-					//senseConditions += "senseCondition(" + effectID + "," + formatter.toPreFluent(effectID) + ").\n";
+					senseConditions += "senseCondition(" + effectID + "," + effectID + "_Occured).\n";
 					restoreSitArg += "restoreSitArg(" + formatter.toFluent(pred) + ",S," + formatter.toFluent(pred) + "(S)).\n";
-					//restoreSitArg += "restoreSitArg(" + formatter.toPreFluent(effectID) + ",S," + formatter.toPreFluent(effectID) + "(S)).\n";
 					
+					effectSatFormula += formatter.toFluent(pred) + "(S),";
 					localAttFormula += formatter.toFluent(pred) + "(S);";
 					
 					if (e.isSatisfying()) {
@@ -273,7 +272,11 @@ public class com2dtg {
 					
 				} //Next predicate
 				
-
+				// TODO: Process getTurnsFalse 
+				
+				satisfactionFormulae_Effects += formatter.trimTrailingCharacter(effectSatFormula) + ".\n";  
+				
+				
 				//
 				// EFECT PRECONDITIONS
 				//
@@ -386,7 +389,7 @@ public class com2dtg {
 		}
 
 		rootSat = "goalAchieved(S) :- " + a.getGoalRoot().getName() + "_Sat(S).\n";
-		procedures += "dtgRun :- write('Policy: '), bp(" + a.getGoalRoot().getName() + ",10,_,U,P,x),"
+		procedures += "dtgRun :- write('Policy: '), bp(" + a.getGoalRoot().getName() + ",10,_,U,P,x),nl,"
 				+ "\n        write('Utility: '),writeln(U), "
 				+ "\n        write('Probability: '),writeln(P).";
 		
@@ -427,16 +430,16 @@ public class com2dtg {
 		rewardFormulae += "\n" + rewardTotal + "\n";
 		
 		
-		
-		satisfactionFormulae += "\n\n % Condition Box Related\n";
+		satisfactionFormulae += "\n\n% Condition Box Related\n";
 		
 		for (Condition cond:a.getConditions()) {
 			//fluentList += cond.getName() + "_fl,";
-			satisfactionFormulae += cond.getName() + "_fl(s0) :- !,initiallyTrue(" + cond.getName() + "_fl).\n";
-			satisfactionFormulae += cond.getName() + "_fl(S) :- " + parser.parseConditionExpression(cond.getFormula()) + ".\n";
-			restoreSitArg += "restoreSitArg(" + formatter.toFluent(cond.getName()) + ",S," + formatter.toFluent(cond.getName()) + "(S)).\n";
+			satisfactionFormulae += cond.getName() + "(s0) :- !,initiallyTrue(" + cond.getName() + "_fl).\n";
+			satisfactionFormulae += cond.getName() + "(S) :- " + parser.parseConditionExpression(cond.getFormula()) + ".\n";
+			restoreSitArg += "restoreSitArg(" + cond.getName() + ",S," + cond.getName() + "(S)).\n";
 		}
 		
+		satisfactionFormulae += "\n\n% Effect Related\n" + satisfactionFormulae_Effects + "\n";  
 		
 		fluentList = fluentList.substring(0, fluentList.length() - 1) + "]).\n";
 		
