@@ -92,6 +92,23 @@
       </sch:assert>
     </sch:rule>
 
+    <sch:rule context="istar-dt-x:conditionID">
+      <sch:assert test="normalize-space(.) = ancestor::istar-dt-x:actor//istar-dt-x:condBox/@name" role="ERROR">
+        <sch:text>
+          conditionID "<sch:value-of select="normalize-space(.)"/>" does not match any &lt;condBox name="..."&gt;.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+
+    <sch:rule context="istar-dt-x:effectID">
+      <sch:assert test="normalize-space(.) = ancestor::istar-dt-x:actor//istar-dt-x:effect/@name" role="ERROR">
+        <sch:text>
+          effectID "<sch:value-of select="normalize-space(.)"/>" does not match any &lt;effect name="..."&gt;.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+
+
     <sch:rule context="istar-dt-x:taskID">
       <sch:assert test="normalize-space(.) = ancestor::istar-dt-x:actor//istar-dt-x:task/@name" role="ERROR">
         <sch:text>
@@ -112,6 +129,23 @@
       <sch:assert test="normalize-space(.) = ancestor::istar-dt-x:actor//istar-dt-x:predicate/normalize-space(.)" role="ERROR">
         <sch:text>
           predicateID “<sch:value-of select='normalize-space(.)'/>” does not match any &lt;predicate&gt;.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+
+    <!-- ===== turnsTrue & turnsFalse check ===== -->
+    <sch:rule context="istar-dt-x:turnsTrue">
+      <sch:assert test="normalize-space(.) = ancestor::istar-dt-x:actor//istar-dt-x:predicate/normalize-space(.)" role="ERROR">
+        <sch:text>
+          turnsTrue “<sch:value-of select='normalize-space(.)'/>” does not match any &lt;predicate&gt;.
+        </sch:text>
+      </sch:assert>
+    </sch:rule>
+
+    <sch:rule context="istar-dt-x:turnsFalse">
+      <sch:assert test="normalize-space(.) = ancestor::istar-dt-x:actor//istar-dt-x:predicate/normalize-space(.)" role="ERROR">
+        <sch:text>
+          turnsFalse “<sch:value-of select='normalize-space(.)'/>” does not match any &lt;predicate&gt;.
         </sch:text>
       </sch:assert>
     </sch:rule>
@@ -218,8 +252,6 @@
       </sch:assert>
     </sch:rule>
   </sch:pattern>
-
-  <!-- TODO Will add rule for turnsTrue/turnsFalse -->
 
   <sch:pattern id="NoInitializations">
     <sch:rule context="istar-dt-x:actor">
