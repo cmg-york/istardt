@@ -153,20 +153,23 @@ public class com2dtg {
 	public String getInitializations (InitializationSet init) {
 		String initLine = "init([";
 		
-		for (Initialization it: init.getInitializations()) {
-			String descr = it.getRef(); //CAUTION: maybe this is getRef
-
-			if ((it.getElement() instanceof Predicate))  {
-				initLine += descr + "_fl,";
-			} else if (it.getElement() instanceof Variable) {
-				initLine += descr + "_fl(" + it.getValue() +  "),";
-			} else if (it.getElement() instanceof Quality) {
-				initLine += descr + "(" + it.getValue() +  "),";
-			} else {
-				System.err.println("ERROR: initialization should be a predicate, a variable or a quality");
+		if ((init != null) && !init.getInitializations().isEmpty()) {
+			for (Initialization it: init.getInitializations()) {
+				String descr = it.getRef();
+				if ((it.getElement() instanceof Predicate))  {
+					initLine += descr + "_fl,";
+				} else if (it.getElement() instanceof Variable) {
+					initLine += descr + "_fl(" + it.getValue() +  "),";
+				} else if (it.getElement() instanceof Quality) {
+					initLine += descr + "(" + it.getValue() +  "),";
+				} else {
+					System.err.println("ERROR: initialization should be a predicate, a variable, or a quality");
+				}
 			}
+			initLine = initLine.substring(0, initLine.length() - 1) + "]).\n";		
+		} else {
+			initLine +=  "]).\n";
 		}
-		initLine = initLine.substring(0, initLine.length() - 1) + "]).\n";
 		return (initLine);
 	}
 	
@@ -205,8 +208,8 @@ public class com2dtg {
 		// Number of Runs
 		numRuns = "getNumRuns(" + a.getGoalRoot().getRuns() + ").";
 		// Problem type
-		problemType = isContinuous(a.getExportedSet()) ? "getObsType(continuous).\n" : "getObsType(discrete).\n";  
-		 
+		//problemType = isContinuous(a.getExportedSet()) ? "getObsType(continuous).\n" : "getObsType(discrete).\n";  
+		problemType = "getObsType(continuous).\n";
 		
 		// TODO
 		// Configure Reward style
@@ -540,7 +543,6 @@ public class com2dtg {
 				+ ":-style_check(-singleton).\n"
 				+ ":- multifile getRewardMode/1.\n"
 				+ ":- multifile getRewardModeDTG/1.\n"
-				+ ":- multifile penalizeDeadlock/1.\n"
 				+ ":- multifile deadlockPenalty/1.\n"
 				+ ":- multifile getInfeasiblePenalty/1.\n"
 				+ ":- multifile val/2.\n"
