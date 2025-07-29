@@ -18,7 +18,7 @@
 <!--
 *** O P T I O N S ***
 -->
-<options continuous = "false"
+<options continuous = "true"
     infeasibleActionPenalty = "100">
 </options>
 
@@ -49,7 +49,7 @@
          <goalID>orderMaterial</goalID>
       </pre>
    </goal>
-   <goal name = "buildRoof" description = "Build Roof" root = "true" terminal = "false" episodeLength = "1">
+   <goal name = "buildRoof" description = "Build Roof" root = "true" terminal = "false" episodeLength = "3">
       <refinement type = "AND">
          <childGoal ref = "orderMaterial"/>
          <childGoal ref = "assignWork"/>
