@@ -99,6 +99,8 @@ proc(orderMaterial, orderFromSupplierA # orderFromSupplierB).
 dtgRun :- write('Policy: '), bp(orderMaterial,10,_,U,P,x),nl,
         write('Utility: '),writeln(U), 
         write('Probability: '),writeln(P).
+dtgRun(L,U,P) :-  with_output_to(string(_),bp(orderMaterial,10,L,U,P,x)).
+
 
 
 %

@@ -113,10 +113,11 @@
           				<goals>
             				<goal>run</goal>
           				</goals>
+          				<!--
           				<configuration>
             				<target>
-             					<copy todir="../dtg2sim-new/src/">
-                					<fileset dir="src/test/resources/dtx2dtg" includes="**/*.pl" excludes="**/*-Authoritative.*">
+             					<copy todir="../dtg2sim-new/examples/">
+                					<fileset dir="src/test/resources/dtx2dtg" includes="**/*.pl" excludes="**/*-Auth.*">
                 					    <exclude name="**/DT-Golog.pl"/>
     									<exclude name="**/DT-Golog-Iface.pl"/>
     									<exclude name="**/DT-Golog-Ext.pl"/>
@@ -124,11 +125,10 @@
               					</copy>
             				</target>
           				</configuration>
+          				-->
         			</execution>
       			</executions>
     		</plugin>
-            
-            
         </plugins>
     </build>
 </project>

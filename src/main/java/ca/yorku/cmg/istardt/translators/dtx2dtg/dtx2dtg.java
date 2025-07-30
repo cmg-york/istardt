@@ -96,9 +96,6 @@ public class dtx2dtg {
                 }            	
             }
             
-
-
-
         } catch (Exception e) {
             System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();

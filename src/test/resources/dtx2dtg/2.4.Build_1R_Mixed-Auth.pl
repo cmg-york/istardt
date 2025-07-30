@@ -114,6 +114,8 @@ proc(buildRoof, assignWork : orderMaterial).
 dtgRun :- write('Policy: '), bp(buildRoof,10,_,U,P,x),nl,
         write('Utility: '),writeln(U), 
         write('Probability: '),writeln(P).
+dtgRun(L,U,P) :-  with_output_to(string(_),bp(buildRoof,10,L,U,P,x)).
+
 
 
 %

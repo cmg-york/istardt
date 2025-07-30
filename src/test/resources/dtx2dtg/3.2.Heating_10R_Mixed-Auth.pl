@@ -29,7 +29,7 @@ getObsType(continuous).
 %
 % C R O S S   S T A T E 
 %
-transStateStructure([roomTemperature(_),runningTime(_)]).
+transStateStructure([roomTemperature(_),runningTime(_),hvacOn_fl]).
 
 
 
@@ -95,6 +95,8 @@ proc(controlHeater, sendOnSignal # sendOffSignal).
 dtgRun :- write('Policy: '), bp(controlHeater,10,_,U,P,x),nl,
         write('Utility: '),writeln(U), 
         write('Probability: '),writeln(P).
+dtgRun(L,U,P) :-  with_output_to(string(_),bp(controlHeater,10,L,U,P,x)).
+
 
 
 %
@@ -236,5 +238,5 @@ restoreSitArg(comfort(X),S,comfort(X,S)).
 restoreSitArg(overallQuality(X),S,overallQuality(X,S)).
 restoreSitArg(roomTemperature(X),S,roomTemperature(X,S)).
 restoreSitArg(runningTime(X),S,runningTime(X,S)).
-restoreSitArg(hvacOn,S,hvacOn(S)).
+restoreSitArg(hvacOn_fl,S,hvacOn_fl(S)).
 

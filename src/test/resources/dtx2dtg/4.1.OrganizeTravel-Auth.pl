@@ -129,6 +129,8 @@ proc(applicationPrepared, fillInPaperForm # fillInOnlineForm).
 dtgRun :- write('Policy: '), bp(travelOrganized,10,_,U,P,x),nl,
         write('Utility: '),writeln(U), 
         write('Probability: '),writeln(P).
+dtgRun(L,U,P) :-  with_output_to(string(_),bp(travelOrganized,10,L,U,P,x)).
+
 
 
 %

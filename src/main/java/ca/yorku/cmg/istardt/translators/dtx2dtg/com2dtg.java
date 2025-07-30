@@ -139,11 +139,13 @@ public class com2dtg {
 			String descr = cr.getName(); //CAUTION: maybe this is getRef
 			if ((cr instanceof Predicate))  {
 				crossState += descr + "_fl,";
+			} else if ((cr instanceof Condition))  {
+					crossState += descr + "_fl,";
 			} else if ((cr instanceof Variable) || (cr instanceof Quality)) {
 				crossState += descr + "(_),";
 			} else {
-				System.err.println("ERROR: initialization should be either a predicate, variable, or quality");
-			}
+				System.err.println("ERROR: cross run set can contain only predicates, conditions, variables, or qualities. ");
+				System.err.println(descr + " is a " + cr.getClass().getSimpleName() + "?");			}
 		}
 		crossState  = crossState .substring(0, crossState .length() - 1) + "]).\n";
 	
@@ -158,12 +160,15 @@ public class com2dtg {
 				String descr = it.getRef();
 				if ((it.getElement() instanceof Predicate))  {
 					initLine += descr + "_fl,";
+				} else if ((it.getElement() instanceof Condition))  {
+					initLine += descr + "_fl,";
 				} else if (it.getElement() instanceof Variable) {
 					initLine += descr + "_fl(" + it.getValue() +  "),";
 				} else if (it.getElement() instanceof Quality) {
 					initLine += descr + "(" + it.getValue() +  "),";
 				} else {
-					System.err.println("ERROR: initialization should be a predicate, a variable, or a quality");
+					System.err.println("ERROR: initializations can contain only predicates, conditions, variables, or qualities. ");
+					System.err.println(descr + " is a " + it.getElement().getClass().getSimpleName() + "?");
 				}
 			}
 			initLine = initLine.substring(0, initLine.length() - 1) + "]).\n";		
@@ -438,7 +443,9 @@ public class com2dtg {
 		rootSat = "goalAchieved(S) :- " + a.getGoalRoot().getName() + "_Sat(S).\n";
 		procedures += "dtgRun :- write('Policy: '), bp(" + a.getGoalRoot().getName() + ",10,_,U,P,x),nl,"
 				+ "\n        write('Utility: '),writeln(U), "
-				+ "\n        write('Probability: '),writeln(P).";
+				+ "\n        write('Probability: '),writeln(P).\n";
+		
+		procedures += "dtgRun(L,U,P) :-  with_output_to(string(_),bp(" + a.getGoalRoot().getName() + ",10,L,U,P,x)).\n";
 		
 		/* 
 		 *  Process Qualities
@@ -478,7 +485,7 @@ public class com2dtg {
 			//fluentList += cond.getName() + "_fl,";
 			satisfactionFormulae += cond.getName() + "_fl(s0) :- !,initiallyTrue(" + cond.getName() + "_fl).\n";
 			satisfactionFormulae += cond.getName() + "_fl(S) :- " + parser.parseConditionExpression(cond.getFormula()) + ".\n";
-			restoreSitArg += "restoreSitArg(" + cond.getName() + ",S," + cond.getName() + "(S)).\n";
+			restoreSitArg += "restoreSitArg(" + cond.getName() + "_fl,S," + cond.getName() + "_fl(S)).\n";
 		}
 		
 		satisfactionFormulae += "\n\n% Effect Related\n" + satisfactionFormulae_Effects + "\n";  
