@@ -190,7 +190,25 @@ public class com2dtg {
 	}
 	
 	
-	public void translate() {
+	
+	private ArrayList<String> getPreFormulae(DecompositionElement e, ArrayList<String> l) {
+		if (e.isRoot()) {
+			return(l);
+		}
+		
+		DecompositionElement parent = e.getParent();
+
+		if (parent.getPreFormula() != null) {
+			String prec = parser.parseConditionExpression(parent.getPreFormula());
+			l.add(prec);
+		}
+		return getPreFormulae(parent,l);
+	}
+	
+	
+	
+	
+	public void translate(boolean printDate) {
 
 
 		Actor a = getActor();
@@ -297,7 +315,11 @@ public class com2dtg {
 				//
 				// TODO: Preconditions due to PRE LINKS
 				//
-
+				for (String pres: getPreFormulae(t, new ArrayList<String>())) {
+					//System.out.println("*** PRE FORMULA: " + de);
+					localPreconditions.add(pres);
+				}
+								
 				//
 				// TODO: Preconditions due to NPR LINKS
 				//
@@ -365,21 +387,43 @@ public class com2dtg {
 				formOp = ";";
 			}
 			
-			String procLine = "proc(" + goalID + ", ";
+			String procLine = "";
 			String localSatFormula = goalID + "_Sat(S) :- ";
 			String localAttFormula = goalID + "_Att(S) :- ";
 			String localPreFormula = goalID + "_Pre(S) :- ";
+			ArrayList<String> procChildren = new ArrayList<String>();
+			
 			for (DecompositionElement l: g.getChildren()) {
 				String childID = formatter.toCamelCase(l.getName());
-				procLine += childID + procOp;
+				procChildren.add(childID);
+				//procLine += childID + procOp;
 				localSatFormula += childID + "_Sat(S)" + formOp;
 				localPreFormula += childID + "_Pre(S)" + formOp;
 				localAttFormula += childID + "_Att(S)" + ";";
 			}
+			
+			if (g.getDecompType() == DecompType.AND) { // AND Decomposed
+				ArrayList<String> permutes = new ArrayList<String>();
+				PermutationsGenerator permutator = new PermutationsGenerator();
+				permutes = (ArrayList<String>) permutator.generatePermutations(procChildren);
+				for (String permute:permutes) {
+					procLine += "proc(" + goalID + ", " + permute + ").\n";  
+				}
+			} else {
+				procLine = "proc(" + goalID + ", ";
+				for (String child:procChildren) {
+					procLine += child + procOp;
+				}
+				procLine = procLine.substring(0, procLine.length() - 3) + ").\n";
+			}
+			
+			
+			
+			
 			localSatFormula = localSatFormula.substring(0, localSatFormula.length() - 1) + ".\n";
 			localAttFormula = localAttFormula.substring(0, localAttFormula.length() - 1) + ".\n";
 			localPreFormula = localPreFormula.substring(0, localPreFormula.length() - 1) + ".\n";
-			procLine = procLine.substring(0, procLine.length() - 3) + ").\n";
+			
 
 			restoreSitArg += "restoreSitArg(" + formatter.toSat(goalID) + ",S," + formatter.toSat(goalID) + "(S)).\n";
 			//restoreSitArg += "restoreSitArg(" + formatter.toPreFluent(taskID) + ",S," + formatter.toPreFluent(taskID) + "(S)).\n";
@@ -406,11 +450,6 @@ public class com2dtg {
 					o.getName() + "(V_init,s0) :- getInitValue(" + o.getName() + ",V_init),!.\n";
 			String indent = " ".repeat((o.getName() + "(0,s0) :- ").length());
 
-			
-			//addInit if PREVIOUS (o)
-			//isOperantOfPrevious(Element e, Formula f)
-			//isInCrossRun(Element e)
-			
 			boolean addInit = !parser.isOperantOfPrevious(o, o.getFormula()) && isInCrossRun(o,a.getCrossRunSet());
 
 			if (addInit) {
@@ -437,8 +476,8 @@ public class com2dtg {
 		
 		for (Condition cond:a.getConditions()) {
 			//fluentList += cond.getName() + "_fl,";
-			satisfactionFormulae += cond.getName() + "(s0) :- !,initiallyTrue(" + cond.getName() + "_fl).\n";
-			satisfactionFormulae += cond.getName() + "(S) :- " + parser.parseConditionExpression(cond.getFormula()) + ".\n";
+			satisfactionFormulae += cond.getName() + "_fl(s0) :- !,initiallyTrue(" + cond.getName() + "_fl).\n";
+			satisfactionFormulae += cond.getName() + "_fl(S) :- " + parser.parseConditionExpression(cond.getFormula()) + ".\n";
 			restoreSitArg += "restoreSitArg(" + cond.getName() + ",S," + cond.getName() + "(S)).\n";
 		}
 		
@@ -448,9 +487,9 @@ public class com2dtg {
 		
 		
 		if (outputFile.equals("")) {
-			printToStdOut(getSpecFromVars());
+			printToStdOut(getSpecFromVars(printDate));
 		} else {
-			printToFile(getSpecFromVars());
+			printToFile(getSpecFromVars(printDate));
 		}
 	}
 
@@ -471,11 +510,11 @@ public class com2dtg {
 	    return(now.format(formatter));
 	}
 
-	private String getSpecFromVars() {
+	private String getSpecFromVars(boolean printDate) {
 		return (
 		
 		"% DT-Golog Specification for Model: " + modelName + " \n" +
-		"% Date Translated: " + getCurrentTime() + " \n" +
+		"% Date Translated: " + (printDate ? getCurrentTime():"TEST")  + " \n" +
 		"% From source: " + modelName + " \n" +
 		"% Using DTTRanslate \n" +
 		header + "\n\n" +

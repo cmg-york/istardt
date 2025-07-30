@@ -92,7 +92,7 @@ public class dtx2dtg {
                 if (translate) {
                     System.out.println("Tranlsating...");
                     com2dtg trans = new com2dtg(model,outputFile);
-                    trans.translate();
+                    trans.translate(true);
                 }            	
             }
             

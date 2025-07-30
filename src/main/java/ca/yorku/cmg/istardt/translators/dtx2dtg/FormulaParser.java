@@ -6,6 +6,7 @@ import java.util.Map;
 
 import ca.yorku.cmg.istardt.xmlparser.objects.ANDOperator;
 import ca.yorku.cmg.istardt.xmlparser.objects.Atom;
+import ca.yorku.cmg.istardt.xmlparser.objects.Condition;
 import ca.yorku.cmg.istardt.xmlparser.objects.Element;
 import ca.yorku.cmg.istardt.xmlparser.objects.Formula;
 import ca.yorku.cmg.istardt.xmlparser.objects.GTOperator;
@@ -46,6 +47,7 @@ public class FormulaParser {
 		} else if (f instanceof LTOperator) {
 			return  generateComparisonExpression(f,LTOperator.class,"<");
 		} else if (f instanceof PreviousOperator) {
+			//System.out.println("What am I getting here:" + ((PreviousOperator) f).getLeft().getFormula());
 			Atom a = (Atom) ((PreviousOperator) f).getLeft();
 			return a.getTitleText() + "_fl(s0)";
 		} else if (f instanceof NOTOperator) {
@@ -55,6 +57,8 @@ public class FormulaParser {
 				return ((Atom) f).getTitleText() + "_Sat(S)";
 			} else if (((Atom) f).getElement() instanceof Predicate) {
 				return ((Atom) f).getTitleText() + "_fl(S)";
+			} else if (((Atom) f).getElement() instanceof Condition) {
+				return ((Atom) f).getTitleText() + "_fl(S)";
 			} else {//quality or variable
 				return ((Atom) f).getTitleText() + "(S)";
 			}
@@ -63,6 +67,8 @@ public class FormulaParser {
 		}
 		return "";
 	}
+	
+	
 	
 	
 	public String parseSimpleQualityExpression(Formula f) {
@@ -170,7 +176,7 @@ public class FormulaParser {
 			m = (Atom) f;
 		}
 		//System.out.println("If am " + m.getTitleText() + " and I am of type " + m.getElement().getClass().getSimpleName());
-		if ((m.getElement() instanceof Predicate)) {
+		if ((m.getElement() instanceof Predicate) || (m.getElement() instanceof Condition)) {
 			return(
 					"val(R_" + m.getTitleText() + "_fl," +  m.getTitleText() + "_fl(" + (hasPrev ? "s0" : "S") + ")),\n"  
 				);
@@ -250,6 +256,8 @@ public class FormulaParser {
 			return("R_" + m.getTitleText() + "_Sat");
 		} else if ((m.getElement() instanceof Quality) || (m.getElement() instanceof Variable)) {
 			return("R_" + m.getTitleText());
+		} else if ((m.getElement() instanceof Condition)) {
+			return("R_" + m.getTitleText() + "_fl");
 		} else {
 			System.err.println("Uknown type of :" + m.getTitleText() + " is " + m.getClass());
 		}
