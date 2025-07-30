@@ -132,6 +132,7 @@
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="goalID" type="IdentifierType"/>
             <xsd:element name="taskID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
         </xsd:choice>
         <xsd:attribute name="continuous" type="xsd:boolean" use="required"></xsd:attribute>
         <xsd:attribute name="minVal" type="xsd:float" use="optional"></xsd:attribute>
@@ -161,6 +162,7 @@
             <xsd:element name="predicateID" type="IdentifierType"/>
             <xsd:element name="variableID" type="IdentifierType"/>
             <xsd:element name="qualID" type="IdentifierType"/>
+            <xsd:element name="conditionID" type="IdentifierType"/>
         </xsd:choice>
     </xsd:complexType>
 
