@@ -142,6 +142,10 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
             String variableID = crossRunNode.get("variableID").asText();
             crossRunSet.addRefs(variableID);
             LOGGER.info(getClass(), "Added variable reference to CrossRunSet: " + variableID);
+        } else if (crossRunNode.has("conditionID")) {
+            String conditionID = crossRunNode.get("conditionID").asText();
+            crossRunSet.addRefs(conditionID);
+            LOGGER.info(getClass(), "Added condition reference to CrossRunSet: " + conditionID);
         } else {
             LOGGER.warning(getClass(), "Unknown reference type in CrossRun: " + crossRunNode);
         }
@@ -169,6 +173,8 @@ public class ActorDeserializer extends BaseDeserializer<Actor> {
             refValue = exportNode.get("variableID").asText();
         } else if (exportNode.has("qualID")) {
             refValue = exportNode.get("qualID").asText();
+        } else if (exportNode.has("conditionID")) {
+            refValue = exportNode.get("conditionID").asText();
         }
 
         if (refValue != null) {
