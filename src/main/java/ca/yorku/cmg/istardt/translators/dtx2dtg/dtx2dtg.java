@@ -115,9 +115,9 @@ public class dtx2dtg {
 				"where options are:\n" +
 				"    -f filename \t iStarDT-X XML file \n" + 
 				"    -o filename \t DT-Golog PL file \n" +
-				"    -t \t translate only (skip validation) \n" +
-				"    -t \t validate only (skip tranlsation) \n" +
-				"    -p \t print model info  \n" +
+				"    -t \t\t\t translate only (skip validation) \n" +
+				"    -v \t\t\t validate only (skip tranlsation) \n" +
+				"    -p \t\t\t print model info  \n" +
 				"    -h \t\t\t prints this help \n";
 		return(s);
 	}
