@@ -101,7 +101,7 @@ Usage: dtx2dtg [-options]
 where options are:
     -f filename   iStarDT-X XML file
     -o filename   DT-Golog PL file
-	-t            translate only (skip validation)
+    -t            translate only (skip validation)
     -v            validate only (skip tranlsation)
     -p            print model info (forces unmarshalling)
     -h            prints this help
